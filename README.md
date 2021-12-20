@@ -1,6 +1,6 @@
 # Terralization's forked version of Nuclear-Control
 
-### We removed the cape part of the mod since it caused an bug, but we also included some community fixes
+### We replaced the cape part of the mod since it caused an bug, original authors are on the list aswell as ours, but we also included some community fixes
 
 ## Fixes by
 
