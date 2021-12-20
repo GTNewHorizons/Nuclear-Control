@@ -68,7 +68,7 @@ public class ClientProxy extends CommonProxy {
 	}
 	public void cape(){
 		try {
-		DevCapes.getInstance().registerConfig("http://technic-solder.eu-central-1.linodeobjects.com/cape.json");
+		DevCapes.getInstance().registerConfig("http://files.thorfusion.xyz.eu-central-1.linodeobjects.com/cape.json");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
