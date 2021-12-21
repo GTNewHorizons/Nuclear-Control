@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol;
 
-import com.jadarstudios.developercapes.DevCapes;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -24,7 +23,6 @@ import org.apache.logging.log4j.Logger;
 import shedar.mods.ic2.nuclearcontrol.blocks.BlockNuclearControlLight;
 import shedar.mods.ic2.nuclearcontrol.blocks.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.crossmod.CrossModLoader;
-import shedar.mods.ic2.nuclearcontrol.crossmod.ModLib;
 import shedar.mods.ic2.nuclearcontrol.crossmod.RF.CrossBuildcraft;
 import shedar.mods.ic2.nuclearcontrol.crossmod.RF.CrossRF;
 import shedar.mods.ic2.nuclearcontrol.crossmod.gregtech.CrossGregTech;

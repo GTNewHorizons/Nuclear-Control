@@ -9,9 +9,7 @@ import com.jadarstudios.developercapes.DevCapes;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -22,10 +20,6 @@ import shedar.mods.ic2.nuclearcontrol.renderers.MainBlockRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityIC2ThermoRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityInfoPanelRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityRemoteThermoRenderer;
-import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class ClientProxy extends CommonProxy {
 
