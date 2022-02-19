@@ -9,6 +9,9 @@ buildscript {
           name = "sonatype"
           url = "https://oss.sonatype.org/content/repositories/snapshots/"
       }
+      flatDir {
+        dirs 'libs'
+    }
     }
     dependencies {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
@@ -41,7 +44,7 @@ repositories {
 	}
 	maven {
         name "ProfMobius"
-        url "https://mobiusstrip.eu/maven"
+        url "http://mobiusstrip.eu/maven"
     }
     flatDir {
         dirs 'libs'
