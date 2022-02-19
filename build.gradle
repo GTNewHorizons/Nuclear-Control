@@ -27,6 +27,8 @@ minecraft {
 	runDir = "eclipse"
 	replace "@VERSION@", project.version
 }
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 repositories {
 	maven {
