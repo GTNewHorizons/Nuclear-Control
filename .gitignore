@@ -13,7 +13,7 @@
 
 # Package Files
 *.jar
-!/lib/*.jar
+!/libs/*.jar
 *.war
 *.ear
 
