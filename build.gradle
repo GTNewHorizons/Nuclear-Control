@@ -4,9 +4,7 @@ buildscript {
         name 'central'
         url 'https://maven.thorfusion.com/artifactory/central/'
     }
-      flatDir {
-        dirs 'libs'
-    }
+
     }
     dependencies {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
@@ -33,9 +31,7 @@ repositories {
         name 'central'
         url 'https://maven.thorfusion.com/artifactory/central/'
     }
-    flatDir {
-        dirs 'libs'
-    }
+
 }
 
 dependencies {
