@@ -10,21 +10,20 @@ buildscript {
         classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
             changing = true
         }
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
     }
 }
 
-apply plugin: 'forge'
-
-version = newNuclearControlVersion
-group= "com.shedar.IC2NuclearControl"
-archivesBaseName = "IC2NuclearControl"
-minecraft {
-    version = forgeVersion
-	runDir = "eclipse"
-	replace "@VERSION@", project.version
+plugins {
+    id 'java-library'
 }
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+
+apply plugin: 'forge'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: "com.jfrog.artifactory"
+apply plugin: "maven-publish"
+apply plugin: "maven"
 
 repositories {
     maven {
@@ -34,13 +33,35 @@ repositories {
 
 }
 
+// Define properties file
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    // Load config. It shall from now be referenced as simply config or project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = "${config.mod_version}"
+group= "com.shedar.IC2NuclearControl"
+archivesBaseName = "IC2NuclearControl"
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+minecraft {
+    version = config.minecraft_version + "-" + config.forge_version
+    replaceIn "shedar/mods/ic2/nuclearcontrol/IC2NuclearControl.java"
+    replace "GRADLE_MODVERSION", config.mod_version
+}
+
 dependencies {
-	compile ic2Version
-	compile codeChickenCoreVersion
-	compile notEnoughItemsVersion
-	compile codeChickenLibVersion
+    compile codeChickenCoreVersion
+    compile notEnoughItemsVersion
+    compile codeChickenLibVersion
+    compile "net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev"
+    compile "mcp.mobius.waila:Waila:1.5.10_1.7.10:dev"
 	compile argoVersion
-	compile wailaVersion
 	compile files(openCVersion)
     compile files(rcVersion)
 	compile files(aeVersion)
@@ -50,7 +71,6 @@ dependencies {
 	compile files(buildcraftVersion)
     compile files(gregtechVersion)
 }
-
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output

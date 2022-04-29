@@ -55,7 +55,7 @@ import shedar.mods.ic2.nuclearcontrol.recipes.RecipesOld;
 
 
 
-@Mod(modid = "IC2NuclearControl", name = "Nuclear Control 2", version = "2.4.6b", dependencies = "required-after:IC2; after:gregtech;", guiFactory = "shedar.mods.ic2.nuclearcontrol.gui.GuiFactory")
+@Mod(modid = "IC2NuclearControl", name = "Nuclear Control 2", version = "GRADLE_MODVERSION", dependencies = "required-after:IC2; after:gregtech;", guiFactory = "shedar.mods.ic2.nuclearcontrol.gui.GuiFactory")
 public class IC2NuclearControl {
 
 	// The instance of your mod forge uses
