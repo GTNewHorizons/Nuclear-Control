@@ -43,7 +43,7 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-version = "${config.mod_version}"
+version = "${config.minecraft_version}-${config.mod_version}"
 group= "com.shedar.IC2NuclearControl"
 archivesBaseName = "IC2NuclearControl"
 sourceCompatibility = '1.8'
