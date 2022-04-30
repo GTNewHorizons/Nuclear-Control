@@ -137,6 +137,10 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifactId = rootProject.name
+            groupId = project.group
+            version = project.version
+            artifacts = [deobfJar, libJar, jar]
         }
     }
 }
