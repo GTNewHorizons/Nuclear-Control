@@ -267,9 +267,7 @@ public class ModelInfoPanel {
         double u2 = texture.getMaxU();
         double v1 = texture.getMinV();
         double v2 = texture.getMaxV();
-        GL11.glDepthMask(false);
         addPoints(pointMap[facing], normalMap[facing], u1, u2, v1, v2);
-        GL11.glDepthMask(true);
         texture = block.getIcon(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord, facing);
 
         u1 = texture.getMinU();
