@@ -1,9 +1,9 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -18,8 +18,12 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 @SideOnly(Side.CLIENT)
 public class ModelInfoPanel {
 
-    private static final String TEXTURE_FILE = "nuclearcontrol:textures/blocks/infoPanel/panelAdvancedSide.png";
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
+    private static final String TEXTURE_FILE = "nuclearcontrol:infoPanel/panelAdvancedSide";
+    private static final IIcon advSideTex = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(TEXTURE_FILE);
+    private static final double Uma = advSideTex.getMaxU();
+    private static final double Umi = advSideTex.getMinU();
+    private static final double Vma = advSideTex.getMaxV();
+    private static final double Vmi = advSideTex.getMinV();
 
     private double[] coordinates = new double[24];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
@@ -296,77 +300,67 @@ public class ModelInfoPanel {
         if (panel.getTransparencyMode() == 0) { // Check if face should be transparent
             drawFacing(facing, panel.getRotation(), screen, panel, block, tess);
         }
-        //
-        tess.draw();
 
         // SIDES
         if (panel.getTransparencyMode() == 0) { // Check if block should be transparent
-            Tessellator.instance.startDrawingQuads();
-            renderer.minecraftRB.renderEngine.bindTexture(TEXTURE_LOCATION);
+
             Tessellator.instance.setBrightness(
                     block.getMixedBrightnessForBlock(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord));
             Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            int dx = screen.getDx() + 1;
-            int dy = screen.getDy() + 1;
-            int dz = screen.getDz() + 1;
-
             // bottom
             if (facing != 0) {
                 Tessellator.instance.setNormal(0, -1, 0);
-                addPoint(0, 0, 0);
-                addPoint(3, dx, 0);
-                addPoint(2, dx, dz);
-                addPoint(1, 0, dz);
+                addPoint(0, Umi, Vmi);
+                addPoint(3, Uma, Vmi);
+                addPoint(2, Uma, Vma);
+                addPoint(1, Umi, Vma);
             }
 
             if (facing != 1) {
                 Tessellator.instance.setNormal(0, 1, 0);
-                addPoint(4, 0, 0);
-                addPoint(5, dz, 0);
-                addPoint(6, dz, dx);
-                addPoint(7, 0, dx);
+                addPoint(4, Umi, Vmi);
+                addPoint(5, Uma, Vmi);
+                addPoint(6, Uma, Vma);
+                addPoint(7, Umi, Vma);
             }
 
             if (facing != 2) {
                 Tessellator.instance.setNormal(0, 0, -1);
-                addPoint(0, 0, 0);
-                addPoint(4, dy, 0);
-                addPoint(7, dy, dx);
-                addPoint(3, 0, dx);
+                addPoint(0, Umi, Vmi);
+                addPoint(4, Uma, Vmi);
+                addPoint(7, Uma, Vma);
+                addPoint(3, Umi, Vma);
             }
 
             if (facing != 3) {
                 Tessellator.instance.setNormal(0, 0, 1);
-                addPoint(6, 0, 0);
-                addPoint(5, dx, 0);
-                addPoint(1, dx, dy);
-                addPoint(2, 0, dy);
+                addPoint(6, Umi, Vmi);
+                addPoint(5, Uma, Vmi);
+                addPoint(1, Uma, Vma);
+                addPoint(2, Umi, Vma);
             }
 
             if (facing != 4) {
                 Tessellator.instance.setNormal(-1, 0, 0);
-                addPoint(5, 0, 0);
-                addPoint(4, dz, 0);
-                addPoint(0, dz, dy);
-                addPoint(1, 0, dy);
+                addPoint(5, Umi, Vmi);
+                addPoint(4, Uma, Vmi);
+                addPoint(0, Uma, Vma);
+                addPoint(1, Umi, Vma);
             }
 
             if (facing != 5) {
                 Tessellator.instance.setNormal(1, 0, 0);
-                addPoint(2, 0, 0);
-                addPoint(3, dz, 0);
-                addPoint(7, dz, dy);
-                addPoint(6, 0, dy);
+                addPoint(2, Umi, Vmi);
+                addPoint(3, Uma, Vmi);
+                addPoint(7, Uma, Vma);
+                addPoint(6, Umi, Vma);
             }
-            Tessellator.instance.draw();
         }
+
         // RETURN TO MC DRAWING
-        Tessellator.instance.startDrawingQuads();
-        renderer.minecraftRB.renderEngine.bindTexture(TEXTURE_LOCATION);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
-        renderer.minecraftRB.renderEngine.bindTexture(TextureMap.locationBlocksTexture/* blocks texture atlas */);
     }
 }
