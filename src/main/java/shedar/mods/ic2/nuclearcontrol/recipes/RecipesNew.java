@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import cpw.mods.fml.common.Loader;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
 import ic2.core.util.StackUtil;
@@ -18,6 +19,13 @@ import shedar.mods.ic2.nuclearcontrol.utils.LightDamages;
 public class RecipesNew {
 
     public static void addRecipes() {
+
+        CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
+
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
+
         ItemStack thermalMonitor = new ItemStack(
                 IC2NuclearControl.blockNuclearControlMain,
                 1,
@@ -220,6 +228,5 @@ public class RecipesNew {
                 IC2Items.getItem("electronicCircuit"),
                 IC2NuclearControl.itemMultipleSensorLocationCard);
 
-        CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }
 }

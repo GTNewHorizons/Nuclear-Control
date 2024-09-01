@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
@@ -19,25 +20,19 @@ import shedar.mods.ic2.nuclearcontrol.utils.LightDamages;
 
 public class GregtechRecipes {
 
-    private static Item gtmeta1;
-    private static ItemStack gtComputerMonitor;
-    private static ItemStack gtSensor;
-    private static ItemStack gtEmitter;
-
-    /**
-     * Grabs all the nessary items/itemstacks from GT indirectly.
-     * 
-     * @author xbony2
-     */
-    public static void grabItems() {
-        gtmeta1 = GameRegistry.findItem("gregtech", "gt.metaitem.01");
-        gtComputerMonitor = new ItemStack(gtmeta1, 1, 32740);
-        gtSensor = new ItemStack(gtmeta1, 1, 32690);
-        gtEmitter = new ItemStack(gtmeta1, 1, 32680);
-    }
-
     public static void addRecipes() {
-        GregtechRecipes.grabItems();
+
+        CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
+
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
+
+        final Item gtmeta1 = GameRegistry.findItem("gregtech", "gt.metaitem.01");
+        final ItemStack gtComputerMonitor = new ItemStack(gtmeta1, 1, 32740);
+        final ItemStack gtSensor = new ItemStack(gtmeta1, 1, 32690);
+        final ItemStack gtEmitter = new ItemStack(gtmeta1, 1, 32680);
+
         Recipes.advRecipes.addRecipe(
                 new ItemStack(IC2NuclearControl.itemToolThermometer),
                 new Object[] { "BG ", "GMG", " GI", 'B', "boltIron", 'G', "plateGlass", 'M', "cellMercury", 'I',
@@ -245,6 +240,5 @@ public class GregtechRecipes {
                                 BlockDamages.DAMAGE_INFO_PANEL_EXTENDER),
                         'R', IC2NuclearControl.itemUpgrade, 'P', "plateStainlessSteel" });
 
-        CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
     }
 }

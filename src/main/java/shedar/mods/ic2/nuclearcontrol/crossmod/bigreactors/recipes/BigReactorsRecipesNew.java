@@ -3,6 +3,7 @@ package shedar.mods.ic2.nuclearcontrol.crossmod.bigreactors.recipes;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import cpw.mods.fml.common.Loader;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
 import shedar.mods.ic2.nuclearcontrol.crossmod.bigreactors.CrossBigReactors;
@@ -10,6 +11,9 @@ import shedar.mods.ic2.nuclearcontrol.crossmod.bigreactors.CrossBigReactors;
 public class BigReactorsRecipesNew {
 
     public static void addRecipes() {
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
         Recipes.advRecipes.addRecipe(
                 new ItemStack(CrossBigReactors.kitRFsensor),
                 new Object[] { "IT", "PD", 'I', "ingotYellorium", 'T', IC2Items.getItem("frequencyTransmitter"), 'P',

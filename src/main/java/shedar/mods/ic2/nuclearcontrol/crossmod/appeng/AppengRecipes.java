@@ -5,12 +5,17 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEColor;
+import cpw.mods.fml.common.Loader;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
 
 public class AppengRecipes {
 
     public static void addRecipesToRegistry() {
+
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
 
         // AE Kit
         Recipes.advRecipes.addRecipe(
@@ -28,6 +33,10 @@ public class AppengRecipes {
     }
 
     public static void addGregtechRecipes() {
+
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
 
         // AE Kit
         Recipes.advRecipes.addRecipe(

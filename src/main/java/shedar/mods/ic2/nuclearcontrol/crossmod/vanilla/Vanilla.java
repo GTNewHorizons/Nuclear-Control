@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
@@ -24,6 +25,10 @@ public class Vanilla {
         GameRegistry.registerItem(inventoryCard, "ItemInventoryScannerCard");
         GameRegistry.registerItem(vanillaKit, "ItemVanilliaKit");
         GameRegistry.registerItem(machineCard, "ItemVanillaMachineCard");
+
+        if (Loader.isModLoaded("dreamcraft")) {
+            return;
+        }
 
         Recipes.advRecipes.addRecipe(
                 new ItemStack(vanillaKit),
