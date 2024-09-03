@@ -4,8 +4,8 @@ import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.items.GT_RadioactiveCellIC_Item;
-import gregtech.api.items.GT_RadioactiveCell_Item;
+import gregtech.api.items.ItemRadioactiveCell;
+import gregtech.api.items.ItemRadioactiveCellIC;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.crossmod.ModLib;
 
@@ -32,11 +32,11 @@ public class CrossGregTech {
             return 0;
         }
         try {
-            if (stack.getItem() instanceof GT_RadioactiveCellIC_Item) {
+            if (stack.getItem() instanceof ItemRadioactiveCellIC) {
                 String rodName = stack.getUnlocalizedName();
-                GT_RadioactiveCell_Item rod = (GT_RadioactiveCell_Item) GameRegistry.findItem(ModLib.GT, rodName);
+                ItemRadioactiveCell rod = (ItemRadioactiveCell) GameRegistry.findItem(ModLib.GT, rodName);
                 int maxDamage = rod.getMaxDamageEx();
-                int currentDmg = GT_RadioactiveCellIC_Item.getDurabilityOfStack(stack);
+                int currentDmg = ItemRadioactiveCellIC.getDurabilityOfStack(stack);
                 int dmg = maxDamage - currentDmg;
                 return (dmg > 0) ? dmg : 0;
             } else {
