@@ -50,7 +50,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 
     public GuiAdvancedInfoPanel(Container container) {
         super(container);
-        ySize = 212;
+        ySize = 228;
         activeTab = 0;
         initialized = false;
         name = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.name");
@@ -160,100 +160,38 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                                 192,
                                 15 + 16 * 2));
             }
-            List<PanelSetting> settingsList = null;
+            List<PanelSetting> settingsList;
             if (card.getItem() instanceof IPanelMultiCard) {
                 settingsList = ((IPanelMultiCard) source).getSettingsList(new CardWrapperImpl(card, activeTab));
             } else {
                 settingsList = source.getSettingsList();
             }
             int hy = fontRendererObj.FONT_HEIGHT + 1;
-            int y = 1;
-            int x = guiLeft + 24;
-            int hpos = guiTop + 55;
-            if (settingsList != null) for (PanelSetting panelSetting : settingsList) {
-                if (y <= 6) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 4,
-                                    hpos + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 7 && y <= 12) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 22,
-                                    hpos - 6 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 13 && y <= 18) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 44,
-                                    hpos - 12 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 19 && y <= 24) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 68,
-                                    hpos - 18 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 25 && y <= 32) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 92,
-                                    hpos - 24 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 31 && y <= 38) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 114,
-                                    hpos - 32 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else if (y >= 37 && y <= 44) {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 136,
-                                    hpos - 38 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                } else {
-                    buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    x + 158,
-                                    hpos - 44 * hy + hy * y,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-                }
+            int x = guiLeft + 30;
+            int hpos = guiTop + 60;
+            if (settingsList != null) {
+                for (int i = 0; i < settingsList.size(); i++) {
+                    PanelSetting panelSetting = settingsList.get(i);
+                    if (i >= 42) break;
+                    // Calculate column and row
+                    int column = i < 24 ? i / 8 : (i - 24) / 6 + 3;
+                    int row = i < 24 ? i % 8 : (i - 24) % 6;
 
-                y++;
+                    // calculate actual positions
+                    int xpos = x + column * 23;
+                    int ypos = i < 24 ? hpos + row * hy : hpos + row * hy + hy * 2;
+
+                    buttonList.add(
+                            new GuiInfoPanelCheckBox(
+                                    0,
+                                    xpos,
+                                    ypos,
+                                    panelSetting,
+                                    container.panel,
+                                    slot,
+                                    fontRendererObj));
+
+                }
             }
             if (!modified) {
                 textboxTitle = new GuiTextField(fontRendererObj, 7, 16, 162, 18);
@@ -305,15 +243,14 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             case ID_SETTINGS:
                 ItemStack card = getActiveCard();
                 if (card == null) return;
-                if (card != null && card.getItem() instanceof IAdvancedCardSettings) {
+                if (card.getItem() instanceof IAdvancedCardSettings) {
                     ICardWrapper helper = new CardWrapperImpl(card, activeTab);
                     Object guiObject = ((IAdvancedCardSettings) card.getItem()).getSettingsScreen(helper);
-                    if (!(guiObject instanceof GuiScreen)) {
+                    if (!(guiObject instanceof GuiScreen gui)) {
                         IC2NuclearControl.logger
                                 .warn("Invalid card, getSettingsScreen method should return GuiScreen object");
                         return;
                     }
-                    GuiScreen gui = (GuiScreen) guiObject;
                     ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, activeTab);
                     ((ICardGui) gui).setCardSettingsHelper(wrapper);
                     mc.displayGuiScreen(gui);
