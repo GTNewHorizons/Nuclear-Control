@@ -12,6 +12,7 @@ import net.minecraft.world.World;
  * interfaces.
  * 
  * @author Shedar
+ * @deprecated use {@link IPanelAdvDataSource} for compatibility in future updates
  */
 public interface IPanelDataSource {
 
@@ -44,6 +45,7 @@ public interface IPanelDataSource {
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
+     * @deprecated
      */
     List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels);
 

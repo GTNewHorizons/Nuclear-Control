@@ -100,6 +100,15 @@ public class NuclearNetworkHelper {
                 new PacketClientDisplaySettings(panel.xCoord, panel.yCoord, panel.zCoord, slot, settings));
     }
 
+    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, DisplaySettingHelper settings) {
+        if (panel == null) return;
+
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
+
+        ChannelHandler.network.sendToServer(
+                new PacketClientDisplaySettings(panel.xCoord, panel.yCoord, panel.zCoord, slot, settings));
+    }
+
     // client
     public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, int slot) {
         if (card == null || fields == null

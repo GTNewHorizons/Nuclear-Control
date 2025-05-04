@@ -17,6 +17,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -29,8 +30,8 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
 
     public static final int DISPLAY_BYTES = 1;
     public static final int DISPLAY_ITEMS = 2;
-    public static final int DISPLAY_CRAFTER = 4;
-    public static final int DISPLAY_CRAFTSTACK = 8;
+    public static final int DISPLAY_CRAFTER = 3;
+    public static final int DISPLAY_CRAFTSTACK = 4;
     // public static final int DISPLAY_TEMP = 16;
     public static final UUID CARD_TYPE1 = new UUID(0, 2);
 
@@ -120,7 +121,8 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         int TYPE = card.getInt("targetType");
@@ -132,7 +134,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
             int itemsUsed = card.getInt("UsedItems");
 
             // Total Bytes
-            if ((displaySettings & DISPLAY_BYTES) > 0) {
+            if (displaySettings.getSetting(DISPLAY_BYTES)) {
                 line = new PanelString();
                 line.textRight = String.format(
                         StatCollector.translateToLocal("msg.nc.InfoPanelAE.DisplayBytes"),
@@ -142,7 +144,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
             }
 
             // Used Items
-            if ((displaySettings & DISPLAY_ITEMS) > 0) {
+            if (displaySettings.getSetting(DISPLAY_ITEMS)) {
                 line = new PanelString();
                 line.textRight = String
                         .format(StatCollector.translateToLocal("msg.nc.InfoPanelAE.DisplayItem"), itemsUsed, items);
@@ -160,14 +162,14 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
             }
 
             // Crafting item
-            if ((displaySettings & DISPLAY_CRAFTER) > 0) {
+            if (displaySettings.getSetting(DISPLAY_CRAFTER)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelAE.CraftItemMake", localName, showLabels);
                 result.add(line);
             }
 
             // Crafting Stacks
-            if ((displaySettings & DISPLAY_CRAFTSTACK) > 0) {
+            if (displaySettings.getSetting(DISPLAY_CRAFTSTACK)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelAE.CraftAMT", stackSize, showLabels);
                 result.add(line);

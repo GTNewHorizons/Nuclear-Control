@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 @SideOnly(Side.CLIENT)
@@ -49,9 +48,7 @@ public class GuiInfoPanelShowLabels extends GuiButton {
         if (super.mousePressed(minecraft, i, j)) {
             checked = !checked;
             int value = checked ? -1 : -2;
-            // panel.setShowLabels(checked);
-
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(panel, value);
+            (IC2.network.get()).initiateClientTileEntityEvent(panel, value);
             return true;
         } else {
             return false;

@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 
 public class PacketClientDisplaySettings implements IMessage, IMessageHandler<PacketClientDisplaySettings, IMessage> {
 
@@ -16,16 +17,28 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
     private int y;
     private int z;
     private byte slot;
-    private int settings;
+    private DisplaySettingHelper settings = new DisplaySettingHelper();
 
     public PacketClientDisplaySettings() {}
 
+    /**
+     * @deprecated use {@link #PacketClientDisplaySettings(int, int, int, byte, DisplaySettingHelper)}
+     */
     public PacketClientDisplaySettings(int x, int y, int z, byte slot, int settings) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.slot = slot;
-        this.settings = settings;
+        this.settings = new DisplaySettingHelper(settings);
+    }
+
+    public PacketClientDisplaySettings(int x, int y, int z, byte slot, DisplaySettingHelper settings) {
+        PacketClientDisplaySettings packet = new PacketClientDisplaySettings();
+        packet.x = x;
+        packet.y = y;
+        packet.z = z;
+        packet.slot = slot;
+        packet.settings = settings;
     }
 
     @Override
@@ -34,7 +47,7 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
         y = buf.readInt();
         z = buf.readInt();
         slot = buf.readByte();
-        settings = buf.readInt();
+        settings = new DisplaySettingHelper(buf);
     }
 
     @Override
@@ -43,7 +56,7 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
         buf.writeInt(y);
         buf.writeInt(z);
         buf.writeByte(slot);
-        buf.writeInt(settings);
+        settings.writeToByteBuffer(buf);
     }
 
     @Override

@@ -38,4 +38,10 @@ public class PanelString {
      * Color of the right aligned part of the line.
      */
     public int colorRight = 0;
+
+    @Override
+    public String toString() {
+        String rv = textLeft + textCenter + textRight;
+        return rv.replace("null", "");
+    }
 }

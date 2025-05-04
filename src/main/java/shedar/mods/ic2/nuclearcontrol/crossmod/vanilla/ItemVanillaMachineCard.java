@@ -22,6 +22,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -29,9 +30,9 @@ public class ItemVanillaMachineCard extends ItemCardBase {
 
     public static final int DISPLAY_BREWING = 1;
     public static final int DISPLAY_TIME = 2;
-    public static final int DISPLAY_SLOT_1 = 4;
-    public static final int DISPLAY_SLOT_2 = 8;
-    public static final int DISPLAY_SLOT_3 = 16;
+    public static final int DISPLAY_SLOT_1 = 3;
+    public static final int DISPLAY_SLOT_2 = 4;
+    public static final int DISPLAY_SLOT_3 = 5;
 
     private static final String BREW_STAND = "brewStand";
     private static final String FURNACE = "furnace";
@@ -122,7 +123,8 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         if (card.getString("entity").equals(BREW_STAND)) {
@@ -131,12 +133,12 @@ public class ItemVanillaMachineCard extends ItemCardBase {
             int brewTime = card.getInt("brewTime");
             NBTTagCompound tag = card.getTag("BrewInfo");
 
-            if ((displaySettings & DISPLAY_TIME) > 0) {
+            if (displaySettings.getSetting(DISPLAY_TIME)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.brewstand", brewTime, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_1) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_1)) {
                 String slot1pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tag.hasKey("Slot1")) {
                     slot1pre = tag.getString("Slot1");
@@ -145,7 +147,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType1", slot1pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_2) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_2)) {
                 String slot2pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tag.hasKey("Slot2")) {
                     slot2pre = tag.getString("Slot2");
@@ -154,7 +156,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType2", slot2pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_3) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_3)) {
                 String slot3pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tag.hasKey("Slot3")) {
                     slot3pre = tag.getString("Slot3");
@@ -163,7 +165,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType3", slot3pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_BREWING) > 0) {
+            if (displaySettings.getSetting(DISPLAY_BREWING)) {
                 int txtColour = 0;
                 String text;
                 if (isBrewing) {
@@ -191,12 +193,12 @@ public class ItemVanillaMachineCard extends ItemCardBase {
             int burnTime = card.getInt("burnTime");
             NBTTagCompound tagCompound = card.getTag("Info");
 
-            if ((displaySettings & DISPLAY_TIME) > 0) {
+            if (displaySettings.getSetting(DISPLAY_TIME)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.burnTime", burnTime, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_1) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_1)) {
                 String slot1pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tagCompound.hasKey("Cooking")) {
                     slot1pre = tagCompound.getString("Cooking");
@@ -208,7 +210,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                         slot1pre);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_2) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_2)) {
                 String slot2pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tagCompound.hasKey("Fuel")) {
                     slot2pre = tagCompound.getString("Fuel");
@@ -220,7 +222,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                         slot2pre);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_3) > 0) {
+            if (displaySettings.getSetting(DISPLAY_SLOT_3)) {
                 String slot3pre = StatCollector.translateToLocal("msg.nc.None");
                 if (tagCompound.hasKey("Output")) {
                     slot3pre = tagCompound.getString("Output");
@@ -232,7 +234,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                         slot3pre);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_BREWING) > 0) {
+            if (displaySettings.getSetting(DISPLAY_BREWING)) {
                 int txtColour = 0;
                 String text;
                 if (isBurning) {
