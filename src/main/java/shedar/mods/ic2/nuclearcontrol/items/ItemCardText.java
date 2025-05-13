@@ -19,6 +19,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiCardText;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 
 public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings {
 
@@ -44,7 +45,8 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         boolean started = false;
         for (int i = 9; i >= 0; i--) {

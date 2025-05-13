@@ -12,6 +12,7 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -40,7 +41,8 @@ public class ItemTimeCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();
         result.add(item);
@@ -49,7 +51,7 @@ public class ItemTimeCard extends ItemCardBase {
         int minutes = (time % 1000) * 6 / 100;
         String suffix = "";
 
-        if ((displaySettings & MODE_24H) == 0) {
+        if (displaySettings.getSetting(MODE_24H)) {
             suffix = hours < 12 ? "AM" : "PM";
             hours %= 12;
             if (hours == 0) hours += 12;

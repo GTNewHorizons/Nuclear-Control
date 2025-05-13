@@ -22,6 +22,7 @@ import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
@@ -70,17 +71,19 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
                     continue;
                 }
-                int displaySettings = panel.getDisplaySettingsByCard(card);
-                if (displaySettings == 0) {
-                    continue;
-                }
+                DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(card);
+
                 CardWrapperImpl helper = new CardWrapperImpl(card, -1);
                 CardState state = helper.getState();
                 List<PanelString> data;
                 if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
                     data = StringUtils.getStateMessage(state);
                 } else {
-                    data = panel.getCardData(displaySettings, card, helper);
+                    if (panel instanceof TileEntityAdvancedInfoPanel) {
+                        data = panel.getSortedCardData(displaySettings, card, helper);
+                    } else {
+                        data = panel.getCardData(displaySettings, card, helper);
+                    }
                 }
                 if (data == null) {
                     continue;

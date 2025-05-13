@@ -12,21 +12,48 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 
 public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDispSettingsAll, IMessage> {
 
     private int x;
     private int y;
     private int z;
-    private Map<Byte, Map<UUID, Integer>> settings;
+    private Map<Byte, Map<UUID, DisplaySettingHelper>> settings;
 
     public PacketDispSettingsAll() {}
 
+    /**
+     * @deprecated use {@link #newConstructor(int, int, int, Map)} unfortunately, due to the nested map, there is no way
+     *             to make a normal overloaded constructor
+     */
     public PacketDispSettingsAll(int x, int y, int z, Map<Byte, Map<UUID, Integer>> settings) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.settings = settings;
+        this.settings = new HashMap<>();
+
+        for (Map.Entry<Byte, Map<UUID, Integer>> outerEntry : settings.entrySet()) {
+            Map<UUID, DisplaySettingHelper> innerMap = new HashMap<>();
+
+            for (Map.Entry<UUID, Integer> innerEntry : outerEntry.getValue().entrySet()) {
+                int value = innerEntry.getValue();
+                String binaryString = String.format("%8s", Integer.toBinaryString(value & 0xFF)).replace(' ', '0');
+                innerMap.put(innerEntry.getKey(), new DisplaySettingHelper(binaryString));
+            }
+
+            this.settings.put(outerEntry.getKey(), innerMap);
+        }
+    }
+
+    public static PacketDispSettingsAll newConstructor(int x, int y, int z,
+            Map<Byte, Map<UUID, DisplaySettingHelper>> settings) {
+        PacketDispSettingsAll packet = new PacketDispSettingsAll();
+        packet.x = x;
+        packet.y = y;
+        packet.z = z;
+        packet.settings = settings;
+        return packet;
     }
 
     @Override
@@ -34,16 +61,16 @@ public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDi
         x = buf.readInt();
         y = buf.readInt();
         z = buf.readInt();
-        settings = new HashMap<Byte, Map<UUID, Integer>>();
+        settings = new HashMap<>();
         byte count = buf.readByte();
         for (int i = 0; i < count; i++) {
             byte slot = buf.readByte();
             short dCount = buf.readShort();
-            Map<UUID, Integer> setting = new HashMap<UUID, Integer>();
+            Map<UUID, DisplaySettingHelper> setting = new HashMap<>();
             for (int j = 0; j < dCount; j++) {
                 long most = buf.readLong();
                 long least = buf.readLong();
-                setting.put(new UUID(most, least), buf.readInt());
+                setting.put(new UUID(most, least), new DisplaySettingHelper(buf));
             }
             settings.put(slot, setting);
         }
@@ -55,17 +82,17 @@ public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDi
         buf.writeInt(y);
         buf.writeInt(z);
         buf.writeByte(settings.size());
-        for (Map.Entry<Byte, Map<UUID, Integer>> slotData : settings.entrySet()) {
+        for (Map.Entry<Byte, Map<UUID, DisplaySettingHelper>> slotData : settings.entrySet()) {
             buf.writeByte(slotData.getKey());
             buf.writeShort(slotData.getValue().size());
-            for (Map.Entry<UUID, Integer> item : slotData.getValue().entrySet()) {
+            for (Map.Entry<UUID, DisplaySettingHelper> item : slotData.getValue().entrySet()) {
                 UUID key = item.getKey();
                 if (key == null) {
                     continue;
                 }
                 buf.writeLong(key.getMostSignificantBits());
                 buf.writeLong(key.getLeastSignificantBits());
-                buf.writeInt(item.getValue());
+                item.getValue().writeToByteBuffer(buf);
             }
         }
     }
@@ -78,14 +105,16 @@ public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDi
             return null;
         }
         TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
-        for (Map.Entry<Byte, Map<UUID, Integer>> slotData : message.settings.entrySet()) {
-            Map<UUID, Integer> setting = panel.getDisplaySettingsForSlot(slotData.getKey());
-            for (Map.Entry<UUID, Integer> item : slotData.getValue().entrySet()) {
+        for (Map.Entry<Byte, Map<UUID, DisplaySettingHelper>> slotData : message.settings.entrySet()) {
+            Map<UUID, DisplaySettingHelper> setting = panel.getDisplaySettingsForSlot(slotData.getKey());
+            for (Map.Entry<UUID, DisplaySettingHelper> item : slotData.getValue().entrySet()) {
                 UUID key = item.getKey();
                 if (key == null) {
                     continue;
                 }
-                setting.put(new UUID(key.getMostSignificantBits(), key.getLeastSignificantBits()), item.getValue());
+                setting.put(
+                        new UUID(key.getMostSignificantBits(), key.getLeastSignificantBits()),
+                        item.getValue());
             }
         }
         panel.resetCardData();

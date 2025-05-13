@@ -30,20 +30,12 @@ import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
-import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
-import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
-import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
-import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.api.*;
 import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.InfoPanel;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
-import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
-import shedar.mods.ic2.nuclearcontrol.utils.ColorUtil;
-import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
-import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.*;
 
 public class TileEntityInfoPanel extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, INetworkClientTileEntityEventListener,
@@ -79,7 +71,7 @@ public class TileEntityInfoPanel extends TileEntity
     private boolean prevIsWeb = false;
     protected boolean isWeb = false;
 
-    protected final Map<Byte, Map<UUID, Integer>> displaySettings;
+    protected final Map<Byte, Map<UUID, DisplaySettingHelper>> displaySettings;
 
     private int prevRotation;
     public int rotation;
@@ -218,7 +210,7 @@ public class TileEntityInfoPanel extends TileEntity
         return slot == SLOT_CARD;
     }
 
-    public void setDisplaySettings(byte slot, int settings) {
+    public void setDisplaySettings(byte slot, DisplaySettingHelper settings) {
         if (!isCardSlot(slot)) return;
         UUID cardType = null;
         ItemStack stack = inventory[slot];
@@ -230,14 +222,9 @@ public class TileEntityInfoPanel extends TileEntity
             }
         }
         if (cardType != null) {
-            if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<UUID, Integer>());
-            boolean update = true;// !displaySettings.get(slot).containsKey(cardType)
-                                  // ||
-                                  // displaySettings.get(slot).get(cardType)
-                                  // != settings;
-
+            if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<>());
             displaySettings.get(slot).put(cardType, settings);
-            if (update && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 NuclearNetworkHelper.sendDisplaySettingsUpdate(this, slot, cardType, settings);
             }
         }
@@ -313,8 +300,8 @@ public class TileEntityInfoPanel extends TileEntity
         dt = IC2NuclearControl.instance.dataRefreshPeriod;
         dataTicker = (dt > tickRate) ? tickRate : dt;
         updatedataTicker = dataTicker;
-        displaySettings = new HashMap<Byte, Map<UUID, Integer>>(1);
-        displaySettings.put((byte) 0, new HashMap<UUID, Integer>());
+        displaySettings = new HashMap<>(1);
+        displaySettings.put((byte) 0, new HashMap<>());
         powered = false;
         prevPowered = false;
         facing = 0;
@@ -369,12 +356,24 @@ public class TileEntityInfoPanel extends TileEntity
         cardData.clear();
     }
 
-    public List<PanelString> getCardData(int settings, ItemStack cardStack, ICardWrapper helper) {
+
+    /**
+     * get a list of PanelStrings to display on the screen
+     *
+     * @param settings  displaySettings of the screen, used as a bitmask
+     * @param cardStack ItemStack that contains the card
+     * @param helper    Wrapper object, to access field values.
+     * @return a list of PanelStrings to display
+     */
+    public List<PanelString> getCardData(DisplaySettingHelper settings, ItemStack cardStack, ICardWrapper helper) {
         IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
         int slot = getIndexOfCard(cardStack);
+        resetCardData();
         List<PanelString> data = cardData.get(slot);
         if (data == null) {
-            data = card.getStringData(settings, helper, getShowLabels());
+            if (card instanceof IPanelAdvDataSource)
+                data = ((IPanelAdvDataSource) card).getStringData(settings, helper, getShowLabels());
+            else data = card.getStringData(settings.getAsInteger(), helper, getShowLabels());
             String title = helper.getTitle();
             if (data != null && title != null && !title.isEmpty()) {
                 PanelString titleString = new PanelString();
@@ -417,10 +416,10 @@ public class TileEntityInfoPanel extends TileEntity
                 NBTTagCompound compound = settingsList.getCompoundTagAt(i);
                 try {
                     UUID key = UUID.fromString(compound.getString("key"));
-                    int value = compound.getInteger("value");
-                    getDisplaySettingsForSlot(slot).put(key, value);
+                    String value = compound.getString("value");
+                    getDisplaySettingsForSlot(slot).put(key, new DisplaySettingHelper(value));
                 } catch (IllegalArgumentException e) {
-                    IC2NuclearControl.logger.warn("Ivalid display settings for Information Panel");
+                    IC2NuclearControl.logger.warn("Invalid display settings for Information Panel");
                 }
             }
         }
@@ -434,10 +433,10 @@ public class TileEntityInfoPanel extends TileEntity
             for (int i = 0; i < settingsList.tagCount(); i++) {
                 NBTTagCompound compound = settingsList.getCompoundTagAt(i);
                 try {
-                    int value = compound.getInteger("value");
-                    setDisplaySettings(slot, value);
+                    String value = compound.getString("value");
+                    setDisplaySettings(slot, new DisplaySettingHelper(value));
                 } catch (IllegalArgumentException e) {
-                    IC2NuclearControl.logger.warn("Ivalid display settings for Information Panel");
+                    IC2NuclearControl.logger.warn("Invalid display settings for Information Panel");
                 }
             }
         }
@@ -445,12 +444,6 @@ public class TileEntityInfoPanel extends TileEntity
 
     protected void readDisplaySettings(NBTTagCompound nbttagcompound) {
         deserializeDisplaySettings(nbttagcompound, "dSettings", SLOT_CARD);
-        if (nbttagcompound.hasKey("dSets")) {// v.1.3.2 compatibility
-            int[] dSets = nbttagcompound.getIntArray("dSets");
-            for (int i = 0; i < dSets.length; i++) {
-                displaySettings.get(SLOT_CARD).put(new UUID(0, i), dSets[i]);
-            }
-        }
     }
 
     public void readDisplaySettingsFromCard(ItemStack item) {
@@ -511,12 +504,13 @@ public class TileEntityInfoPanel extends TileEntity
         super.invalidate();
     }
 
+    //TODO add sorting to this
     protected NBTTagList serializeSlotSettings(byte slot) {
         NBTTagList settingsList = new NBTTagList();
-        for (Map.Entry<UUID, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
+        for (Map.Entry<UUID, DisplaySettingHelper> item : getDisplaySettingsForSlot(slot).entrySet()) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("key", item.getKey().toString());
-            compound.setInteger("value", item.getValue());
+            compound.setString("value", item.getValue().toString());
             settingsList.appendTag(compound);
         }
         return settingsList;
@@ -752,7 +746,7 @@ public class TileEntityInfoPanel extends TileEntity
                 processCard(card, upgradeCountRange, slot);
             }
         }
-    };
+    }
 
     @Override
     public boolean isItemValid(int slotIndex, ItemStack itemstack) {
@@ -885,32 +879,36 @@ public class TileEntityInfoPanel extends TileEntity
         prevRotation = rotation;
     }
 
-    public Map<Byte, Map<UUID, Integer>> getDisplaySettings() {
+    public Map<Byte, Map<UUID, DisplaySettingHelper>> getDisplaySettings() {
         return displaySettings;
     }
 
-    public Map<UUID, Integer> getDisplaySettingsForSlot(byte slot) {
+    public Map<UUID, DisplaySettingHelper> getDisplaySettingsForSlot(byte slot) {
         if (!displaySettings.containsKey(slot)) {
-            displaySettings.put(slot, new HashMap<UUID, Integer>());
+            displaySettings.put(slot, new HashMap<>());
         }
         return displaySettings.get(slot);
     }
 
     public int getDisplaySettingsForCardInSlot(int slot) {
-        ItemStack card = inventory[slot];
-        if (card == null) {
-            return 0;
-        }
-        return getDisplaySettingsByCard(card);
+        return getNewDisplaySettingsForCardInSlot(slot).getAsInteger();
     }
 
-    public int getDisplaySettingsByCard(ItemStack card) {
+    public DisplaySettingHelper getNewDisplaySettingsForCardInSlot(int slot) {
+        ItemStack card = inventory[slot];
+        if (card == null) {
+            return new DisplaySettingHelper();
+        }
+        return getNewDisplaySettingsByCard(card);
+    }
+
+    public DisplaySettingHelper getNewDisplaySettingsByCard(ItemStack card) {
         byte slot = getIndexOfCard(card);
         if (card == null) {
-            return 0;
+            return new DisplaySettingHelper();
         }
         if (!displaySettings.containsKey(slot)) {
-            return DISPLAY_DEFAULT;
+            return new DisplaySettingHelper();
         }
         UUID cardType = null;
         if (card.getItem() instanceof IPanelMultiCard) {
@@ -921,7 +919,11 @@ public class TileEntityInfoPanel extends TileEntity
         if (displaySettings.get(slot).containsKey(cardType)) {
             return displaySettings.get(slot).get(cardType);
         }
-        return DISPLAY_DEFAULT;
+        return new DisplaySettingHelper();
+    }
+
+    public int getDisplaySettingsByCard(ItemStack card) {
+        return getNewDisplaySettingsByCard(card).getAsInteger();
     }
 
     @Override
@@ -951,5 +953,20 @@ public class TileEntityInfoPanel extends TileEntity
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
         return isItemValid(slot, itemstack);
+    }
+
+    /**
+     * get a sorted list of PanelStrings to display on the screen
+     *
+     * @param settings  displaySettings of the screen, used as a bitmask
+     * @param cardStack ItemStack that contains the card
+     * @param helper    Wrapper object, to access field values.
+     * @return a list of PanelStrings to display
+     */
+    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+            CardWrapperImpl helper) {
+        List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
+        new DataSorter(cardStack).sortList(data);
+        return data;
     }
 }

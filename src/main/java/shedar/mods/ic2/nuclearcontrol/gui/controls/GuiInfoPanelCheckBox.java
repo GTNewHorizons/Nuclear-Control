@@ -55,11 +55,7 @@ public class GuiInfoPanelCheckBox extends GuiButton {
     public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {
         if (super.mousePressed(minecraft, mouseX, mouseY)) {
             checked = !checked;
-            int value;
-            if (checked) value = panel.getDisplaySettingsForCardInSlot(slot) | setting.displayBit;
-            else value = panel.getDisplaySettingsForCardInSlot(slot) & (~setting.displayBit);
-            NuclearNetworkHelper.setDisplaySettings(panel, slot, value);
-            panel.setDisplaySettings(slot, value);
+            panel.getNewDisplaySettingsForCardInSlot(slot).setSetting(setting.displayBit, checked);
             return true;
         } else return false;
     }

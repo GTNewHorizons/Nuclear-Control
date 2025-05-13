@@ -91,7 +91,7 @@ public class NuclearNetworkHelper {
     }
 
     // client
-    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, int settings) {
+    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, DisplaySettingHelper settings) {
         if (panel == null) return;
 
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
@@ -165,13 +165,13 @@ public class NuclearNetworkHelper {
 
         TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
         if (!(tileEntity instanceof TileEntityInfoPanel)) return;
-        Map<Byte, Map<UUID, Integer>> settings = ((TileEntityInfoPanel) tileEntity).getDisplaySettings();
+        Map<Byte, Map<UUID, DisplaySettingHelper>> settings = ((TileEntityInfoPanel) tileEntity).getDisplaySettings();
         if (settings == null) return;
-        ChannelHandler.network.sendTo(new PacketDispSettingsAll(x, y, z, settings), player);
+        ChannelHandler.network.sendTo(PacketDispSettingsAll.newConstructor(x, y, z, settings), player);
     }
 
     // server
-    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, UUID key, int value) {
+    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, UUID key, DisplaySettingHelper value) {
         sendPacketToAllAround(
                 panel.xCoord,
                 panel.yCoord,

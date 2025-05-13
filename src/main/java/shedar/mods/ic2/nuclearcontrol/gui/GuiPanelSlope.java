@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 public class GuiPanelSlope extends GuiScreen {
@@ -36,22 +35,32 @@ public class GuiPanelSlope extends GuiScreen {
     @Override
     protected void mouseClicked(int x, int y, int par3) {
         super.mouseClicked(x, y, par3);
-        x -= guiLeft;
-        y -= guiTop;
-        if (y >= 23 && y <= 89) {
-            int amount = (87 - y + 2) / 4;
+        updateValue(x, y);
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        updateValue(mouseX, mouseY);
+    }
+
+    private void updateValue(int mouseX, int mouseY) {
+        mouseX -= guiLeft;
+        mouseY -= guiTop;
+        if (mouseY >= 23 && mouseY <= 89) {
+            int amount = (87 - mouseY + 2) / 4;
             int offset = 0;
-            if (x >= 21 && x <= 34) {
+            if (mouseX >= 21 && mouseX <= 34) {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_THICKNESS;
                 if (amount < 1) amount = 1;
-            } else if (x >= 79 && x <= 92) {
+            } else if (mouseX >= 79 && mouseX <= 92) {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_HOR;
                 if (amount < 0) amount = 0;
-            } else if (x >= 137 && x <= 150) {
+            } else if (mouseX >= 137 && mouseX <= 150) {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_VERT;
                 if (amount < 0) amount = 0;
             }
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(panel, offset + amount);
+            (IC2.network.get()).initiateClientTileEntityEvent(panel, offset + amount);
         }
     }
 

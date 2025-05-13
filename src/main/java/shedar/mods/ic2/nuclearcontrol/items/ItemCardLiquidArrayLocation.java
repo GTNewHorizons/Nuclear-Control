@@ -21,6 +21,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.utils.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -29,11 +30,11 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
 
     public static final int DISPLAY_NAME = 1;
     public static final int DISPLAY_AMOUNT = 2;
-    public static final int DISPLAY_FREE = 4;
-    public static final int DISPLAY_CAPACITY = 8;
-    public static final int DISPLAY_PERCENTAGE = 16;
-    public static final int DISPLAY_EACH = 32;
-    public static final int DISPLAY_TOTAL = 64;
+    public static final int DISPLAY_FREE = 3;
+    public static final int DISPLAY_CAPACITY = 4;
+    public static final int DISPLAY_PERCENTAGE = 5;
+    public static final int DISPLAY_EACH = 6;
+    public static final int DISPLAY_TOTAL = 7;
 
     private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
     private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
@@ -131,18 +132,19 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         double totalAmount = 0;
         double totalCapacity = 0;
-        boolean showEach = (displaySettings & DISPLAY_EACH) > 0;
-        boolean showSummary = (displaySettings & DISPLAY_TOTAL) > 0;
-        boolean showName = (displaySettings & DISPLAY_NAME) > 0;
-        boolean showAmount = true;// (displaySettings & DISPLAY_AMOUNT) > 0;
-        boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
-        boolean showCapacity = (displaySettings & DISPLAY_CAPACITY) > 0;
-        boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
+        boolean showEach = displaySettings.getSetting(DISPLAY_EACH);
+        boolean showSummary = displaySettings.getSetting(DISPLAY_TOTAL);
+        boolean showName = displaySettings.getSetting(DISPLAY_NAME);
+        boolean showAmount = true;// displaySettings.getSetting(DISPLAY_AMOUNT) > 0;
+        boolean showFree = displaySettings.getSetting(DISPLAY_FREE);
+        boolean showCapacity = displaySettings.getSetting(DISPLAY_CAPACITY);
+        boolean showPercentage = displaySettings.getSetting(DISPLAY_PERCENTAGE);
         int cardCount = getCardCount(card);
         for (int i = 0; i < cardCount; i++) {
             int amount = card.getInt(String.format("_%damount", i));
