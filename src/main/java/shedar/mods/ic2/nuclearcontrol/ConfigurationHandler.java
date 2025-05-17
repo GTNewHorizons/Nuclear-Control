@@ -26,7 +26,7 @@ public class ConfigurationHandler {
             IC2NuclearControl.instance.maxAlarmRange = configuration
                     .get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
             IC2NuclearControl.instance.allowedAlarms = configuration
-                    .get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").getString()
+                    .get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,factorio-rocket-silo").getString()
                     .replaceAll(" ", "");
             IC2NuclearControl.instance.remoteThermalMonitorEnergyConsumption = configuration
                     .get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();

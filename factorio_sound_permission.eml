@@ -1,0 +1,153 @@
+X-Envelope-From: <factorio@factorio.com>
+X-Envelope-To: <niclas@klugmann.de>
+X-Delivery-Time: 1747123166
+X-UID: 23456
+Return-Path: <factorio@factorio.com>
+ARC-Seal: i=1; a=rsa-sha256; t=1747123166; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=IRQJ0dyIGjb34ok40ldyjR4v3B6Po/I3lirpdP2PdwiC/Chx6aqljSaYRqXKc1losy
+    W3bxuAus33cmdloeLDb5/MW28h8qUFJZTZLcjJn6pSsFVRCQ50gFPCxoXFzzCECWsBlT
+    1tH+A5saHjBVWPF/TnKkhvnRRtOuR42P9BxvLgj1Z9GXNS11MmAW2poSrL1Dwxh9g4A4
+    nviLSilhaIvEvJx8Bz6iQyDy6J8uRR+LdTr8L235UCC/TYcjwI/6NoVlndmsyRDEU1Ck
+    Xmx2S37n5RbSQrQ/knQcA5CXs48buae+lszdXKRzTSIN0g5ZXMg8rkwlYvFqGL/9eLOJ
+    16OA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1747123166;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:Subject:Message-ID:Date:From:In-Reply-To:References:Cc:Date:From:
+    Subject:Sender;
+    bh=nFggBTaIoja/3nFxlDg5aljTe5kCWaa91CtaMEdd2Ww=;
+    b=Ur/8KSMvzCOxCSsZKgZ1l6VbHuUewv6uQ0xPjPRFRpNGV7ZqYpyLR7WmfO0zTKK1bB
+    N57mwR7xq+Kamqzm3k9vCKfH3ZylZkhGEykuPPLE6kjxaZ4uUWK7v04K5wvhjsF5yVi5
+    vGyzXPVhN9i5Cy8wbdvyTMzfmnIyxbGmb8ZUQTBeUUIAKoeIwV90Kv7DOvog37AyObVH
+    u56AtlLX09Jqd8s/RoPWoNcM2JJKBKy/Rb5YYM63iJkbyLQ/7f4fj6A2hS9o1hvVRVz1
+    W/ANlq//ZhDYrnghe0t/QpeI3Qb6yKavoGQe+VCtPiHUiIA9rB8z8XcsUVuaDlJ4B2fT
+    uFHg==
+ARC-Authentication-Results: i=1; strato.com;
+    dmarc=pass (p=QUARANTINE sp=NONE) header.from="factorio.com";
+    arc=none smtp.remote-ip=2a00:1450:4864:20::52d;
+    dkim=pass header.d="factorio.com" header.s="google" header.a="rsa-sha256";
+    dkim-adsp=pass;
+    spf=pass smtp.mailfrom="factorio@factorio.com"
+Authentication-Results: strato.com;
+    dmarc=pass (p=QUARANTINE sp=NONE) header.from="factorio.com";
+    arc=none smtp.remote-ip=2a00:1450:4864:20::52d;
+    dkim=pass header.d="factorio.com" header.s="google" header.a="rsa-sha256";
+    dkim-adsp=pass;
+    spf=pass smtp.mailfrom="factorio@factorio.com"
+X-RZG-Expurgate: suspect/normal
+X-RZG-Expurgate-ID: 149500::1747123166-BA076B3E-D8DC6725/10/3626336762
+X-RZG-CLASS-ID: mi00
+Received-SPF: pass
+    (strato.com: domain factorio.com designates 2a00:1450:4864:20::52d as permitted sender)
+    mechanism=ip6;
+    client-ip=2a00:1450:4864:20::52d;
+    helo="mail-ed1-x52d.google.com";
+    envelope-from="factorio@factorio.com";
+    receiver=smtpin.rzone.de;
+    identity=mailfrom;
+Received: from mail-ed1-x52d.google.com ([IPv6:2a00:1450:4864:20::52d])
+    by smtpin.rzone.de (RZmta 51.3.0 OK)
+    with ESMTPS id E3747a14D7xQNSM
+    (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+    (Client CN "smtp.gmail.com", Issuer "WR4" (verified OK))
+        (Client hostname verification FAILED)
+    for <niclas@klugmann.de>;
+    Tue, 13 May 2025 09:59:26 +0200 (CEST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5fbee929e56so10030664a12.0
+        for <niclas@klugmann.de>; Tue, 13 May 2025 00:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=factorio.com; s=google; t=1747123165; x=1747727965; darn=klugmann.de;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nFggBTaIoja/3nFxlDg5aljTe5kCWaa91CtaMEdd2Ww=;
+        b=IiWBriXHQz3/80/SbMvUEE15O90Hb8StkAkFc1IpdaxMaChy63777PNDkJoiliafsS
+         GIxn8tOEu1rT+nLC5Pkz3220VTDQK0H1Y7nxWcHKdCwzIUmAbr8vhYEzS3gYbJRTIUYF
+         +DdAJmsxh/5Qz7pNmKvSdOCLgVb9+6uy2Nf4MoeuqBOWbsxlSRdjWFpJX57ekvpwaLCx
+         ghxbtbGMRYNIWhOtPlx5pgDvmp5u9VEuNvUoYw8Up5JnlI+02/zjKNx21b8Iakcs7T/F
+         IQOtNMQZwK/viQzOPE7GbupeW5FaEHuRtwI9V31GXta4PFmA/2UX/siiaE1cZPnVae7d
+         OLdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747123165; x=1747727965;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nFggBTaIoja/3nFxlDg5aljTe5kCWaa91CtaMEdd2Ww=;
+        b=NdFHPU3YstHLmC0K6mFjTQ4HpTSvuARcdSRKvHSERBV8w/qhWGjr8avhUS20O5hLtN
+         dKGqtZ2c97jsqqkuretiIj73ndXJ1p0r2Ug25vIyEASPyBvzlQd1xz7PpPrSIGofdfgN
+         7b5CFbFhEWf4nEPKdTIVW01RMXFq9ropHcPD0UJfnjXd1G/awdelMKGsjKxYx3U98h1q
+         8cYBiNkO+btaydXzBnoyxzgdjpkD37jAWsrvJ4LHFr6BESrkIurz4/hj7Qe2MDgtJMMY
+         A7HE8yEwQULGKws/sQKIbQ9haT/6BsIYCGbUHOCPSdcfzLx/OpBgsWiFkWdpvNNU+oqg
+         3rbg==
+X-Gm-Message-State: AOJu0YzOlNTvcWPewB+Bu0HmIVL+5QXDh1MI9TCJ4rEhwoCkKdtyCHUl
+	mKPHs/31Yddsxw31ACnIV1M3iEioYw0YdsVNIWsn1YEmFouIJ2xhEDLbnvqm5hT275UDH6j77PO
+	sbW2VsusBcmEx2sJ9C6BG2BJ3gVvZRzsKm3cd1uXChc74WVlR
+X-Gm-Gg: ASbGnctR82WpSCjVp36t7qLvpQM0yGuP4Q0jJvO5hL2uJm2rXa844RbALbmS/uARa5C
+	eE/xkwExwK7LrXEZtF9axzZ3Hr0rmWuFZXB0U8kjMCE20GY94zs7mYzZnjH7V8ZKK9XgmLNLRzM
+	IrRAxsybCtA0pO1ioMH9UFns2CM/1ixqs=
+X-Google-Smtp-Source: AGHT+IG7bWM8aQIJzui1kfZnZ66PRJnR1Dsa69sJXrytG3IS0+BJrOa5JAONcF73gQLAJw72hW59uhvq8QwhqSJbZDc=
+X-Received: by 2002:a17:907:3f20:b0:ac7:c7cd:ac39 with SMTP id
+ a640c23a62f3a-ad218f0f2eamr1621669866b.24.1747123164639; Tue, 13 May 2025
+ 00:59:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <ADFD106D-0073-4D45-862D-2AAA50C9D8B3@klugmann.de>
+In-Reply-To: <ADFD106D-0073-4D45-862D-2AAA50C9D8B3@klugmann.de>
+From: Factorio <factorio@factorio.com>
+Date: Tue, 13 May 2025 09:58:44 +0200
+X-Gm-Features: AX0GCFuLuAjwIFKJqRmYXuniGqyiJIjgyalw6hNERPseaWDVb6qWTgk18c81CSo
+Message-ID: <CAHmfJRxFpV+kVJ7P5+kFDKPRP_HLCryGgdJK9H6Dt60n3iGFMw@mail.gmail.com>
+Subject: Re: Licensing a sound effect
+To: Niclas Klugmann <niclas@klugmann.de>
+Content-Type: multipart/alternative; boundary="0000000000009b849c0634ffcf5a"
+
+--0000000000009b849c0634ffcf5a
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Niclas,
+
+You can include the sound affect, we are okay with that if its for a free
+mod
+
+Kind Regards,
+Scott
+
+On Fri, 2 May 2025 at 01:59, Niclas Klugmann <niclas@klugmann.de> wrote:
+
+> Hello factorio team!
+> I'm a developer on an open source Minecraft modpack project that has been
+> going on for 10 years now, Gregtech: New Horizons. It has been greatly
+> inspired by Factorio and I wanted to ask if there's a way to license and
+> get the rocket silos alarm as an optional alarm sound for the industrial
+> alarm in our modpack.
+>
+> The industrial alarm block can use custom sounds every user can customize,
+> I'd like to maybe ship it with the normal default modpack, nothing more.
+>
+> Cheers
+> Niclas Klugmann
+>
+> the project is visible at https://github.com/GTNewHorizons
+>
+
+--0000000000009b849c0634ffcf5a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi Niclas,</div><div><br></div><div>You can include t=
+he sound affect, we are okay with that if its for a free mod</div><div><br>=
+</div><div>Kind Regards,</div><div>Scott</div></div><br><div class=3D"gmail=
+_quote gmail_quote_container"><div dir=3D"ltr" class=3D"gmail_attr">On Fri,=
+ 2 May 2025 at 01:59, Niclas Klugmann &lt;<a href=3D"mailto:niclas@klugmann=
+.de">niclas@klugmann.de</a>&gt; wrote:<br></div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,=
+204);padding-left:1ex"><u></u><div><div dir=3D"auto">Hello factorio team!<b=
+r>I&#39;m a developer on an open source Minecraft modpack project that has =
+been going on for 10 years now, Gregtech: New Horizons. It has been greatly=
+ inspired by Factorio and I wanted to ask if there&#39;s a way to license a=
+nd get the rocket silos alarm as an optional alarm sound for the industrial=
+ alarm in our modpack.<br><br>The industrial alarm block can use custom sou=
+nds every user can customize, I&#39;d like to maybe ship it with the normal=
+ default modpack, nothing more.<br><br>Cheers<br>Niclas Klugmann<br><br>the=
+ project is visible at <a href=3D"https://github.com/GTNewHorizons" target=
+=3D"_blank">https://github.com/GTNewHorizons</a></div></div></blockquote></=
+div>
+
+--0000000000009b849c0634ffcf5a--
