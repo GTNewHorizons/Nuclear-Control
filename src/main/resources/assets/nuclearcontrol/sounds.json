@@ -1,4 +1,5 @@
 {
     "alarm-default": {"category": "master","sounds": [{"name": "alarm-default","stream": true}]},
-    "alarm-sci-fi": {"category": "master","sounds": [{"name": "alarm-sci-fi","stream": true}]}
+    "alarm-sci-fi": {"category": "master","sounds": [{"name": "alarm-sci-fi","stream": true}]},
+    "alarm-factorio-rocket-silo": {"category": "master","sounds": [{"name": "alarm-factorio-rocket-silo","stream": true}]}
 }
