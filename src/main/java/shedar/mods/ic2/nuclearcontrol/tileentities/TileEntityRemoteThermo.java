@@ -8,6 +8,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.MinecraftForge;
@@ -74,14 +77,30 @@ public class TileEntityRemoteThermo extends TileEntityThermo
     }
 
     @Override
-    public List<String> getNetworkedFields() {
-        List<String> list = super.getNetworkedFields();
-        list.add("maxStorage");
-        list.add("tier");
-        list.add("maxPacketSize");
-        list.add("rotation");
+    public Packet getDescriptionPacket() {
+        S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+        NBTTagCompound tag = pkt.func_148857_g();
 
-        return list;
+        tag.setDouble("maxStorage", maxStorage);
+        tag.setInteger("tier", tier);
+        tag.setDouble("maxPacketSize", maxPacketSize);
+        tag.setInteger("rotation", rotation);
+
+        return pkt;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+
+        NBTTagCompound tag = pkt.func_148857_g();
+
+        maxStorage = tag.getDouble("maxStorage");
+        tier = tag.getInteger("tier");
+        maxPacketSize = tag.getDouble("maxPacketSize");
+        rotation = tag.getInteger("rotation");
+
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
@@ -141,34 +160,26 @@ public class TileEntityRemoteThermo extends TileEntityThermo
 
     public void setTier(int value) {
         tier = value;
-        if (tier != prevTier) {
-            IC2.network.get().updateTileEntityField(this, "tier");
-        }
+        if (tier != prevTier) markForUpdate();
         prevTier = tier;
     }
 
     @Override
     public void setRotation(int value) {
         rotation = value;
-        if (rotation != prevRotation) {
-            IC2.network.get().updateTileEntityField(this, "rotation");
-        }
+        if (rotation != prevRotation) markForUpdate();
         prevRotation = rotation;
     }
 
     public void setMaxPacketSize(double value) {
         maxPacketSize = value;
-        if (maxPacketSize != prevMaxPacketSize) {
-            IC2.network.get().updateTileEntityField(this, "maxPacketSize");
-        }
+        if (maxPacketSize != prevMaxPacketSize) markForUpdate();
         prevMaxPacketSize = maxPacketSize;
     }
 
     public void setMaxStorage(double value) {
         maxStorage = value;
-        if (maxStorage != prevMaxStorage) {
-            IC2.network.get().updateTileEntityField(this, "maxStorage");
-        }
+        if (maxStorage != prevMaxStorage) markForUpdate();
         prevMaxStorage = maxStorage;
     }
 
@@ -213,14 +224,14 @@ public class TileEntityRemoteThermo extends TileEntityThermo
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
-        super.readFromNBT(nbttagcompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        energy = nbttagcompound.getDouble("energy"); // I'm not sure why it was getInt instead of double...
-        if (nbttagcompound.hasKey("rotation")) {
-            prevRotation = rotation = nbttagcompound.getInteger("rotation");
+        energy = tag.getDouble("energy"); // I'm not sure why it was getInt instead of double...
+        if (tag.hasKey("rotation")) {
+            prevRotation = rotation = tag.getInteger("rotation");
         }
-        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         inventory = new ItemStack[getSizeInventory()];
         for (int i = 0; i < nbttaglist.tagCount(); i++) {
             NBTTagCompound compound = nbttaglist.getCompoundTagAt(i);
@@ -234,10 +245,10 @@ public class TileEntityRemoteThermo extends TileEntityThermo
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
-        super.writeToNBT(nbttagcompound);
-        nbttagcompound.setDouble("energy", energy);
-        nbttagcompound.setInteger("rotation", rotation);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        tag.setDouble("energy", energy);
+        tag.setInteger("rotation", rotation);
 
         NBTTagList nbttaglist = new NBTTagList();
         for (int i = 0; i < inventory.length; i++) {
@@ -248,16 +259,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
                 nbttaglist.appendTag(compound);
             }
         }
-        nbttagcompound.setTag("Items", nbttaglist);
-    }
-
-    @Override
-    public void onNetworkUpdate(String field) {
-        super.onNetworkUpdate(field);
-        if (field.equals("rotation") && prevRotation != rotation) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            prevRotation = rotation;
-        }
+        tag.setTag("Items", nbttaglist);
     }
 
     @Override
