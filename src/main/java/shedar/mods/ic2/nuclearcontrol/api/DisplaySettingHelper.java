@@ -15,7 +15,7 @@ public class DisplaySettingHelper {
     }
 
     public DisplaySettingHelper(String settings) {
-        this.settings = settings;
+        this.settings = sanitizeSettings(settings);
     }
 
     /**
@@ -101,6 +101,9 @@ public class DisplaySettingHelper {
      * @param buf ByteBuf to write to
      */
     public void writeToByteBuffer(ByteBuf buf) {
+        if (!settings.matches("[01]+")) {
+            settings = sanitizeSettings(settings);
+        }
         // Write the actual bit length first
         buf.writeShort(settings.length());
 
@@ -151,5 +154,26 @@ public class DisplaySettingHelper {
 
     public static int bitMaskToIndex(int value) {
         return Integer.numberOfTrailingZeros(value);
+    }
+
+    private String sanitizeSettings(String input) {
+        if (input == null || input.isEmpty()) {
+            return "0";
+        }
+
+        if (input.matches("[01]+")) {
+            return input;
+        }
+
+        try {
+            int legacy = Integer.parseInt(input);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 31; i >= 0; i--) {
+                sb.append(((legacy >>> i) & 1) == 1 ? "1" : "0");
+            }
+            return sb.reverse().toString();
+        } catch (NumberFormatException e) {
+            return "0";
+        }
     }
 }
