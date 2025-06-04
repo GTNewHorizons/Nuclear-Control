@@ -286,7 +286,7 @@ public class GuiScrollableList extends GuiScreen {
      * @param height height
      */
     private void setScissor(int x, int y, int width, int height) {
-        int scaleFactor = 2;
+        int scaleFactor = mc.gameSettings.guiScale;
         GL11.glScissor(
                 x * scaleFactor,
                 (mc.displayHeight - (y + height) * scaleFactor),
@@ -321,7 +321,6 @@ public class GuiScrollableList extends GuiScreen {
                 if (mouseX > internalLeft && mouseX < internalLeft + GUI_WIDTH
                         && mouseY > internalBottom - FUNCTION_BUTTON_HEIGHT
                         && mouseY < internalBottom) {
-                    SmallGuiButton button = null;
                     for (SmallGuiButton b : functionButtons) {
                         b.mousePressed(mc, mouseX, mouseY);
                     }
@@ -339,8 +338,8 @@ public class GuiScrollableList extends GuiScreen {
             if (adjustedY < internalTop) {
                 adjustedY = internalTop;
                 scrollUp();
-            } else if (adjustedY > internalBottom) {
-                adjustedY = internalBottom;
+            } else if (adjustedY > internalBottom - FUNCTION_BUTTON_HEIGHT - PADDING_BOTTOM - BUTTON_HEIGHT) {
+                adjustedY = internalBottom - FUNCTION_BUTTON_HEIGHT - PADDING_BOTTOM - BUTTON_HEIGHT;
                 scrollDown();
             }
             draggedButton.setPosition(adjustedY);
@@ -384,10 +383,11 @@ public class GuiScrollableList extends GuiScreen {
         thumbLocation = adjustedY;
         if (adjustedY < internalTop) {
             thumbLocation = internalTop;
-        } else if (adjustedY > internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT + 1) {
-            thumbLocation = internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT + 1;
+        } else if (adjustedY > internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT) {
+            thumbLocation = internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT;
         }
-        double offsetRatio = (double) (thumbLocation - internalTop) / (internalBottom - internalTop - THUMB_HEIGHT);
+        double offsetRatio = (double) (thumbLocation - internalTop)
+                / (internalBottom - internalTop - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT);
         int newScrollOffset = (int) (offsetRatio * (buttonListFull.size() - VISIBLE_BUTTONS));
         scrollOffset = Math.max(0, Math.min(newScrollOffset, buttonListFull.size() - VISIBLE_BUTTONS));
         updateVisibleButtons();
@@ -398,11 +398,11 @@ public class GuiScrollableList extends GuiScreen {
      */
     private void updateThumbLocation() {
         double locationRatio = (double) scrollOffset / (buttonListFull.size() - VISIBLE_BUTTONS);
-        int newThumbLocation = (int) (locationRatio * (internalBottom - internalTop - THUMB_HEIGHT) + internalTop);
+        int newThumbLocation = (int) (locationRatio * (LIST_HEIGHT - THUMB_HEIGHT) + internalTop);
         if (newThumbLocation < internalTop + 1) {
             newThumbLocation = internalTop;
-        } else if (newThumbLocation > internalBottom - THUMB_HEIGHT) {
-            newThumbLocation = internalBottom - THUMB_HEIGHT;
+        } else if (newThumbLocation > internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT) {
+            newThumbLocation = internalBottom - THUMB_HEIGHT - PADDING_BOTTOM - FUNCTION_BUTTON_HEIGHT;
         }
         thumbLocation = newThumbLocation;
         updateVisibleButtons();
