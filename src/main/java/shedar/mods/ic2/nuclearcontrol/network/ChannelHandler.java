@@ -13,6 +13,8 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRemoteMonitor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRequest;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSensor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSound;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorter;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorterSync;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsAll;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsUpdate;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketEncounter;
@@ -45,5 +47,9 @@ public class ChannelHandler {
                 PacketClientRemoteMonitor.class,
                 16,
                 Side.CLIENT);
+        network.registerMessage(PacketDataSorter.class, PacketDataSorter.class, 17, Side.CLIENT);
+        network.registerMessage(PacketDataSorter.class, PacketDataSorter.class, 18, Side.SERVER);
+        network.registerMessage(PacketDataSorterSync.class, PacketDataSorterSync.class, 19, Side.CLIENT);
+        network.registerMessage(PacketDataSorterSync.class, PacketDataSorterSync.class, 20, Side.SERVER);
     }
 }

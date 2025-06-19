@@ -9,7 +9,9 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
@@ -40,7 +42,8 @@ public class ItemTimeCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();
         result.add(item);
@@ -49,7 +52,7 @@ public class ItemTimeCard extends ItemCardBase {
         int minutes = (time % 1000) * 6 / 100;
         String suffix = "";
 
-        if ((displaySettings & MODE_24H) == 0) {
+        if (displaySettings.getNewSetting(MODE_24H)) {
             suffix = hours < 12 ? "AM" : "PM";
             hours %= 12;
             if (hours == 0) hours += 12;
@@ -63,7 +66,7 @@ public class ItemTimeCard extends ItemCardBase {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>(1);
-        result.add(new PanelSetting(LangHelper.translate("1"), MODE_24H, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cb24h"), MODE_24H, CARD_TYPE));
         return result;
     }
 

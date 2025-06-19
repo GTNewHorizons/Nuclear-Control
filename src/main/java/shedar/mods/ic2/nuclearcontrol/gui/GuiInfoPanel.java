@@ -184,7 +184,7 @@ public class GuiInfoPanel extends GuiContainer {
 
                     buttonList.add(
                             new GuiInfoPanelCheckBox(
-                                    0,
+                                    i,
                                     xpos,
                                     ypos,
                                     panelSetting,
@@ -213,8 +213,6 @@ public class GuiInfoPanel extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
-        // fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2,
-        // 0x404040);
         if (textboxTitle != null) textboxTitle.drawTextBox();
     }
 

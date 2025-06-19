@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.network.ChannelHandler;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketAcounter;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketChat;
@@ -22,11 +23,13 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRequest;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSensor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSound;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorterSync;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsAll;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsUpdate;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketEncounter;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensorTitle;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
@@ -91,7 +94,7 @@ public class NuclearNetworkHelper {
     }
 
     // client
-    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, int settings) {
+    public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, DisplaySettingHelper settings) {
         if (panel == null) return;
 
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) return;
@@ -165,13 +168,14 @@ public class NuclearNetworkHelper {
 
         TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
         if (!(tileEntity instanceof TileEntityInfoPanel)) return;
-        Map<Byte, Map<UUID, Integer>> settings = ((TileEntityInfoPanel) tileEntity).getDisplaySettings();
+        Map<Byte, Map<UUID, DisplaySettingHelper>> settings = ((TileEntityInfoPanel) tileEntity).getDisplaySettings();
         if (settings == null) return;
         ChannelHandler.network.sendTo(new PacketDispSettingsAll(x, y, z, settings), player);
     }
 
     // server
-    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, UUID key, int value) {
+    public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, UUID key,
+            DisplaySettingHelper value) {
         sendPacketToAllAround(
                 panel.xCoord,
                 panel.yCoord,
@@ -179,5 +183,25 @@ public class NuclearNetworkHelper {
                 64,
                 panel.getWorldObj(),
                 new PacketDispSettingsUpdate(panel.xCoord, panel.yCoord, panel.zCoord, slot, key, value));
+    }
+
+    // client and server
+    public static void sendDataSorterSync(TileEntityAdvancedInfoPanel panel) {
+        if (panel == null) return;
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            ChannelHandler.network.sendToServer(new PacketDataSorterSync(panel));
+        } else if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            sendPacketToAllAround(
+                    panel.xCoord,
+                    panel.yCoord,
+                    panel.zCoord,
+                    64,
+                    panel.getWorldObj(),
+                    new PacketDataSorterSync(panel));
+        }
+    }
+
+    public static void requestDataSorters(TileEntityInfoPanel panel) {
+        ChannelHandler.network.sendToServer(new PacketClientRequest(panel.xCoord, panel.yCoord, panel.zCoord));
     }
 }

@@ -56,14 +56,6 @@ public class PacketClientSound implements IMessage, IMessageHandler<PacketClient
 
     @Override
     public IMessage onMessage(PacketClientSound message, MessageContext ctx) {
-        /*
-         * TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y,
-         * message.z); if (tile instanceof TileEntityHowlerAlarm) ((TileEntityHowlerAlarm)
-         * tile).setSoundName(message.soundName); else if (tile instanceof TileEntityInfoPanel) { ItemStack stack =
-         * ((TileEntityInfoPanel) tile).getStackInSlot(message.slot); if (stack == null || !(stack.getItem() instanceof
-         * IPanelDataSource)) return null; new CardWrapperImpl(stack, -1).setTitle(message.soundName);
-         * NuclearNetworkHelper.setSensorCardTitle((TileEntityInfoPanel) tile, message.slot, message.soundName); }
-         */
         int x = message.x;
         int y = message.y;
         int z = message.z;

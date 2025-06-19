@@ -15,7 +15,9 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData;
@@ -28,10 +30,10 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
 
     public static final int DISPLAY_ENERGY = 1;
     public static final int DISPLAY_FREE = 2;
-    public static final int DISPLAY_STORAGE = 4;
-    public static final int DISPLAY_EACH = 8;
-    public static final int DISPLAY_TOTAL = 16;
-    public static final int DISPLAY_PERCENTAGE = 32;
+    public static final int DISPLAY_STORAGE = 3;
+    public static final int DISPLAY_EACH = 4;
+    public static final int DISPLAY_TOTAL = 5;
+    public static final int DISPLAY_PERCENTAGE = 6;
 
     private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
     private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
@@ -123,17 +125,18 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         double totalEnergy = 0;
         double totalStorage = 0;
-        boolean showEach = (displaySettings & DISPLAY_EACH) > 0;
-        boolean showSummary = (displaySettings & DISPLAY_TOTAL) > 0;
-        boolean showEnergy = (displaySettings & DISPLAY_ENERGY) > 0;
-        boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
-        boolean showStorage = (displaySettings & DISPLAY_STORAGE) > 0;
-        boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
+        boolean showEach = displaySettings.getNewSetting(DISPLAY_EACH);
+        boolean showSummary = displaySettings.getNewSetting(DISPLAY_TOTAL);
+        boolean showEnergy = displaySettings.getNewSetting(DISPLAY_ENERGY);
+        boolean showFree = displaySettings.getNewSetting(DISPLAY_FREE);
+        boolean showStorage = displaySettings.getNewSetting(DISPLAY_STORAGE);
+        boolean showPercentage = displaySettings.getNewSetting(DISPLAY_PERCENTAGE);
         int cardCount = getCardCount(card);
         for (int i = 0; i < cardCount; i++) {
             int energy = card.getInt(String.format("_%denergy", i));
@@ -232,13 +235,26 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_STORAGE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_PERCENTAGE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("5"), DISPLAY_EACH, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("6"), DISPLAY_TOTAL, CARD_TYPE));
+        List<PanelSetting> result = new ArrayList<>(6);
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyCurrent"),
+                        DISPLAY_ENERGY,
+                        CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyStorage"),
+                        DISPLAY_STORAGE,
+                        CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyPercentage"),
+                        DISPLAY_PERCENTAGE,
+                        CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelEnergyEach"), DISPLAY_EACH, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelEnergyTotal"), DISPLAY_TOTAL, CARD_TYPE));
         return result;
     }
 

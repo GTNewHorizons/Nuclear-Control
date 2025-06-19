@@ -150,7 +150,7 @@ msg.nc.InfoPanelRF.TempPROPER=当前核心温度
 #5x5 Reactor Messages
 msg.nc.InfoPanel55.Output=输出：%s Hu/s
 msg.nc.InfoPanel55.Temp=核心温度：%s%%
-msg.nc.InfoPanel55.tarkin=储罐输入：%s / 10000 mB
+msg.nc.InfoPanel55.tankin=储罐输入：%s / 10000 mB
 msg.nc.InfoPanel55.tankout=储罐输出：%s / 10000 mB
 msg.nc.InfoPanel55.Out=输出(Hu/s)
 msg.nc.InfoPanel55.BufferIn=冷却液缓冲储罐

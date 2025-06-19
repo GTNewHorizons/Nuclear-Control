@@ -1,7 +1,9 @@
 package shedar.mods.ic2.nuclearcontrol.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -15,7 +17,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.core.IC2;
-import ic2.core.network.NetworkManager;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
@@ -24,7 +25,7 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
+import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiScrollableList;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.IconButton;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
@@ -44,9 +45,16 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     private static final int ID_TRANSPARENCY = 6;
     private static final int ID_ROTATELEFT = 7;
     private static final int ID_ROTATERIGHT = 8;
+    private static final int ID_LINES = 9;
+
+    private static final int HOVER_DELAY = 5;
 
     private byte activeTab;
     private boolean initialized;
+    private boolean willReturn = false;
+    private int hoverDelayLeft = HOVER_DELAY;
+    private int previousButtonX = -1;
+    private int previousButtonY = -1;
 
     public GuiAdvancedInfoPanel(Container container) {
         super(container);
@@ -58,7 +66,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(TEXTURE_LOCATION);
         int left = (width - xSize) / 2;
@@ -68,15 +76,90 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        if (mouseX > guiLeft + 80 + 18 && mouseX < guiLeft + 80 + 18 * 5
+                && mouseY > guiTop + 42
+                && mouseY < guiTop + 42 + 18 * 2) {
+            int buttonX = (mouseX - guiLeft - 79) / 18 - 1;
+            int buttonY = (mouseY - guiTop - 41) / 18;
+            if (buttonX == previousButtonX && buttonY == previousButtonY) {
+                if (hoverDelayLeft <= 0) {
+                    drawButtonTooltip(mouseX, mouseY, buttonX, buttonY);
+                } else {
+                    hoverDelayLeft--;
+                }
+            } else {
+                hoverDelayLeft = HOVER_DELAY;
+                previousButtonX = buttonX;
+                previousButtonY = buttonY;
+            }
+        } else if (mouseX > guiLeft + 32 && mouseX < guiLeft + 64
+                && mouseY > guiTop + 80
+                && mouseY < guiTop + 80 + 16
+                && getActiveCard() != null) {
+                    if (previousButtonX == -2 && previousButtonY == -2) {
+                        if (hoverDelayLeft <= 0) {
+                            List<String> list = new ArrayList<>();
+                            list.add(StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.LineConfig"));
+                            drawTooltip(mc, mouseX, mouseY, list);
+                        } else {
+                            hoverDelayLeft--;
+                        }
+                    } else {
+                        hoverDelayLeft = HOVER_DELAY;
+                        previousButtonX = -2;
+                        previousButtonY = -2;
+                    }
+                } else {
+                    hoverDelayLeft = HOVER_DELAY;
+                    previousButtonX = -1;
+                    previousButtonY = -1;
+                }
+    }
+
+    private void drawButtonTooltip(int mouseX, int mouseY, int buttonX, int buttonY) {
+        String tooltipText = "";
+        if (buttonY == 0) {
+            if (buttonX == 0) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.RotateRight");
+            } else if (buttonX == 1) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Colors");
+            } else if (buttonX == 2) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Power");
+            } else if (buttonX == 3) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Settings");
+            }
+        } else if (buttonY == 1) {
+            if (buttonX == 0) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.RotateLeft");
+            } else if (buttonX == 1) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Labels");
+            } else if (buttonX == 2) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Slope");
+            } else if (buttonX == 3) {
+                tooltipText = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Transparency");
+            }
+        }
+        List<String> list = new ArrayList<>();
+        list.add(tooltipText);
+        drawTooltip(mc, mouseX, mouseY, list);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         super.drawGuiContainerForegroundLayer(par1, par2);
+
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected void initControls() {
         ItemStack card = getActiveCard();
-        if ((card == null && prevCard == null && initialized) || (card != null && card.equals(prevCard))) return;
+        if (((card == null && prevCard == null && initialized) || (card != null && card.equals(prevCard)))
+                && !willReturn)
+            return;
+        willReturn = false;
         initialized = true;
         int h = fontRendererObj.FONT_HEIGHT + 1;
         buttonList.clear();
@@ -166,31 +249,18 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             } else {
                 settingsList = source.getSettingsList();
             }
-            int hy = fontRendererObj.FONT_HEIGHT + 1;
-            int x = guiLeft + 30;
-            int hpos = guiTop + 60;
             if (settingsList != null) {
-                for (int i = 0; i < settingsList.size(); i++) {
-                    PanelSetting panelSetting = settingsList.get(i);
-                    if (i >= 42) break;
-                    // Calculate column and row
-                    int column = i < 24 ? i / 8 : (i - 24) / 6 + 3;
-                    int row = i < 24 ? i % 8 : (i - 24) % 6;
-
-                    // calculate actual positions
-                    int xpos = x + column * 23;
-                    int ypos = i < 24 ? hpos + row * hy : hpos + row * hy + hy * 2;
-
+                if (((IPanelDataSource) card.getItem()).getSettingsList() != null) {
                     buttonList.add(
-                            new GuiInfoPanelCheckBox(
-                                    0,
-                                    xpos,
-                                    ypos,
-                                    panelSetting,
-                                    container.panel,
-                                    slot,
-                                    fontRendererObj));
-
+                            new IconButton(
+                                    ID_LINES,
+                                    guiLeft + 32,
+                                    guiTop + 80,
+                                    32,
+                                    16,
+                                    TEXTURE_LOCATION,
+                                    192 - 16,
+                                    111));
                 }
             }
             if (!modified) {
@@ -204,13 +274,27 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
         }
     }
 
+    /**
+     * draw a tooltip at the given location with the given text.
+     *
+     * @param mc        Minecraft instance.
+     * @param mouseX    X location of the mouse
+     * @param mouseY    Y location of the mouse
+     * @param textLines lines of text to draw
+     */
+    private void drawTooltip(Minecraft mc, int mouseX, int mouseY, List<String> textLines) {
+        drawHoveringText(textLines, mouseX, mouseY, mc.fontRenderer);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+    }
+
     @Override
     protected ItemStack getActiveCard() {
         return container.panel.getCards().get(activeTab);
     }
 
     @Override
-    public void setWorldAndResolution(net.minecraft.client.Minecraft par1Minecraft, int par2, int par3) {
+    public void setWorldAndResolution(Minecraft par1Minecraft, int par2, int par3) {
         initialized = false;
         super.setWorldAndResolution(par1Minecraft, par2, par3);
     }
@@ -236,11 +320,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     @Override
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
-            case ID_COLORS:
+            case ID_COLORS -> {
                 GuiScreen colorGui = new GuiScreenColor(this, container.panel);
+                willReturn = true;
                 mc.displayGuiScreen(colorGui);
-                break;
-            case ID_SETTINGS:
+
+            }
+            case ID_SETTINGS -> {
                 ItemStack card = getActiveCard();
                 if (card == null) return;
                 if (card.getItem() instanceof IAdvancedCardSettings) {
@@ -253,10 +339,12 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                     }
                     ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, activeTab);
                     ((ICardGui) gui).setCardSettingsHelper(wrapper);
+                    willReturn = true;
                     mc.displayGuiScreen(gui);
                 }
-                break;
-            case ID_LABELS:
+
+            }
+            case ID_LABELS -> {
                 boolean checked = !container.panel.getShowLabels();
                 if (button instanceof IconButton) {
                     IconButton iButton = (IconButton) button;
@@ -264,29 +352,42 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                 }
                 int value = checked ? -1 : -2;
                 container.panel.setShowLabels(checked);
-                ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.panel, value);
-                break;
-            case ID_POWER:
+                IC2.network.get().initiateClientTileEntityEvent(container.panel, value);
+                willReturn = true;
+            }
+            case ID_POWER -> {
                 byte mode = ((TileEntityAdvancedInfoPanel) container.panel).getNextPowerMode();
                 if (button instanceof IconButton) {
                     IconButton iButton = (IconButton) button;
                     iButton.textureTop = getIconPowerTopOffset(mode);
                 }
-                ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.panel, mode);
-                break;
-            case ID_SLOPE:
+                IC2.network.get().initiateClientTileEntityEvent(container.panel, mode);
+            }
+            case ID_SLOPE -> {
                 GuiPanelSlope slopeGui = new GuiPanelSlope(this, (TileEntityAdvancedInfoPanel) container.panel);
+                willReturn = true;
                 mc.displayGuiScreen(slopeGui);
-                break;
-            case ID_TRANSPARENCY:
-                ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.panel, ID_TRANSPARENCY);
-                break;
-            case ID_ROTATELEFT:
-                ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.panel, ID_ROTATELEFT);
-                break;
-            case ID_ROTATERIGHT:
-                ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
-                break;
+            }
+            case ID_TRANSPARENCY -> {
+                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_TRANSPARENCY);
+            }
+            case ID_ROTATELEFT -> {
+                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATELEFT);
+            }
+            case ID_ROTATERIGHT -> {
+                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
+            }
+            case ID_LINES -> {
+                ItemStack card = getActiveCard();
+                if (((IPanelDataSource) card.getItem()).getSettingsList() != null) {
+                    GuiScrollableList listGui = new GuiScrollableList(
+                            this,
+                            (TileEntityAdvancedInfoPanel) container.panel,
+                            card);
+                    willReturn = true;
+                    mc.displayGuiScreen(listGui);
+                }
+            }
         }
     }
 
@@ -298,7 +399,6 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             if (newTab > 2) newTab = 2;
             if (newTab != activeTab && modified) updateTitle();
             activeTab = newTab;
-
         }
     }
 }

@@ -17,8 +17,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.reactor.IReactor;
 import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
@@ -31,10 +33,10 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
 
     public static final int DISPLAY_ONOFF = 1;
     public static final int DISPLAY_HEAT = 2;
-    public static final int DISPLAY_MAXHEAT = 4;
-    public static final int DISPLAY_OUTPUT = 8;
-    public static final int DISPLAY_TIME = 16;
-    public static final int DISPLAY_MELTING = 32;
+    public static final int DISPLAY_MAXHEAT = 3;
+    public static final int DISPLAY_OUTPUT = 4;
+    public static final int DISPLAY_TIME = 5;
+    public static final int DISPLAY_MELTING = 6;
 
     public static final UUID CARD_TYPE = new UUID(0, 0);
 
@@ -132,27 +134,28 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
-        if ((displaySettings & DISPLAY_HEAT) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_HEAT)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", card.getInt("heat"), showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_MAXHEAT) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_MAXHEAT)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", card.getInt("maxHeat"), showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_MELTING) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_MELTING)) {
             line = new PanelString();
             line.textLeft = StringUtils
                     .getFormatted("msg.nc.InfoPanelMelting", card.getInt("maxHeat") * 85 / 100, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_OUTPUT) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
             line = new PanelString();
             if (card.getBoolean("isSteam")) {
                 line.textLeft = StringUtils.getFormatted(
@@ -165,7 +168,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             result.add(line);
         }
         int timeLeft = card.getInt("timeLeft");
-        if ((displaySettings & DISPLAY_TIME) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_TIME)) {
             int hours = timeLeft / 3600;
             int minutes = (timeLeft % 3600) / 60;
             int seconds = timeLeft % 60;
@@ -177,7 +180,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
         }
 
         int txtColor = 0;
-        if ((displaySettings & DISPLAY_ONOFF) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_ONOFF)) {
             boolean reactorPowered = card.getBoolean("reactorPoweredB");
             if (reactorPowered) {
                 txtColor = 0x00ff00;
@@ -203,12 +206,13 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ONOFF, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_HEAT, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_MAXHEAT, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_MELTING, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("5"), DISPLAY_OUTPUT, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("6"), DISPLAY_TIME, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelOnOff"), DISPLAY_ONOFF, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelHeat"), DISPLAY_HEAT, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelMaxHeat"), DISPLAY_MAXHEAT, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelMelting"), DISPLAY_MELTING, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelOutput"), DISPLAY_OUTPUT, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelTimeRemaining"), DISPLAY_TIME, CARD_TYPE));
         return result;
     }
 

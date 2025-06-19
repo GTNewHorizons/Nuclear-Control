@@ -17,7 +17,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
@@ -29,11 +31,11 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
 
     public static final int DISPLAY_NAME = 1;
     public static final int DISPLAY_AMOUNT = 2;
-    public static final int DISPLAY_FREE = 4;
-    public static final int DISPLAY_CAPACITY = 8;
-    public static final int DISPLAY_PERCENTAGE = 16;
-    public static final int DISPLAY_EACH = 32;
-    public static final int DISPLAY_TOTAL = 64;
+    public static final int DISPLAY_FREE = 3;
+    public static final int DISPLAY_CAPACITY = 4;
+    public static final int DISPLAY_PERCENTAGE = 5;
+    public static final int DISPLAY_EACH = 6;
+    public static final int DISPLAY_TOTAL = 7;
 
     private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
     private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
@@ -131,18 +133,19 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         double totalAmount = 0;
         double totalCapacity = 0;
-        boolean showEach = (displaySettings & DISPLAY_EACH) > 0;
-        boolean showSummary = (displaySettings & DISPLAY_TOTAL) > 0;
-        boolean showName = (displaySettings & DISPLAY_NAME) > 0;
-        boolean showAmount = true;// (displaySettings & DISPLAY_AMOUNT) > 0;
-        boolean showFree = (displaySettings & DISPLAY_FREE) > 0;
-        boolean showCapacity = (displaySettings & DISPLAY_CAPACITY) > 0;
-        boolean showPercentage = (displaySettings & DISPLAY_PERCENTAGE) > 0;
+        boolean showEach = displaySettings.getNewSetting(DISPLAY_EACH);
+        boolean showSummary = displaySettings.getNewSetting(DISPLAY_TOTAL);
+        boolean showName = displaySettings.getNewSetting(DISPLAY_NAME);
+        boolean showAmount = true;// displaySettings.getNewSetting(DISPLAY_AMOUNT) > 0;
+        boolean showFree = displaySettings.getNewSetting(DISPLAY_FREE);
+        boolean showCapacity = displaySettings.getNewSetting(DISPLAY_CAPACITY);
+        boolean showPercentage = displaySettings.getNewSetting(DISPLAY_PERCENTAGE);
         int cardCount = getCardCount(card);
         for (int i = 0; i < cardCount; i++) {
             int amount = card.getInt(String.format("_%damount", i));
@@ -249,13 +252,23 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>(7);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_NAME, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_AMOUNT, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_CAPACITY, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("5"), DISPLAY_PERCENTAGE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("6"), DISPLAY_EACH, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("7"), DISPLAY_TOTAL, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidName"), DISPLAY_NAME, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_AMOUNT, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidFree"), DISPLAY_FREE, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelLiquidCapacity"),
+                        DISPLAY_CAPACITY,
+                        CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelLiquidPercentage"),
+                        DISPLAY_PERCENTAGE,
+                        CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidEach"), DISPLAY_EACH, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidTotal"), DISPLAY_TOTAL, CARD_TYPE));
         return result;
     }
 

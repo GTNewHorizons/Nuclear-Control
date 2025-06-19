@@ -12,17 +12,18 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
-import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class ItemCardInventoryScanner extends ItemCardBase {
 
-    public static final int DISPLAY_NAME = 1;
-    public static final int DISPLAY_TOTAL = 2;
+    public static final int DISPLAY_NAME = 0;
+    public static final int DISPLAY_TOTAL = 1;
 
     public ItemCardInventoryScanner() {
         super("cardVanilla");
@@ -60,7 +61,8 @@ public class ItemCardInventoryScanner extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
@@ -68,12 +70,12 @@ public class ItemCardInventoryScanner extends ItemCardBase {
         int TotalInv = card.getInt("totalInv");
         int TotalInUse = card.getInt("totalInUse");
 
-        if ((displaySettings & DISPLAY_NAME) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_NAME)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("%s", StatCollector.translateToLocal(name), showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_TOTAL) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_TOTAL)) {
             line = new PanelString();
             line.textLeft = String
                     .format(StatCollector.translateToLocal("msg.nc.Vanilla.Display"), TotalInUse, TotalInv);
@@ -85,8 +87,16 @@ public class ItemCardInventoryScanner extends ItemCardBase {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>();
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_NAME, getCardType()));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_TOTAL, getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.Name"),
+                        DISPLAY_NAME,
+                        getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.StorageLVL"),
+                        DISPLAY_TOTAL,
+                        getCardType()));
         return result;
     }
 }

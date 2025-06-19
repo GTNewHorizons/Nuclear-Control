@@ -12,7 +12,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
@@ -27,9 +29,9 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
 
     public static final int DISPLAY_ON = 1;
     public static final int DISPLAY_OUTPUT = 2;
-    public static final int DISPLAY_ENERGY = 4;
-    public static final int DISPLAY_PERCENTAGE = 8;
-    public static final int DISPLAY_TEMP = 16;
+    public static final int DISPLAY_ENERGY = 3;
+    public static final int DISPLAY_PERCENTAGE = 4;
+    public static final int DISPLAY_TEMP = 5;
     public static final UUID CARD_TYPE1 = new UUID(0, 2);
 
     @Override
@@ -124,7 +126,8 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
@@ -140,28 +143,28 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
         boolean passive = card.getBoolean("isPassive");
         if (passive) {
             // Temperature
-            if ((displaySettings & DISPLAY_TEMP) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_TEMP)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Temp", coreTemp, showLabels);
                 result.add(line);
             }
 
             // Stored Energy
-            if ((displaySettings & DISPLAY_ENERGY) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.EnergyStored", ienergyStored, showLabels);
                 result.add(line);
             }
 
             // Energy Created Frequency
-            if ((displaySettings & DISPLAY_OUTPUT) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.CreatedEnergy", ioutputlvl, showLabels);
                 result.add(line);
             }
 
             // Output Percentage
-            if ((displaySettings & DISPLAY_PERCENTAGE) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Percentage", PerOut, showLabels);
                 result.add(line);
@@ -170,7 +173,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             // On or Off
             int txtColor = 0;
             String text;
-            if ((displaySettings & DISPLAY_ON) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_ON)) {
                 boolean reactorPowered = card.getBoolean("Online");
                 if (reactorPowered) {
                     txtColor = 0x00ff00;
@@ -192,19 +195,19 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             }
         } else {
             // Temperature
-            if ((displaySettings & DISPLAY_TEMP) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_TEMP)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Temp", coreTemp, showLabels);
                 result.add(line);
             }
             // Energy Created Frequency
-            if ((displaySettings & DISPLAY_OUTPUT) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.SteamOutput", ioutputlvl, showLabels);
                 result.add(line);
             }
             // Stored Energy
-            if ((displaySettings & DISPLAY_ENERGY) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormattedKey(
                         "msg.nc.InfoPanelRF.CoolantTank",
@@ -213,7 +216,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
                 result.add(line);
             }
             // Vapor Tank
-            if ((displaySettings & DISPLAY_PERCENTAGE) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormattedKey(
                         "msg.nc.InfoPanelRF.OutputTank",
@@ -224,7 +227,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             // On or Off
             int txtColor = 0;
             String text;
-            if ((displaySettings & DISPLAY_ON) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_ON)) {
                 boolean reactorPowered = card.getBoolean("Online");
                 if (reactorPowered) {
                     txtColor = 0x00ff00;
@@ -252,11 +255,11 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ON, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_OUTPUT, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_TEMP, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("5"), DISPLAY_PERCENTAGE, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("1"), DISPLAY_ON, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("2"), DISPLAY_ENERGY, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("3"), DISPLAY_OUTPUT, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("4"), DISPLAY_TEMP, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("5"), DISPLAY_PERCENTAGE, CARD_TYPE));
         return result;
     }
 }

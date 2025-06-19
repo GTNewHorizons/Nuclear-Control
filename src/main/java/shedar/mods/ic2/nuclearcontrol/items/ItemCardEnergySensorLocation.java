@@ -14,9 +14,11 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData;
@@ -31,8 +33,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
 
     public static final int DISPLAY_ENERGY = 1;
     public static final int DISPLAY_FREE = 2;
-    public static final int DISPLAY_STORAGE = 4;
-    public static final int DISPLAY_PERCENTAGE = 8;
+    public static final int DISPLAY_STORAGE = 3;
+    public static final int DISPLAY_PERCENTAGE = 4;
 
     public static final UUID CARD_TYPE = new UUID(0, 2);
 
@@ -96,29 +98,30 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
         double energy = card.getDouble("energyL");
         double storage = card.getDouble("maxStorageL");
 
-        if ((displaySettings & DISPLAY_ENERGY) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_FREE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_FREE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyFree", storage - energy, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_STORAGE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_STORAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyStorage", storage, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_PERCENTAGE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted(
                     "msg.nc.InfoPanelEnergyPercentage",
@@ -131,11 +134,23 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(3);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_STORAGE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_PERCENTAGE, CARD_TYPE));
+        List<PanelSetting> result = new ArrayList<PanelSetting>(4); // Initial capacity should be 4
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyCurrent"),
+                        DISPLAY_ENERGY,
+                        CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyStorage"),
+                        DISPLAY_STORAGE,
+                        CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelEnergyFree"), DISPLAY_FREE, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.cbInfoPanelEnergyPercentage"),
+                        DISPLAY_PERCENTAGE,
+                        CARD_TYPE));
         return result;
     }
 

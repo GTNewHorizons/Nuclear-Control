@@ -9,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<PacketDispSettingsUpdate, IMessage> {
@@ -18,13 +19,13 @@ public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<Packe
     private int z;
     private byte slot;
     private UUID key;
-    private int value;
+    private DisplaySettingHelper value;
     private long most;
     private long least;
 
     public PacketDispSettingsUpdate() {}
 
-    public PacketDispSettingsUpdate(int x, int y, int z, byte slot, UUID key, int value) {
+    public PacketDispSettingsUpdate(int x, int y, int z, byte slot, UUID key, DisplaySettingHelper value) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -41,7 +42,7 @@ public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<Packe
         slot = buf.readByte();
         most = buf.readLong();
         least = buf.readLong();
-        value = buf.readInt();
+        value = new DisplaySettingHelper(buf);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<Packe
         buf.writeByte(slot);
         buf.writeLong(key.getMostSignificantBits());
         buf.writeLong(key.getLeastSignificantBits());
-        buf.writeInt(value);
+        value.writeToByteBuffer(buf);
     }
 
     @Override

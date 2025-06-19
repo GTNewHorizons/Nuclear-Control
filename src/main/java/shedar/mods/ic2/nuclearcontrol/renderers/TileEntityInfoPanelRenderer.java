@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
@@ -70,17 +71,19 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
                     continue;
                 }
-                int displaySettings = panel.getDisplaySettingsByCard(card);
-                if (displaySettings == 0) {
-                    continue;
-                }
+                DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(card);
+
                 CardWrapperImpl helper = new CardWrapperImpl(card, -1);
                 CardState state = helper.getState();
                 List<PanelString> data;
                 if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
                     data = StringUtils.getStateMessage(state);
                 } else {
-                    data = panel.getCardData(displaySettings, card, helper);
+                    if (panel instanceof TileEntityAdvancedInfoPanel) {
+                        data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, card, helper);
+                    } else {
+                        data = panel.getCardData(displaySettings, card, helper);
+                    }
                 }
                 if (data == null) {
                     continue;

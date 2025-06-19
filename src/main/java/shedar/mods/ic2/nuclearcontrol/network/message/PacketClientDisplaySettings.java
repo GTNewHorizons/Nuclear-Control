@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
@@ -16,11 +17,11 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
     private int y;
     private int z;
     private byte slot;
-    private int settings;
+    private DisplaySettingHelper settings = new DisplaySettingHelper();
 
     public PacketClientDisplaySettings() {}
 
-    public PacketClientDisplaySettings(int x, int y, int z, byte slot, int settings) {
+    public PacketClientDisplaySettings(int x, int y, int z, byte slot, DisplaySettingHelper settings) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -34,7 +35,7 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
         y = buf.readInt();
         z = buf.readInt();
         slot = buf.readByte();
-        settings = buf.readInt();
+        settings = new DisplaySettingHelper(buf);
     }
 
     @Override
@@ -43,16 +44,11 @@ public class PacketClientDisplaySettings implements IMessage, IMessageHandler<Pa
         buf.writeInt(y);
         buf.writeInt(z);
         buf.writeByte(slot);
-        buf.writeInt(settings);
+        settings.writeToByteBuffer(buf);
     }
 
     @Override
     public IMessage onMessage(PacketClientDisplaySettings message, MessageContext ctx) {
-        /*
-         * TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y,
-         * message.z); if (tile instanceof TileEntityInfoPanel) ((TileEntityInfoPanel)
-         * tile).setDisplaySettings(message.slot, message.settings);
-         */
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         Container openContainer = player.openContainer;
         if (openContainer instanceof ContainerInfoPanel) {

@@ -12,7 +12,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cofh.api.energy.IEnergyHandler;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
@@ -68,29 +70,30 @@ public class ItemCardRFEnergyLocation extends ItemCardEnergySensorLocation {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
         double energy = card.getDouble("energyL");
         double storage = card.getDouble("maxStorageL");
 
-        if ((displaySettings & DISPLAY_ENERGY) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_FREE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_FREE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyFree", storage - energy, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_STORAGE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_STORAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyStorage", storage, showLabels);
             result.add(line);
         }
-        if ((displaySettings & DISPLAY_PERCENTAGE) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted(
                     "msg.nc.InfoPanelEnergyPercentage",
@@ -104,10 +107,10 @@ public class ItemCardRFEnergyLocation extends ItemCardEnergySensorLocation {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>();
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ENERGY, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_STORAGE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_FREE, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_PERCENTAGE, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("1"), DISPLAY_ENERGY, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("2"), DISPLAY_STORAGE, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("3"), DISPLAY_FREE, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("4"), DISPLAY_PERCENTAGE, CARD_TYPE));
         return result;
     }
 }

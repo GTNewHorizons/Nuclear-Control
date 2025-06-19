@@ -15,8 +15,10 @@ import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.IC2Cross.ReactorInfo;
@@ -31,9 +33,9 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
 
     public static final int DISPLAY_ON = 1;
     public static final int DISPLAY_OUTPUTTank = 2;
-    public static final int DISPLAY_INPUTTank = 4;
-    public static final int DISPLAY_HeatUnits = 8;
-    public static final int DISPLAY_CoreTemp = 16;
+    public static final int DISPLAY_INPUTTank = 3;
+    public static final int DISPLAY_HeatUnits = 4;
+    public static final int DISPLAY_CoreTemp = 5;
     public static final UUID CARD_TYPE1 = new UUID(0, 2);
 
     @Override
@@ -122,7 +124,8 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
@@ -132,28 +135,28 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         double coreTemp = card.getInt("CoreTempurature");
 
         // Temperature
-        if ((displaySettings & DISPLAY_HeatUnits) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_HeatUnits)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.Output", heatUnits, showLabels);
             result.add(line);
         }
 
         // Stored Energy
-        if ((displaySettings & DISPLAY_CoreTemp) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_CoreTemp)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.Temp", coreTemp, showLabels);
             result.add(line);
         }
 
         // Energy Created Frequency
-        if ((displaySettings & DISPLAY_INPUTTank) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_INPUTTank)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tarkin", tIn, showLabels);
             result.add(line);
         }
 
         // Output Percentage
-        if ((displaySettings & DISPLAY_OUTPUTTank) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_OUTPUTTank)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tankout", tOut, showLabels);
             result.add(line);
@@ -162,7 +165,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         // On or Off
         int txtColor = 0;
         String text;
-        if ((displaySettings & DISPLAY_ON) > 0) {
+        if (displaySettings.getNewSetting(DISPLAY_ON)) {
             boolean reactorPowered = card.getBoolean("Online");
             if (reactorPowered) {
                 txtColor = 0x00ff00;
@@ -171,7 +174,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
                 txtColor = 0xff0000;
                 text = LangHelper.translate("msg.nc.InfoPanelOff");
             }
-            if (result.size() > 0) {
+            if (!result.isEmpty()) {
                 PanelString firstLine = result.get(0);
                 firstLine.textRight = text;
                 firstLine.colorRight = txtColor;
@@ -188,12 +191,20 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_ON, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_OUTPUTTank, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("3"), DISPLAY_INPUTTank, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("4"), DISPLAY_HeatUnits, CARD_TYPE));
-        result.add(new PanelSetting(LangHelper.translate("5"), DISPLAY_CoreTemp, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelOnOff"), DISPLAY_ON, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.InfoPanel55.BufferOut"),
+                        DISPLAY_OUTPUTTank,
+                        CARD_TYPE));
+        result.add(
+                new NewPanelSetting(LangHelper.translate("msg.nc.InfoPanel55.BufferIn"), DISPLAY_INPUTTank, CARD_TYPE));
+        result.add(new NewPanelSetting(LangHelper.translate("msg.nc.InfoPanel55.Out"), DISPLAY_HeatUnits, CARD_TYPE));
+        result.add(
+                new NewPanelSetting(
+                        LangHelper.translate("msg.nc.InfoPanelRF.TempPROPER"),
+                        DISPLAY_CoreTemp,
+                        CARD_TYPE));
         return result;
     }
-
 }

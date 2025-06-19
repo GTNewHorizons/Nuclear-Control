@@ -29,7 +29,7 @@ public class CardWrapperImpl implements ICardWrapper {
         }
         this.card = card;
         this.slot = (byte) slot;
-        updateSet = new HashMap<String, Object>();
+        updateSet = new HashMap<>();
     }
 
     @Override

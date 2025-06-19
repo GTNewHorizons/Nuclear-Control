@@ -150,7 +150,7 @@ msg.nc.InfoPanelRF.TempPROPER=Temperatura Jezgre
 #5x5 Reactor Messages
 msg.nc.InfoPanel55.Output=Proizvodnja: %s Hu/s
 msg.nc.InfoPanel55.Temp=Temperature Jezgre: %s%%
-msg.nc.InfoPanel55.tarkin=U Spremnik: %s / 10000 mB
+msg.nc.InfoPanel55.tankin=U Spremnik: %s / 10000 mB
 msg.nc.InfoPanel55.tankout=Van Spremnika: %s / 10000 mB
 msg.nc.InfoPanel55.Out=OutpuProizvodnja (Hu/s)
 msg.nc.InfoPanel55.BufferIn=Spremnik Hladne Tekuƒáine

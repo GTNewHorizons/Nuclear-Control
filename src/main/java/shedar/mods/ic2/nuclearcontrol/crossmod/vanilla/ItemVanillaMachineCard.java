@@ -18,20 +18,21 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
-import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class ItemVanillaMachineCard extends ItemCardBase {
 
     public static final int DISPLAY_BREWING = 1;
     public static final int DISPLAY_TIME = 2;
-    public static final int DISPLAY_SLOT_1 = 4;
-    public static final int DISPLAY_SLOT_2 = 8;
-    public static final int DISPLAY_SLOT_3 = 16;
+    public static final int DISPLAY_SLOT_1 = 3;
+    public static final int DISPLAY_SLOT_2 = 4;
+    public static final int DISPLAY_SLOT_3 = 5;
 
     private static final String BREW_STAND = "brewStand";
     private static final String FURNACE = "furnace";
@@ -122,149 +123,163 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        if (card.getString("entity").equals(BREW_STAND)) {
 
+        String machineType = card.getString("entity");
+
+        if (BREW_STAND.equals(machineType)) {
+            // ... (Brewing Stand logic as previously discussed and refined) ...
             Boolean isBrewing = card.getBoolean("brewing");
             int brewTime = card.getInt("brewTime");
             NBTTagCompound tag = card.getTag("BrewInfo");
 
-            if ((displaySettings & DISPLAY_TIME) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_TIME)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.brewstand", brewTime, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_1) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_SLOT_1)) {
                 String slot1pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tag.hasKey("Slot1")) {
+                if (tag != null && tag.hasKey("Slot1")) {
                     slot1pre = tag.getString("Slot1");
                 }
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType1", slot1pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_2) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_SLOT_2)) {
                 String slot2pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tag.hasKey("Slot2")) {
+                if (tag != null && tag.hasKey("Slot2")) {
                     slot2pre = tag.getString("Slot2");
                 }
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType2", slot2pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_SLOT_3) > 0) {
+            if (displaySettings.getNewSetting(DISPLAY_SLOT_3)) {
                 String slot3pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tag.hasKey("Slot3")) {
+                if (tag != null && tag.hasKey("Slot3")) {
                     slot3pre = tag.getString("Slot3");
                 }
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.potionType3", slot3pre, showLabels);
                 result.add(line);
             }
-            if ((displaySettings & DISPLAY_BREWING) > 0) {
-                int txtColour = 0;
+            // Brewing stand status logic (applied after other lines are potentially added)
+            if (displaySettings.getNewSetting(DISPLAY_BREWING)) {
+                int txtColour;
                 String text;
                 if (isBrewing) {
-                    txtColour = 0x00ff00;
-                    text = LangHelper.translate("msg.nc.Vanilla.brewing");
+                    txtColour = 0x00ff00; // Green
+                    text = StatCollector.translateToLocal("msg.nc.Vanilla.brewing");
                 } else {
-                    txtColour = 0xff0000;
-                    text = LangHelper.translate("msg.nc.Vanilla.notBrewing");
+                    txtColour = 0xff0000; // Red
+                    text = StatCollector.translateToLocal("msg.nc.Vanilla.notBrewing");
                 }
-                if (result.size() > 0) {
+
+                if (result.size() > 0 && result.get(0).textRight == null) {
+                    // Attach to the right of the first line if available
                     PanelString firstLine = result.get(0);
                     firstLine.textRight = text;
                     firstLine.colorRight = txtColour;
                 } else {
+                    // Otherwise, add as a new line
                     line = new PanelString();
                     line.textLeft = text;
                     line.colorLeft = txtColour;
                     result.add(line);
                 }
             }
-            return result;
 
-        } else if (card.getString("entity").equals(FURNACE)) {
+        } else if (FURNACE.equals(machineType)) {
             boolean isBurning = card.getBoolean("burning");
             int burnTime = card.getInt("burnTime");
             NBTTagCompound tagCompound = card.getTag("Info");
 
-            if ((displaySettings & DISPLAY_TIME) > 0) {
-                line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.Vanilla.burnTime", burnTime, showLabels);
-                result.add(line);
-            }
-            if ((displaySettings & DISPLAY_SLOT_1) > 0) {
-                String slot1pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tagCompound.hasKey("Cooking")) {
-                    slot1pre = tagCompound.getString("Cooking");
-                }
-                line = new PanelString();
-                line.textLeft = String.format(
-                        StatCollector.translateToLocal("msg.nc.Vanilla.cooking"),
-                        tagCompound.getInteger("Csize"),
-                        slot1pre);
-                result.add(line);
-            }
-            if ((displaySettings & DISPLAY_SLOT_2) > 0) {
-                String slot2pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tagCompound.hasKey("Fuel")) {
-                    slot2pre = tagCompound.getString("Fuel");
-                }
-                line = new PanelString();
-                line.textLeft = String.format(
-                        StatCollector.translateToLocal("msg.nc.Vanilla.fuel"),
-                        tagCompound.getInteger("Fsize"),
-                        slot2pre);
-                result.add(line);
-            }
-            if ((displaySettings & DISPLAY_SLOT_3) > 0) {
-                String slot3pre = StatCollector.translateToLocal("msg.nc.None");
-                if (tagCompound.hasKey("Output")) {
-                    slot3pre = tagCompound.getString("Output");
-                }
-                line = new PanelString();
-                line.textLeft = String.format(
-                        StatCollector.translateToLocal("msg.nc.Vanilla.output"),
-                        tagCompound.getInteger("Osize"),
-                        slot3pre);
-                result.add(line);
-            }
-            if ((displaySettings & DISPLAY_BREWING) > 0) {
-                int txtColour = 0;
-                String text;
+            boolean statusHandled = false;
+            String statusText = null;
+            int statusColour = 0;
+
+            if (displaySettings.getNewSetting(DISPLAY_BREWING)) { // DISPLAY_BREWING is reused for furnace activity
                 if (isBurning) {
-                    txtColour = 0x00ff00;
-                    text = LangHelper.translate("msg.nc.InfoPanelOn");
+                    statusColour = 0x00ff00; // Green
+                    statusText = StatCollector.translateToLocal("msg.nc.InfoPanelOn");
                 } else {
-                    txtColour = 0xff0000;
-                    text = LangHelper.translate("msg.nc.InfoPanelOff");
+                    statusColour = 0xff0000; // Red
+                    statusText = StatCollector.translateToLocal("msg.nc.InfoPanelOff");
                 }
-                if (result.size() > 0) {
-                    PanelString firstLine = result.get(0);
-                    firstLine.textRight = text;
-                    firstLine.colorRight = txtColour;
-                } else {
+            }
+
+            if (displaySettings.getNewSetting(DISPLAY_TIME)) {
+                line = new PanelString();
+                line.textLeft = String.format( // Using String.format as in your original for furnace time
+                        StatCollector.translateToLocal("msg.nc.Vanilla.burnTime"),
+                        burnTime);
+                if (displaySettings.getNewSetting(DISPLAY_BREWING)) { // If status is also active
+                    line.textRight = statusText;
+                    line.colorRight = statusColour;
+                    statusHandled = true;
+                }
+                result.add(line);
+            }
+
+            if (tagCompound != null) {
+                if (displaySettings.getNewSetting(DISPLAY_SLOT_1)) {
+                    String slot1pre = StatCollector.translateToLocal("msg.nc.None");
+                    if (tagCompound.hasKey("Cooking")) {
+                        slot1pre = tagCompound.getString("Cooking");
+                    }
                     line = new PanelString();
-                    line.textLeft = text;
-                    line.colorLeft = txtColour;
+                    line.textLeft = String.format(
+                            StatCollector.translateToLocal("msg.nc.Vanilla.cooking"),
+                            tagCompound.getInteger("Csize"),
+                            slot1pre);
+                    result.add(line);
+                }
+                if (displaySettings.getNewSetting(DISPLAY_SLOT_2)) {
+                    String slot2pre = StatCollector.translateToLocal("msg.nc.None");
+                    if (tagCompound.hasKey("Fuel")) {
+                        slot2pre = tagCompound.getString("Fuel");
+                    }
+                    line = new PanelString();
+                    line.textLeft = String.format(
+                            StatCollector.translateToLocal("msg.nc.Vanilla.fuel"),
+                            tagCompound.getInteger("Fsize"),
+                            slot2pre);
+                    result.add(line);
+                }
+                if (displaySettings.getNewSetting(DISPLAY_SLOT_3)) {
+                    String slot3pre = StatCollector.translateToLocal("msg.nc.None");
+                    if (tagCompound.hasKey("Output")) {
+                        slot3pre = tagCompound.getString("Output");
+                    }
+                    line = new PanelString();
+                    line.textLeft = String.format(
+                            StatCollector.translateToLocal("msg.nc.Vanilla.output"),
+                            tagCompound.getInteger("Osize"),
+                            slot3pre);
                     result.add(line);
                 }
             }
-            /*
-             * public static final int DISPLAY_BREWING = 1; public static final int DISPLAY_TIME = 2; public static
-             * final int DISPLAY_SLOT_1 = 4; public static final int DISPLAY_SLOT_2 = 8; public static final int
-             * DISPLAY_SLOT_3 = 16; card.setBoolean("burning", furnace.isBurning()); card.setInt("burnTime",
-             * furnace.furnaceBurnTime); NBTTagCompound tag = new NBTTagCompound(); tag.setString("Cooking",
-             * furnace.getStackInSlot(0).getDisplayName()); tag.setInteger("Csize",
-             * furnace.getStackInSlot(0).stackSize); tag.setString("Fuel", furnace.getStackInSlot(1).getDisplayName());
-             * tag.setInteger("Fsize", furnace.getStackInSlot(1).stackSize); tag.setString("Output",
-             * furnace.getStackInSlot(2).getDisplayName()); tag.setInteger("Osize",
-             * furnace.getStackInSlot(2).stackSize);
-             */
 
+            // If status is active but wasn't attached to the time line
+            if (displaySettings.getNewSetting(DISPLAY_BREWING) && !statusHandled) {
+                if (!result.isEmpty() && result.get(0).textRight == null) {
+                    // Attach to the right of the first existing line (could be a slot)
+                    PanelString firstLine = result.get(0);
+                    firstLine.textRight = statusText;
+                    firstLine.colorRight = statusColour;
+                } else {
+                    // If no other lines or first line's right is occupied, add status as a new line
+                    line = new PanelString();
+                    line.textLeft = statusText;
+                    line.colorLeft = statusColour;
+                    result.add(line);
+                }
+            }
         }
         return result;
     }
@@ -272,11 +287,31 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     @Override
     public List<PanelSetting> getSettingsList() {
         List<PanelSetting> result = new ArrayList<PanelSetting>();
-        result.add(new PanelSetting(LangHelper.translate("1"), DISPLAY_BREWING, getCardType()));
-        result.add(new PanelSetting(LangHelper.translate("2"), DISPLAY_TIME, getCardType()));
-        result.add(new PanelSetting(StringUtils.getFormattedKey("3", 1), DISPLAY_SLOT_1, getCardType()));
-        result.add(new PanelSetting(StringUtils.getFormattedKey("4", 2), DISPLAY_SLOT_2, getCardType()));
-        result.add(new PanelSetting(StringUtils.getFormattedKey("5", 3), DISPLAY_SLOT_3, getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.setting.activeTime"),
+                        DISPLAY_TIME,
+                        getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.setting.slot1Contents"),
+                        DISPLAY_SLOT_1,
+                        getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.setting.slot2Contents"),
+                        DISPLAY_SLOT_2,
+                        getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.setting.slot3Contents"),
+                        DISPLAY_SLOT_3,
+                        getCardType()));
+        result.add(
+                new NewPanelSetting(
+                        StatCollector.translateToLocal("msg.nc.Vanilla.setting.activityStatus"),
+                        DISPLAY_BREWING,
+                        getCardType()));
         return result;
     }
 }
