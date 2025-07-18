@@ -24,7 +24,7 @@ public class ModelInfoPanel {
     private static final double Vma = advSideTex.getMaxV();
     private static final double Vmi = advSideTex.getMinV();
 
-    private double[] coordinates = new double[24];
+    private final double[] coordinates = new double[24];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
             { 5, 4, 0, 1 }, { 2, 3, 7, 6 } };
     private static final byte[][] normalMap = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
@@ -226,7 +226,8 @@ public class ModelInfoPanel {
 
     private void drawScreenWithBorder(byte[] points, byte[] n, double u1, double u2, double v1, double v2,
             double border, int facing) {
-        Tessellator.instance.setNormal(n[0], n[1], n[2]);
+        final Tessellator tess = Tessellator.instance;
+        tess.setNormal(n[0], n[1], n[2]);
         double[][] UVMap = { { u1, v1 }, { u1, v2 }, { u2, v2 }, { u2, v1 } };
         byte[] edges = { points[3], points[0], points[1], points[2], points[3], points[0] };
 
@@ -248,7 +249,7 @@ public class ModelInfoPanel {
                                             coordinates[edges[i - 1] * 3 + 2] })),
                     border);
 
-            Tessellator.instance.addVertexWithUV(
+            tess.addVertexWithUV(
                     coordinates[edges[i] * 3] - edge1[0] - edge2[0] + 0.001 * Facing.offsetsXForSide[facing],
                     coordinates[edges[i] * 3 + 1] - edge1[1] - edge2[1] + 0.001 * Facing.offsetsYForSide[facing],
                     coordinates[edges[i] * 3 + 2] - edge1[2] - edge2[2] + 0.001 * Facing.offsetsZForSide[facing],
@@ -301,14 +302,14 @@ public class ModelInfoPanel {
         // SIDES
         if (panel.getTransparencyMode() == 0) { // Check if block should be transparent
 
-            Tessellator.instance.setBrightness(
+            tess.setBrightness(
                     block.getMixedBrightnessForBlock(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord));
-            Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+            tess.setColorOpaque_F(0.5F, 0.5F, 0.5F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             // bottom
             if (facing != 0) {
-                Tessellator.instance.setNormal(0, -1, 0);
+                tess.setNormal(0, -1, 0);
                 addPoint(0, Umi, Vmi);
                 addPoint(3, Uma, Vmi);
                 addPoint(2, Uma, Vma);
@@ -316,7 +317,7 @@ public class ModelInfoPanel {
             }
 
             if (facing != 1) {
-                Tessellator.instance.setNormal(0, 1, 0);
+                tess.setNormal(0, 1, 0);
                 addPoint(4, Umi, Vmi);
                 addPoint(5, Uma, Vmi);
                 addPoint(6, Uma, Vma);
@@ -324,7 +325,7 @@ public class ModelInfoPanel {
             }
 
             if (facing != 2) {
-                Tessellator.instance.setNormal(0, 0, -1);
+                tess.setNormal(0, 0, -1);
                 addPoint(0, Umi, Vmi);
                 addPoint(4, Uma, Vmi);
                 addPoint(7, Uma, Vma);
@@ -332,7 +333,7 @@ public class ModelInfoPanel {
             }
 
             if (facing != 3) {
-                Tessellator.instance.setNormal(0, 0, 1);
+                tess.setNormal(0, 0, 1);
                 addPoint(6, Umi, Vmi);
                 addPoint(5, Uma, Vmi);
                 addPoint(1, Uma, Vma);
@@ -340,7 +341,7 @@ public class ModelInfoPanel {
             }
 
             if (facing != 4) {
-                Tessellator.instance.setNormal(-1, 0, 0);
+                tess.setNormal(-1, 0, 0);
                 addPoint(5, Umi, Vmi);
                 addPoint(4, Uma, Vmi);
                 addPoint(0, Uma, Vma);
@@ -348,7 +349,7 @@ public class ModelInfoPanel {
             }
 
             if (facing != 5) {
-                Tessellator.instance.setNormal(1, 0, 0);
+                tess.setNormal(1, 0, 0);
                 addPoint(2, Umi, Vmi);
                 addPoint(3, Uma, Vmi);
                 addPoint(7, Uma, Vma);
@@ -358,6 +359,6 @@ public class ModelInfoPanel {
 
         // RETURN TO MC DRAWING
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+        tess.setColorOpaque_F(0.5F, 0.5F, 0.5F);
     }
 }
