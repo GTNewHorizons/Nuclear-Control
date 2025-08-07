@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.gui;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
@@ -59,6 +60,8 @@ public class GuiPanelSlope extends GuiScreen {
             } else if (mouseX >= 137 && mouseX <= 150) {
                 offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_VERT;
                 if (amount < 0) amount = 0;
+            } else {
+                return;
             }
             (IC2.network.get()).initiateClientTileEntityEvent(panel, offset + amount);
         }
