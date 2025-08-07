@@ -99,6 +99,9 @@ public class TileEntityInfoPanelExtender extends TileEntity
         if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen) {
             IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);
         }
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
+        }
         if (partOfScreen && screen == null) {
             TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
             if (core != null && core instanceof TileEntityInfoPanel) {

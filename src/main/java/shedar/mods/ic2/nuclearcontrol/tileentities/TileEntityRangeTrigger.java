@@ -217,6 +217,9 @@ public class TileEntityRangeTrigger extends TileEntity
         if (!worldObj.isRemote) {
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
         }
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
+        }
         init = true;
     }
 
