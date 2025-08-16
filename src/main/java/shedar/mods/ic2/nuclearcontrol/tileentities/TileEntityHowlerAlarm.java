@@ -74,6 +74,9 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         if (!worldObj.isRemote) {
             RedstoneHelper.checkPowered(worldObj, this);
         }
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
+        }
         if (FMLCommonHandler.instance().getEffectiveSide().isServer() && "".equals(soundName)) {
             setSoundName(DEFAULT_SOUND_NAME);
         }
@@ -248,6 +251,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         if (!init) {
             initData();
         }
+
         super.updateEntity();
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (tickRate != -1 && updateTicker-- > 0) return;

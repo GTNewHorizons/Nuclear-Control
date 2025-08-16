@@ -350,6 +350,7 @@ public class TileEntityInfoPanel extends TileEntity
             RedstoneHelper.checkPowered(worldObj, this);
         }
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
             if (screenData == null) {
                 IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
             } else {
