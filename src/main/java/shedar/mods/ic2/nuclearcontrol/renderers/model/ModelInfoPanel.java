@@ -76,20 +76,20 @@ public class ModelInfoPanel {
         if (isTopBottom) {
             if (panel.rotateVert > 0) // |\
             { // | \
-                dBottomRight = dBottomLeft = height * Math.tan(Math.PI * panel.rotateVert / 180);
+                dBottomRight = dBottomLeft = (double) panel.rotateVert / 56;
                 maxDelta = dBottomLeft;
             } else {
-                dTopRight = dTopLeft = height * Math.tan(Math.PI * -panel.rotateVert / 180);
+                dTopRight = dTopLeft = (double) panel.rotateVert / -56;
                 maxDelta = dTopRight;
             }
         }
         if (isLeftRight) {
             if (panel.rotateHor > 0) // -------
             { // | . '
-                dTopRight = dBottomRight = width * Math.tan(Math.PI * panel.rotateHor / 180);
+                dTopRight = dBottomRight = (double) panel.rotateHor / 56;
                 maxDelta = dTopRight;
             } else {
-                dTopLeft = dBottomLeft = width * Math.tan(Math.PI * -panel.rotateHor / 180);
+                dTopLeft = dBottomLeft = (double) panel.rotateHor / -56;
                 maxDelta = dBottomLeft;
             }
         }
