@@ -279,7 +279,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     @Override
     protected void initData() {
         super.initData();
-        NuclearNetworkHelper.requestDataSorters(this);
+
+        if (worldObj.isRemote) {
+            NuclearNetworkHelper.requestDataSorters(this);
+        }
     }
 
     @Override
