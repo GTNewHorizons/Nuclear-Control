@@ -68,6 +68,9 @@ public class TileEntityEnergyCounter extends TileEntity
     }
 
     protected void initData() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
+        }
         init = true;
     }
 

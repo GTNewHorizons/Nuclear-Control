@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.network.INetworkUpdateListener;
@@ -61,7 +62,9 @@ public class TileEntityThermo extends TileEntity implements INetworkDataProvider
     protected void initData() {
         if (!worldObj.isRemote)
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
-
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "facing");
+        }
         init = true;
     }
 
