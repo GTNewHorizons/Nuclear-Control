@@ -52,7 +52,7 @@ public class ItemTimeCard extends ItemCardBase {
         int minutes = (time % 1000) * 6 / 100;
         String suffix = "";
 
-        if (displaySettings.getNewSetting(MODE_24H)) {
+        if (displaySettings.getSetting(MODE_24H)) {
             suffix = hours < 12 ? "AM" : "PM";
             hours %= 12;
             if (hours == 0) hours += 12;

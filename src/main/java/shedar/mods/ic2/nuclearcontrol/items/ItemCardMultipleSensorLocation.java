@@ -232,7 +232,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         int capacity = card.getInt("capacity");
         int amount = card.getInt("amount");
 
-        if (displaySettings.getNewSetting(DISPLAY_LIQUID_NAME)) {
+        if (displaySettings.getSetting(DISPLAY_LIQUID_NAME)) {
             int liquidId = card.getInt("liquidId");
             String name;
             if (liquidId == 0) name = LangHelper.translate("msg.nc.None");
@@ -241,22 +241,22 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidName", name, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_LIQUID_AMOUNT)) {
+        if (displaySettings.getSetting(DISPLAY_LIQUID_AMOUNT)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidAmount", amount, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_LIQUID_FREE)) {
+        if (displaySettings.getSetting(DISPLAY_LIQUID_FREE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidFree", capacity - amount, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_LIQUID_CAPACITY)) {
+        if (displaySettings.getSetting(DISPLAY_LIQUID_CAPACITY)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidCapacity", capacity, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_LIQUID_PERCENTAGE)) {
+        if (displaySettings.getSetting(DISPLAY_LIQUID_PERCENTAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted(
                     "msg.nc.InfoPanelLiquidPercentage",
@@ -272,7 +272,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         if (card.hasField("average")) {// average counter
-            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
+            if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
                 String key = card.getInt("powerType") == EnergyStorageData.TARGET_TYPE_IC2 ? "msg.nc.InfoPanelOutput"
                         : "msg.nc.InfoPanelOutputMJ";
@@ -280,7 +280,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
                 result.add(line);
             }
         } else {// energy counter
-            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
+            if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 double energy = card.getDouble("energy");
                 line = new PanelString();
                 String key = card.getInt("powerType") == EnergyStorageData.TARGET_TYPE_IC2

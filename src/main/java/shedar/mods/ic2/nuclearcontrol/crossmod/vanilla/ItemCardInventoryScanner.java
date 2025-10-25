@@ -70,12 +70,12 @@ public class ItemCardInventoryScanner extends ItemCardBase {
         int TotalInv = card.getInt("totalInv");
         int TotalInUse = card.getInt("totalInUse");
 
-        if (displaySettings.getNewSetting(DISPLAY_NAME)) {
+        if (displaySettings.getSetting(DISPLAY_NAME)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("%s", StatCollector.translateToLocal(name), showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_TOTAL)) {
+        if (displaySettings.getSetting(DISPLAY_TOTAL)) {
             line = new PanelString();
             line.textLeft = String
                     .format(StatCollector.translateToLocal("msg.nc.Vanilla.Display"), TotalInUse, TotalInv);

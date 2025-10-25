@@ -11,8 +11,7 @@ import net.minecraft.world.World;
  * interface. For extended card's behavior it can also implement {@link IRemoteSensor} and {@link IAdvancedCardSettings}
  * interfaces.
  * 
- * @author Shedar
- * @deprecated use {@link IPanelAdvDataSource} for compatibility in future updates
+ * @author Shedar, Guid118
  */
 public interface IPanelDataSource {
 
@@ -45,9 +44,25 @@ public interface IPanelDataSource {
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
-     * @deprecated
+     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, ICardWrapper, boolean)}
+     *             instead. Will be removed in 3.0.0
      */
     List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels);
+
+    /**
+     * Method returns text representation of card's data. Each line is presented by {@link PanelString} object. Method
+     * called on client side. Card's data shouldn't be modified here.
+     *
+     * @param displaySettings display settings, configure by player for this type of cards.
+     * @param card            Wrapper object, to access field values.
+     * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
+     * @return list of string to display.
+     * @see PanelString
+     */
+    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+            boolean showLabels) {
+        return getStringData(displaySettings.getAsInteger(), card, showLabels);
+    }
 
     /**
      * Method should return a list of settings, which displayed in the Information Panel gui as checkboxes. If card
@@ -58,7 +73,7 @@ public interface IPanelDataSource {
 
     /**
      * Method should return identifier of the card. It used to save card's display settings. GUID can be generated at
-     * http://guidgen.com/ site. You shouldn't use non random uid, like UUID(0, 4). Non random uids used in Nuclear
+     * http://guidgen.com/ site. You shouldn't use non-random uid, like UUID(0, 4). Non-random uuids used in Nuclear
      * Control cards for backward compatibility.
      */
     UUID getCardType();

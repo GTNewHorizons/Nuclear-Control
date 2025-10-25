@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 
 public class DataSorter {
@@ -19,19 +16,10 @@ public class DataSorter {
     private List<Integer> customOrder;
 
     /**
-     * Non-default constructor, use only if you don't know the size of the list yet.
+     * Default constructor, use only if you don't know the size of the list yet.
      */
     public DataSorter() {
         this.customOrder = new ArrayList<>();
-    }
-
-    /**
-     * Default constructor. If you don't know the size of the list, use the constructor without parameters.
-     *
-     * @param size size of the list to be sorted
-     */
-    public DataSorter(int size) {
-        resetOrder(size);
     }
 
     public DataSorter(int[] order) {
@@ -163,10 +151,5 @@ public class DataSorter {
 
     public int[] getArray() {
         return this.customOrder.stream().mapToInt(Integer::intValue).toArray();
-    }
-
-    public static void setDataSorter(ItemStack stack, DataSorter dataSorter) {
-        NBTTagCompound compound = stack.getTagCompound();
-        compound.setIntArray("DataSorter", dataSorter.getArray());
     }
 }

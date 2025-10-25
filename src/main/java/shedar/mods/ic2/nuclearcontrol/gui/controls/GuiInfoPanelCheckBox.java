@@ -34,7 +34,7 @@ public class GuiInfoPanelCheckBox extends GuiButton {
         height = renderer.FONT_HEIGHT + 1;
         width = renderer.getStringWidth(setting.title) + 8;
         this.panel = panel;
-        this.checked = panel.getNewDisplaySettingsForCardInSlot(slot).getNewSetting(setting.displayBit);
+        this.checked = panel.getNewDisplaySettingsForCardInSlot(slot).getSetting(setting.displayBit);
 
     }
 

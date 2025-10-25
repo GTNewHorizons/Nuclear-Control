@@ -55,9 +55,8 @@ public enum CardState {
                 return OUT_OF_RANGE;
             case 4:
                 return INVALID_CARD;
-            case 5:
+            default:
                 return CUSTOM_ERROR;
         }
-        return CUSTOM_ERROR;
     }
 }

@@ -135,28 +135,28 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         double coreTemp = card.getInt("CoreTempurature");
 
         // Temperature
-        if (displaySettings.getNewSetting(DISPLAY_HeatUnits)) {
+        if (displaySettings.getSetting(DISPLAY_HeatUnits)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.Output", heatUnits, showLabels);
             result.add(line);
         }
 
         // Stored Energy
-        if (displaySettings.getNewSetting(DISPLAY_CoreTemp)) {
+        if (displaySettings.getSetting(DISPLAY_CoreTemp)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.Temp", coreTemp, showLabels);
             result.add(line);
         }
 
         // Energy Created Frequency
-        if (displaySettings.getNewSetting(DISPLAY_INPUTTank)) {
+        if (displaySettings.getSetting(DISPLAY_INPUTTank)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tarkin", tIn, showLabels);
             result.add(line);
         }
 
         // Output Percentage
-        if (displaySettings.getNewSetting(DISPLAY_OUTPUTTank)) {
+        if (displaySettings.getSetting(DISPLAY_OUTPUTTank)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tankout", tOut, showLabels);
             result.add(line);
@@ -165,7 +165,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         // On or Off
         int txtColor = 0;
         String text;
-        if (displaySettings.getNewSetting(DISPLAY_ON)) {
+        if (displaySettings.getSetting(DISPLAY_ON)) {
             boolean reactorPowered = card.getBoolean("Online");
             if (reactorPowered) {
                 txtColor = 0x00ff00;

@@ -1,179 +1,225 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
+import java.util.BitSet;
+
 import io.netty.buffer.ByteBuf;
 
+/**
+ * Helper class for display settings. This used to be done by an integer bitmask, but that was limited to 32 settings.
+ * This features an unlimited* amount of settings (within reason of course).
+ *
+ * @author Guid118
+ */
 public class DisplaySettingHelper {
 
-    private String settings = "0";
-
+    private final BitSet bits;
+    private int length;
     private boolean all_true = false;
 
-    public DisplaySettingHelper() {}
+    public DisplaySettingHelper() {
+        this.bits = new BitSet();
+        this.length = 0;
+    }
 
     public DisplaySettingHelper(boolean all_true) {
+        this();
         this.all_true = all_true;
     }
 
-    public DisplaySettingHelper(String settings) {
-        this.settings = sanitizeSettings(settings);
+    public DisplaySettingHelper(String bitString) {
+        this.bits = new BitSet();
+        this.length = bitString.length();
+        for (int i = 0; i < length; i++) {
+            char c = bitString.charAt(i);
+            if (c == '1') bits.set(i, true);
+        }
     }
 
     /**
      * @param legacySettings Settings
      * @deprecated use any other constructor, and don't use an int to store display settings
      */
+    @Deprecated
     public DisplaySettingHelper(int legacySettings) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 31; i >= 0; i--) {
-            sb.append(((legacySettings >>> i) & 1) == 1 ? "1" : "0");
+        this.bits = new BitSet();
+        this.length = 0;
+        for (int i = 0; i < 32; i++) {
+            boolean value = ((legacySettings >>> i) & 1) == 1;
+            addSetting(value);
         }
-        this.settings = sb.reverse().toString();
     }
 
+    /**
+     * Constructor for reading from the ByteBuf used in packets.
+     * 
+     * @param buf packet's ByteBuf
+     */
     public DisplaySettingHelper(ByteBuf buf) {
-        short length = buf.readShort();
+        this.length = buf.readShort();
         int bytesToRead = (length + 7) / 8;
+        this.bits = new BitSet(length);
 
-        StringBuilder sb = new StringBuilder(bytesToRead * 8);
         for (int i = 0; i < bytesToRead; i++) {
             byte value = buf.readByte();
-            sb.append(String.format("%8s", Integer.toBinaryString(value & 0xFF)).replace(' ', '0'));
+            for (int bit = 0; bit < 8; bit++) {
+                int index = i * 8 + bit;
+                if (index >= length) break;
+                boolean bitSet = ((value >>> (7 - bit)) & 1) == 1;
+                bits.set(index, bitSet);
+            }
         }
-
-        // Only keep the first `length` bits (remove extra right-padding)
-        this.settings = sb.substring(0, length);
-
-    }
-
-    public DisplaySettingHelper(DisplaySettingHelper helper) {
-        this.settings = helper.settings;
-        this.all_true = helper.all_true;
     }
 
     /**
-     * get the current state of the setting at the given bitMask
-     *
-     * @param bitMask bitMask of the setting
-     * @return value of the setting
+     * Deep copy constructor
+     * 
+     * @param origin original instance to deep copy
      */
-    public boolean getSetting(int bitMask) {
-        return getNewSetting(bitMaskToIndex(bitMask));
+    public DisplaySettingHelper(DisplaySettingHelper origin) {
+        this.bits = (BitSet) origin.bits.clone();
+        this.length = origin.length;
+        this.all_true = origin.all_true;
     }
 
     /**
-     * get the current state of the setting at the given index.
-     *
-     * @param index of the setting
-     * @return value of the setting
+     * get a setting's value from the index.
+     * 
+     * @param index index
+     * @return value
      */
-    public boolean getNewSetting(int index) {
+    public boolean getSetting(int index) {
         if (all_true) return true;
-        if (index >= 0 && index < settings.length()) {
-            return settings.charAt(index) == '1';
-        }
-        return false;
+        return get(index);
     }
 
     /**
-     * add a setting to this DisplaySettingHelper
-     *
-     * @param value current status
-     * @return index
+     * add a value to the end of the settings, without giving an index.
+     * 
+     * @param value to set
      */
-    public int addSetting(boolean value) {
-        settings += value ? '1' : '0';
-        return settings.length() - 1;
+    public void addSetting(boolean value) {
+        bits.set(length, value);
+        length++;
     }
 
     /**
-     * @return the settings as an integer. does not support more than 32 options
-     * @deprecated do not use.
+     * Get the first 32 bits of the settings.
+     * 
+     * @deprecated Don't use an integer to store or send settings. Will be removed in 3.0.0
+     * @return integer representation of the first 32 bits.
      */
+    @Deprecated
     public int getAsInteger() {
         if (all_true) return Integer.MAX_VALUE;
-        String s = new StringBuilder(settings.substring(0, Math.min(31, settings.length()))).reverse().toString();
-        return Integer.parseInt(s, 2);
+
+        int result = 0;
+        int limit = Math.min(31, size());
+        for (int i = 0; i < limit; i++) {
+            if (get(i)) {
+                result |= (1 << i);
+            }
+        }
+        return result;
     }
 
     /**
-     * Write the current settings to the given ByteBuf
-     *
-     * @param buf ByteBuf to write to
+     * toggle the setting at the given index
+     * 
+     * @param index index of the to be toggled setting
      */
-    public void writeToByteBuffer(ByteBuf buf) {
-        if (!settings.matches("[01]+")) {
-            settings = sanitizeSettings(settings);
-        }
-        // Write the actual bit length first
-        buf.writeShort(settings.length());
-
-        // Pad to the right (end) so the length becomes a multiple of 8
-        int remainder = settings.length() % 8;
-        if (remainder != 0) {
-            int padding = 8 - remainder;
-            StringBuilder sb = new StringBuilder(settings.length() + padding);
-            sb.append(settings);
-            for (int i = 0; i < padding; i++) sb.append('0');
-            settings = sb.toString();
-        }
-
-        // Now write 8 bits at a time
-        for (int i = 0; i < settings.length(); i += 8) {
-            String byteString = settings.substring(i, i + 8);
-            byte value = (byte) Integer.parseInt(byteString, 2);
-            buf.writeByte(value);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return settings;
-    }
-
-    private void setSetting(int index, boolean value) {
-        StringBuilder sb = new StringBuilder(settings);
-        if (settings.length() > index) {
-            sb.setCharAt(index, value ? '1' : '0');
-        } else {
-            while (sb.length() < index) {
-                sb.append('0');
-            }
-            sb.append(value ? '1' : '0');
-
-        }
-        settings = sb.toString();
-    }
-
     public void toggleSetting(int index) {
-        setSetting(index, !getNewSetting(index));
+        set(index, !get(index));
     }
 
-    public static int indexToBitMask(int value) {
-        return 1 << value;
+    /**
+     * convert an index to a bitmask
+     * 
+     * @param index index to set the bitmask to
+     * @return bitmask with a 1 at the given index
+     */
+    public static int indexToBitMask(int index) {
+        return 1 << index;
     }
 
+    /**
+     * get the index of the right-most 1 in a bitmask
+     * 
+     * @param value bitmask
+     * @return index of the right-most 1
+     */
     public static int bitMaskToIndex(int value) {
         return Integer.numberOfTrailingZeros(value);
     }
 
-    private String sanitizeSettings(String input) {
-        if (input == null || input.isEmpty()) {
-            return "0";
-        }
+    /**
+     * get the value at the given index.
+     * 
+     * @param index the index of the value to be retrieved, throws IndexOutOfBoundsException when index < 0
+     * @return value at the given index
+     */
+    public boolean get(int index) {
+        return bits.get(index);
+    }
 
-        if (input.matches("[01]+")) {
-            return input;
+    /**
+     * set the value of the given index to the given value.
+     * 
+     * @param index index to be used, should be non-negative
+     * @param value value the index should be set to.
+     */
+    public void set(int index, boolean value) {
+        if (index >= length) {
+            length = index + 1;
         }
+        bits.set(index, value);
+    }
 
-        try {
-            int legacy = Integer.parseInt(input);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 31; i >= 0; i--) {
-                sb.append(((legacy >>> i) & 1) == 1 ? "1" : "0");
+    /**
+     * get the size of the list of settings.
+     * 
+     * @return the last bit ever set. includes trailing zeros.
+     */
+    public int size() {
+        return length;
+    }
+
+    /**
+     * write to the given ByteBuf.
+     * 
+     * @param buf ByteBuf to write to
+     */
+    public void writeToByteBuffer(ByteBuf buf) {
+        buf.writeShort(length);
+        int bytesToWrite = (length + 7) / 8;
+
+        for (int i = 0; i < bytesToWrite; i++) {
+            byte b = 0;
+            for (int bit = 0; bit < 8; bit++) {
+                int index = i * 8 + bit;
+                if (index >= length) break;
+                if (bits.get(index)) {
+                    b |= (byte) (1 << (7 - bit));
+                }
             }
-            return sb.reverse().toString();
-        } catch (NumberFormatException e) {
-            return "0";
+            buf.writeByte(b);
         }
+    }
+
+    /**
+     * write to a string, for NBT storage purposes
+     * 
+     * @return string representation
+     */
+    public String toBitString() {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(bits.get(i) ? '1' : '0');
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return toBitString() + "\nAll true:" + this.all_true + ", length: " + this.length;
     }
 }

@@ -143,28 +143,28 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
         boolean passive = card.getBoolean("isPassive");
         if (passive) {
             // Temperature
-            if (displaySettings.getNewSetting(DISPLAY_TEMP)) {
+            if (displaySettings.getSetting(DISPLAY_TEMP)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Temp", coreTemp, showLabels);
                 result.add(line);
             }
 
             // Stored Energy
-            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
+            if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.EnergyStored", ienergyStored, showLabels);
                 result.add(line);
             }
 
             // Energy Created Frequency
-            if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
+            if (displaySettings.getSetting(DISPLAY_OUTPUT)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.CreatedEnergy", ioutputlvl, showLabels);
                 result.add(line);
             }
 
             // Output Percentage
-            if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
+            if (displaySettings.getSetting(DISPLAY_PERCENTAGE)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Percentage", PerOut, showLabels);
                 result.add(line);
@@ -173,7 +173,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             // On or Off
             int txtColor = 0;
             String text;
-            if (displaySettings.getNewSetting(DISPLAY_ON)) {
+            if (displaySettings.getSetting(DISPLAY_ON)) {
                 boolean reactorPowered = card.getBoolean("Online");
                 if (reactorPowered) {
                     txtColor = 0x00ff00;
@@ -195,19 +195,19 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             }
         } else {
             // Temperature
-            if (displaySettings.getNewSetting(DISPLAY_TEMP)) {
+            if (displaySettings.getSetting(DISPLAY_TEMP)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.Temp", coreTemp, showLabels);
                 result.add(line);
             }
             // Energy Created Frequency
-            if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
+            if (displaySettings.getSetting(DISPLAY_OUTPUT)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelRF.SteamOutput", ioutputlvl, showLabels);
                 result.add(line);
             }
             // Stored Energy
-            if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
+            if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormattedKey(
                         "msg.nc.InfoPanelRF.CoolantTank",
@@ -216,7 +216,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
                 result.add(line);
             }
             // Vapor Tank
-            if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
+            if (displaySettings.getSetting(DISPLAY_PERCENTAGE)) {
                 line = new PanelString();
                 line.textLeft = StringUtils.getFormattedKey(
                         "msg.nc.InfoPanelRF.OutputTank",
@@ -227,7 +227,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
             // On or Off
             int txtColor = 0;
             String text;
-            if (displaySettings.getNewSetting(DISPLAY_ON)) {
+            if (displaySettings.getSetting(DISPLAY_ON)) {
                 boolean reactorPowered = card.getBoolean("Online");
                 if (reactorPowered) {
                     txtColor = 0x00ff00;

@@ -63,7 +63,7 @@ public class GuiToggleButton extends GuiButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (!visible) return;
-        isChecked = panel.getNewDisplaySettingsForCardInSlot(slot).getNewSetting(setting.displayBit);
+        isChecked = panel.getNewDisplaySettingsForCardInSlot(slot).getSetting(setting.displayBit);
         mc.getTextureManager().bindTexture(TEXTURE);
         GL11.glColor4f(1, 1, 1, 1);
 

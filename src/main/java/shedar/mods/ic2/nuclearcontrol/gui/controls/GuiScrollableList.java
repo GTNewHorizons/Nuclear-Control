@@ -29,7 +29,7 @@ public class GuiScrollableList extends GuiScreen {
     // location at the TEXTURE variable further below.
     // General dimensions and paddings
     static final int GUI_WIDTH = 173;
-    static final int GUI_HEIGHT = 233;
+    static final int GUI_HEIGHT = 236;
     private static final int PADDING_LEFT = 6;
     private static final int PADDING_TOP = 6;
     private static final int PADDING_BOTTOM = 7;
@@ -132,6 +132,7 @@ public class GuiScrollableList extends GuiScreen {
         this.buttonListFull.clear();
         this.buttonList.clear();
         this.visibleButtonList.clear();
+        this.functionButtons.clear();
 
         functionButtons.add(
                 new SmallGuiButton(

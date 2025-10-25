@@ -139,23 +139,23 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
-        if (displaySettings.getNewSetting(DISPLAY_HEAT)) {
+        if (displaySettings.getSetting(DISPLAY_HEAT)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", card.getInt("heat"), showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_MAXHEAT)) {
+        if (displaySettings.getSetting(DISPLAY_MAXHEAT)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", card.getInt("maxHeat"), showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_MELTING)) {
+        if (displaySettings.getSetting(DISPLAY_MELTING)) {
             line = new PanelString();
             line.textLeft = StringUtils
                     .getFormatted("msg.nc.InfoPanelMelting", card.getInt("maxHeat") * 85 / 100, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_OUTPUT)) {
+        if (displaySettings.getSetting(DISPLAY_OUTPUT)) {
             line = new PanelString();
             if (card.getBoolean("isSteam")) {
                 line.textLeft = StringUtils.getFormatted(
@@ -168,7 +168,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
             result.add(line);
         }
         int timeLeft = card.getInt("timeLeft");
-        if (displaySettings.getNewSetting(DISPLAY_TIME)) {
+        if (displaySettings.getSetting(DISPLAY_TIME)) {
             int hours = timeLeft / 3600;
             int minutes = (timeLeft % 3600) / 60;
             int seconds = timeLeft % 60;
@@ -180,7 +180,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
         }
 
         int txtColor = 0;
-        if (displaySettings.getNewSetting(DISPLAY_ONOFF)) {
+        if (displaySettings.getSetting(DISPLAY_ONOFF)) {
             boolean reactorPowered = card.getBoolean("reactorPoweredB");
             if (reactorPowered) {
                 txtColor = 0x00ff00;

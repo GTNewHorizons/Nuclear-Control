@@ -63,22 +63,22 @@ public class MekRFCard extends ItemCardEnergySensorLocation {
         double energy = card.getDouble("energyL");
         double storage = card.getDouble("maxStorageL");
 
-        if (displaySettings.getNewSetting(DISPLAY_ENERGY)) {
+        if (displaySettings.getSetting(DISPLAY_ENERGY)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergy", energy, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_FREE)) {
+        if (displaySettings.getSetting(DISPLAY_FREE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyFree", storage - energy, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_STORAGE)) {
+        if (displaySettings.getSetting(DISPLAY_STORAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelEnergyStorage", storage, showLabels);
             result.add(line);
         }
-        if (displaySettings.getNewSetting(DISPLAY_PERCENTAGE)) {
+        if (displaySettings.getSetting(DISPLAY_PERCENTAGE)) {
             line = new PanelString();
             line.textLeft = StringUtils.getFormatted(
                     "msg.nc.InfoPanelEnergyPercentage",

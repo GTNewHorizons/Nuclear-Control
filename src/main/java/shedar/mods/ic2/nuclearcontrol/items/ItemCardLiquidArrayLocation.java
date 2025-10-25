@@ -139,13 +139,13 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
         PanelString line;
         double totalAmount = 0;
         double totalCapacity = 0;
-        boolean showEach = displaySettings.getNewSetting(DISPLAY_EACH);
-        boolean showSummary = displaySettings.getNewSetting(DISPLAY_TOTAL);
-        boolean showName = displaySettings.getNewSetting(DISPLAY_NAME);
+        boolean showEach = displaySettings.getSetting(DISPLAY_EACH);
+        boolean showSummary = displaySettings.getSetting(DISPLAY_TOTAL);
+        boolean showName = displaySettings.getSetting(DISPLAY_NAME);
         boolean showAmount = true;// displaySettings.getNewSetting(DISPLAY_AMOUNT) > 0;
-        boolean showFree = displaySettings.getNewSetting(DISPLAY_FREE);
-        boolean showCapacity = displaySettings.getNewSetting(DISPLAY_CAPACITY);
-        boolean showPercentage = displaySettings.getNewSetting(DISPLAY_PERCENTAGE);
+        boolean showFree = displaySettings.getSetting(DISPLAY_FREE);
+        boolean showCapacity = displaySettings.getSetting(DISPLAY_CAPACITY);
+        boolean showPercentage = displaySettings.getSetting(DISPLAY_PERCENTAGE);
         int cardCount = getCardCount(card);
         for (int i = 0; i < cardCount; i++) {
             int amount = card.getInt(String.format("_%damount", i));

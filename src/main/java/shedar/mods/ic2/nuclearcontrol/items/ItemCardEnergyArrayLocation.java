@@ -131,12 +131,12 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
         PanelString line;
         double totalEnergy = 0;
         double totalStorage = 0;
-        boolean showEach = displaySettings.getNewSetting(DISPLAY_EACH);
-        boolean showSummary = displaySettings.getNewSetting(DISPLAY_TOTAL);
-        boolean showEnergy = displaySettings.getNewSetting(DISPLAY_ENERGY);
-        boolean showFree = displaySettings.getNewSetting(DISPLAY_FREE);
-        boolean showStorage = displaySettings.getNewSetting(DISPLAY_STORAGE);
-        boolean showPercentage = displaySettings.getNewSetting(DISPLAY_PERCENTAGE);
+        boolean showEach = displaySettings.getSetting(DISPLAY_EACH);
+        boolean showSummary = displaySettings.getSetting(DISPLAY_TOTAL);
+        boolean showEnergy = displaySettings.getSetting(DISPLAY_ENERGY);
+        boolean showFree = displaySettings.getSetting(DISPLAY_FREE);
+        boolean showStorage = displaySettings.getSetting(DISPLAY_STORAGE);
+        boolean showPercentage = displaySettings.getSetting(DISPLAY_PERCENTAGE);
         int cardCount = getCardCount(card);
         for (int i = 0; i < cardCount; i++) {
             int energy = card.getInt(String.format("_%denergy", i));
