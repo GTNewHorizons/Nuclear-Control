@@ -68,7 +68,15 @@ public class ClientTickHandler {
 
                     while (iterator1.hasNext()) {
                         Entry entry = (Entry) iterator1.next();
-                        ncInstance.availableAlarms.add(((String) entry.getKey()).replace("alarm-", ""));
+                        if (entry.getKey().toString().startsWith("alarm-")) {
+                            String cleanedUpName = entry.getKey().toString().replace("alarm-", "");
+                            if (ncInstance.availableAlarms.contains(cleanedUpName)) {
+                                IC2NuclearControl.logger
+                                        .warn("Alarm '%s' already available. Skipping inclusion.", cleanedUpName);
+                            } else {
+                                ncInstance.availableAlarms.add(cleanedUpName);
+                            }
+                        }
                     }
                 } catch (RuntimeException runtimeexception) {
                     ;
