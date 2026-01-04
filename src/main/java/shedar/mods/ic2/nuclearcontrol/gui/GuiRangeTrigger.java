@@ -31,7 +31,7 @@ public class GuiRangeTrigger extends GuiContainer {
         super(container);
         ySize = 190;
         this.container = (ContainerRangeTrigger) container;
-        name = StatCollector.translateToLocal("tile.blockRangeTrigger.name");
+        name = StatCollector.translateToLocal("gui.tile.blockRangeTrigger.name.title");
     }
 
     @SuppressWarnings("unchecked")

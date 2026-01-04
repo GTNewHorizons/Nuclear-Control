@@ -27,7 +27,7 @@ public class GuiEnergyCounter extends GuiContainer {
     public GuiEnergyCounter(Container container) {
         super(container);
         this.container = (ContainerEnergyCounter) container;
-        name = StatCollector.translateToLocal("tile.blockEnergyCounter.name");
+        name = StatCollector.translateToLocal("gui.tile.blockEnergyCounter.name.title");
     }
 
     @SuppressWarnings("unchecked")

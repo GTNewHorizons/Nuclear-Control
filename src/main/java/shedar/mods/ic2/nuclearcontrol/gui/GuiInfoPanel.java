@@ -52,7 +52,7 @@ public class GuiInfoPanel extends GuiContainer {
         super(container);
         ySize = 190;
         this.container = (ContainerInfoPanel) container;
-        name = StatCollector.translateToLocal("tile.blockInfoPanel.name");
+        name = StatCollector.translateToLocal("gui.tile.blockInfoPanel.name.title");
         modified = false;
         // inverted value on start to force initControls
         isColored = !this.container.panel.getColored();

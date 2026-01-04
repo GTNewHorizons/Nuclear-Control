@@ -32,6 +32,15 @@ tile.nclight1.name=Lâmpada Branca
 tile.blockEnergyCounter.name=Contador de Energia
 tile.blockAverageCounter.name=Contador da Média
 tile.blockRangeTrigger.name=Gatilho de Alcance
+gui.tile.blockThermalMonitor.name.title=Monitor de Temperatura
+gui.tile.blockIndustrialAlarm.name.title=Alarme Industrial
+gui.tile.blockHowlerAlarm.name.title=Alarme Vibrador
+gui.tile.blockRemoteThermo.name.title=Monitor de Temperatura Remoto
+gui.tile.blockInfoPanel.name.title=Painel de Informação Industrial
+gui.tile.blockEnergyCounter.name.title=Contador de Energia
+gui.tile.blockAverageCounter.name.title=Contador da Média
+gui.tile.blockRangeTrigger.name.title=Gatilho de Alcance
+gui.tile.blockAdvancedInfoPanel.name.title=Painel de Informação Avançado
 
 msg.nc.HowlerAlarmSoundRange=Alcance do Som: %s
 msg.nc.HowlerAlarmSound=Som

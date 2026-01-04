@@ -47,6 +47,15 @@ tile.nclight3.name=Naranƒçasta Lampa
 tile.blockEnergyCounter.name=Energetski Brojaƒç
 tile.blockAverageCounter.name=Prosjecan Brojaƒç
 tile.blockRangeTrigger.name=Daljinski Kontroler
+gui.tile.blockThermalMonitor.name.title=Termalni Monitor
+gui.tile.blockIndustrialAlarm.name.title=Industrijski Alarm
+gui.tile.blockHowlerAlarm.name.title=Howler Alarm
+gui.tile.blockRemoteThermo.name.title=Daljisnki Termalni Monitor
+gui.tile.blockInfoPanel.name.title=Industrijski Informativni Monitor
+gui.tile.blockEnergyCounter.name.title=Energetski Brojaƒç
+gui.tile.blockAverageCounter.name.title=Prosjecan Brojaƒç
+gui.tile.blockRangeTrigger.name.title=Daljinski Kontroler
+gui.tile.blockAdvancedInfoPanel.name.title=Napredan Informativan Monitor
 
 #Integration Blocks
 tile.blockBRPart.name=Reaktor Monitor

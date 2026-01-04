@@ -28,7 +28,7 @@ public class GuiAverageCounter extends GuiContainer {
     public GuiAverageCounter(Container container) {
         super(container);
         this.container = (ContainerAverageCounter) container;
-        name = StatCollector.translateToLocal("tile.blockAverageCounter.name");
+        name = StatCollector.translateToLocal("gui.tile.blockAverageCounter.name.title");
     }
 
     @SuppressWarnings("unchecked")

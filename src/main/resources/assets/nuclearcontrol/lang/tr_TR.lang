@@ -34,6 +34,15 @@ tile.nclight1.name=White Lamp
 tile.blockEnergyCounter.name=Enerji Counter
 tile.blockAverageCounter.name=Average Counter
 tile.blockRangeTrigger.name=Range Trigger
+gui.tile.blockThermalMonitor.name.title=Termal Monitör
+gui.tile.blockIndustrialAlarm.name.title=Endüstriyel Alarm
+gui.tile.blockHowlerAlarm.name.title=Güçlü Alarm
+gui.tile.blockRemoteThermo.name.title=Uzak Termal Monitör
+gui.tile.blockInfoPanel.name.title=Endüstriyel Bilgi Paneli
+gui.tile.blockEnergyCounter.name.title=Enerji Counter
+gui.tile.blockAverageCounter.name.title=Average Counter
+gui.tile.blockRangeTrigger.name.title=Range Trigger
+gui.tile.blockAdvancedInfoPanel.name.title=Gelişmiş Bilgi Paneli
 
 msg.nc.HowlerAlarmSoundRange=Ses Seviyesi: %s
 msg.nc.HowlerAlarmSound=Ses
