@@ -37,6 +37,15 @@ tile.blockBRPart.name=Monitor a Reattore
 tile.blockEnergyCounter.name=Contatore di Energia
 tile.blockAverageCounter.name=Contatore della Media
 tile.blockRangeTrigger.name=Rivelatore di Raggio
+gui.tile.blockThermalMonitor.name.title=Monitor Termale
+gui.tile.blockIndustrialAlarm.name.title=Allarme Industriale
+gui.tile.blockHowlerAlarm.name.title=Allarme Tradizionale
+gui.tile.blockRemoteThermo.name.title=Monitor Termale Remoto
+gui.tile.blockInfoPanel.name.title=Pannello delle Informazioni Industriali
+gui.tile.blockEnergyCounter.name.title=Contatore di Energia
+gui.tile.blockAverageCounter.name.title=Contatore della Media
+gui.tile.blockRangeTrigger.name.title=Rivelatore di Raggio
+gui.tile.blockAdvancedInfoPanel.name.title=Pannello delle Informazioni Avanzato
 
 msg.nc.HowlerAlarmSoundRange=Raggio del Suono: %s
 msg.nc.HowlerAlarmSound=Suono

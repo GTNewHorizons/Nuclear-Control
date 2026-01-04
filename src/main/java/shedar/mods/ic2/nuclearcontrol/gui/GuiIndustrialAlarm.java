@@ -27,7 +27,7 @@ public class GuiIndustrialAlarm extends GuiContainer {
         xSize = 131;
         ySize = 64;
         this.alarm = alarm;
-        name = StatCollector.translateToLocal("tile.blockIndustrialAlarm.name");
+        name = StatCollector.translateToLocal("gui.tile.blockIndustrialAlarm.name.title");
     }
 
     @SuppressWarnings("unchecked")

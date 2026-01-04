@@ -32,6 +32,15 @@ tile.nclight1.name=White Lamp
 tile.blockEnergyCounter.name=Energiezähler
 tile.blockAverageCounter.name=Durchschnittszähler
 tile.blockRangeTrigger.name=Reichweitentrigger
+gui.tile.blockThermalMonitor.name.title=Thermalmonitor
+gui.tile.blockIndustrialAlarm.name.title=Industriealarm
+gui.tile.blockHowlerAlarm.name.title=Heulalarm
+gui.tile.blockRemoteThermo.name.title=Fern-Thermalmonitor
+gui.tile.blockInfoPanel.name.title=Industrielle Informationstafel
+gui.tile.blockEnergyCounter.name.title=Energiezähler
+gui.tile.blockAverageCounter.name.title=Durchschnittszähler
+gui.tile.blockRangeTrigger.name.title=Reichweitentrigger
+gui.tile.blockAdvancedInfoPanel.name.title=Fortgeschrittene Informationstafel
 
 msg.nc.HowlerAlarmSoundRange=Tonreichweite: %s
 msg.nc.HowlerAlarmSound=Ton

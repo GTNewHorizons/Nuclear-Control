@@ -45,6 +45,15 @@ tile.nclight3.name=Orrrange Lamp
 tile.blockEnergyCounter.name=Powe Country Mens Tool
 tile.blockAverageCounter.name=Powe Country Mens Tool
 tile.blockRangeTrigger.name=Rrrrange Triggerrrr
+gui.tile.blockThermalMonitor.name.title=Thermal Magic Shower-thingy
+gui.tile.blockIndustrialAlarm.name.title=HOWLER
+gui.tile.blockHowlerAlarm.name.title=HOWLER
+gui.tile.blockRemoteThermo.name.title=Remote Thermal Magic Shower-thingy
+gui.tile.blockInfoPanel.name.title=Iron-Graded Newspaper-Worthy-Crap Panel
+gui.tile.blockEnergyCounter.name.title=Powe Country Mens Tool
+gui.tile.blockAverageCounter.name.title=Powe Country Mens Tool
+gui.tile.blockRangeTrigger.name.title=Rrrrange Triggerrrr
+gui.tile.blockAdvancedInfoPanel.name.title=Fancy Newspaper-Worthy-Crap Panel
 
 #Integration Blocks
 tile.blockBRPart.name=Rrreactor Monitor

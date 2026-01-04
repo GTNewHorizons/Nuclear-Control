@@ -31,7 +31,7 @@ public class GuiRangeTrigger extends GuiContainer {
         super(container);
         ySize = 190;
         this.container = (ContainerRangeTrigger) container;
-        name = StatCollector.translateToLocal("tile.blockRangeTrigger.name");
+        name = StatCollector.translateToLocal("gui.tile.blockRangeTrigger.name.title");
     }
 
     @SuppressWarnings("unchecked")
@@ -69,12 +69,15 @@ public class GuiRangeTrigger extends GuiContainer {
     }
 
     private void renderValue(double value, int x, int y) {
+        String numbersPrefix = StatCollector.canTranslate("gui.optional.numbers")
+                ? StatCollector.translateToLocal("gui.optional.numbers")
+                : "";
         x += 114;
         for (int i = 0; i < 10; i++) {
             byte digit = (byte) (value % 10);
             String str = Byte.toString(digit);
             fontRendererObj.drawString(
-                    str,
+                    numbersPrefix + str,
                     x - 12 * i - fontRendererObj.getCharWidth(str.charAt(0)) / 2 + (9 - i + 2) / 3 * 6,
                     y,
                     0x404040);
