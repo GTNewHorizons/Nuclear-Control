@@ -48,7 +48,10 @@ public class GuiEnergyCounter extends GuiContainer {
         fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
         fontRendererObj
                 .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        String value = StringUtils.getFormatted("", container.energyCounter.counter, false);
+        String numbersPrefix = StatCollector.canTranslate("gui.optional.numbers")
+                ? StatCollector.translateToLocal("gui.optional.numbers")
+                : "";
+        String value = numbersPrefix + StringUtils.getFormatted("", container.energyCounter.counter, false);
         fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 22, 0x404040);
     }
 

@@ -40,8 +40,8 @@ public class GuiRemoteThermo extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        String numbersPrefix = StatCollector.canTranslate("gui.thermo.numbers")
-                ? StatCollector.translateToLocal("gui.thermo.numbers")
+        String numbersPrefix = StatCollector.canTranslate("gui.optional.numbers")
+                ? StatCollector.translateToLocal("gui.optional.numbers")
                 : "";
         buttonList.add(new CompactButton(0, guiLeft + 47, guiTop - 5 + 20, 22, 12, numbersPrefix + "-1"));
         buttonList.add(new CompactButton(1, guiLeft + 47, guiTop - 5 + 31, 22, 12, numbersPrefix + "-10"));
