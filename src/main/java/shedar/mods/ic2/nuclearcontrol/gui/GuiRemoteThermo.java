@@ -113,7 +113,8 @@ public class GuiRemoteThermo extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
         if (button.id >= 10) return;
 
-        int delta = Integer.parseInt(button.displayString.replace("+", ""));
+        int[] deltas = { -1, -10, -100, -1000, -10000, 1, 10, 100, 1000, 10000 };
+        int delta = deltas[button.id];
         updateHeat(delta);
     }
 
