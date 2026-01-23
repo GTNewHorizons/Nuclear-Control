@@ -32,6 +32,15 @@ tile.nclight1.name=White blanche
 tile.blockEnergyCounter.name=Compteur énergétique
 tile.blockAverageCounter.name=Compteur d'arrondi
 tile.blockRangeTrigger.name=Déclencheur de portée
+gui.tile.blockThermalMonitor.name.title=Moniteur thermique
+gui.tile.blockIndustrialAlarm.name.title=Alarme industrielle
+gui.tile.blockHowlerAlarm.name.title=Alarme
+gui.tile.blockRemoteThermo.name.title=Moniteur thermique distant
+gui.tile.blockInfoPanel.name.title=Écran
+gui.tile.blockEnergyCounter.name.title=Compteur énergétique
+gui.tile.blockAverageCounter.name.title=Compteur d'arrondi
+gui.tile.blockRangeTrigger.name.title=Déclencheur de portée
+gui.tile.blockAdvancedInfoPanel.name.title=Écran avancé
 
 msg.nc.HowlerAlarmSoundRange=Portée du so: %s
 msg.nc.HowlerAlarmSound=Son

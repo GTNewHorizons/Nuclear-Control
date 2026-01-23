@@ -33,7 +33,7 @@ public class GuiHowlerAlarm extends GuiContainer {
         this.alarm = alarm;
         xSize = 131;
         ySize = 136;
-        name = StatCollector.translateToLocal("tile.blockHowlerAlarm.name");
+        name = StatCollector.translateToLocal("gui.tile.blockHowlerAlarm.name.title");
     }
 
     @SuppressWarnings("unchecked")

@@ -61,7 +61,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
         ySize = 228;
         activeTab = 0;
         initialized = false;
-        name = StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.name");
+        name = StatCollector.translateToLocal("gui.tile.blockAdvancedInfoPanel.name.title");
         isColored = this.container.panel.getColored();
     }
 

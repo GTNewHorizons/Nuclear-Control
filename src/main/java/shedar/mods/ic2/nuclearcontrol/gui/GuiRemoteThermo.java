@@ -30,7 +30,7 @@ public class GuiRemoteThermo extends GuiContainer {
     public GuiRemoteThermo(Container container) {
         super(container);
         this.container = (ContainerRemoteThermo) container;
-        name = StatCollector.translateToLocal("tile.blockRemoteThermo.name");
+        name = StatCollector.translateToLocal("gui.tile.blockRemoteThermo.name.title");
         xSize = 214;
         ySize = 166;
     }
@@ -40,17 +40,20 @@ public class GuiRemoteThermo extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        buttonList.add(new CompactButton(0, guiLeft + 47, guiTop - 5 + 20, 22, 12, "-1"));
-        buttonList.add(new CompactButton(1, guiLeft + 47, guiTop - 5 + 31, 22, 12, "-10"));
-        buttonList.add(new CompactButton(2, guiLeft + 12, guiTop - 5 + 20, 36, 12, "-100"));
-        buttonList.add(new CompactButton(3, guiLeft + 12, guiTop - 5 + 31, 36, 12, "-1000"));
-        buttonList.add(new CompactButton(4, guiLeft + 12, guiTop - 5 + 42, 57, 12, "-10000"));
+        String numbersPrefix = StatCollector.canTranslate("gui.optional.numbers")
+                ? StatCollector.translateToLocal("gui.optional.numbers")
+                : "";
+        buttonList.add(new CompactButton(0, guiLeft + 47, guiTop - 5 + 20, 22, 12, numbersPrefix + "-1"));
+        buttonList.add(new CompactButton(1, guiLeft + 47, guiTop - 5 + 31, 22, 12, numbersPrefix + "-10"));
+        buttonList.add(new CompactButton(2, guiLeft + 12, guiTop - 5 + 20, 36, 12, numbersPrefix + "-100"));
+        buttonList.add(new CompactButton(3, guiLeft + 12, guiTop - 5 + 31, 36, 12, numbersPrefix + "-1000"));
+        buttonList.add(new CompactButton(4, guiLeft + 12, guiTop - 5 + 42, 57, 12, numbersPrefix + "-10000"));
 
-        buttonList.add(new CompactButton(5, guiLeft + 122, guiTop - 5 + 20, 22, 12, "+1"));
-        buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 2, "+10"));
-        buttonList.add(new CompactButton(7, guiLeft + 143, guiTop - 5 + 20, 36, 12, "+100"));
-        buttonList.add(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, "+1000"));
-        buttonList.add(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, "+10000"));
+        buttonList.add(new CompactButton(5, guiLeft + 122, guiTop - 5 + 20, 22, 12, numbersPrefix + "+1"));
+        buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 2, numbersPrefix + "+10"));
+        buttonList.add(new CompactButton(7, guiLeft + 143, guiTop - 5 + 20, 36, 12, numbersPrefix + "+100"));
+        buttonList.add(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, numbersPrefix + "+1000"));
+        buttonList.add(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, numbersPrefix + "+10000"));
 
         buttonList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 33, container.remoteThermo));
 
@@ -110,7 +113,8 @@ public class GuiRemoteThermo extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
         if (button.id >= 10) return;
 
-        int delta = Integer.parseInt(button.displayString.replace("+", ""));
+        int[] deltas = { -1, -10, -100, -1000, -10000, 1, 10, 100, 1000, 10000 };
+        int delta = deltas[button.id];
         updateHeat(delta);
     }
 
