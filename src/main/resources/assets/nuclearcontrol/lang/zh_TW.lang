@@ -47,7 +47,16 @@ tile.nclight3.name=橙色燈
 tile.blockEnergyCounter.name=電力計算機
 tile.blockAverageCounter.name=平均電力計算機
 tile.blockRangeTrigger.name=範圍觸發器
-	
+gui.tile.blockThermalMonitor.name.title=溫度監察器
+gui.tile.blockIndustrialAlarm.name.title=工業警報器
+gui.tile.blockHowlerAlarm.name.title=蜂鳴警報器
+gui.tile.blockRemoteThermo.name.title=遙控温度監察器
+gui.tile.blockInfoPanel.name.title=工業顯示器
+gui.tile.blockEnergyCounter.name.title=電力計算機
+gui.tile.blockAverageCounter.name.title=平均電力計算機
+gui.tile.blockRangeTrigger.name.title=範圍觸發器
+gui.tile.blockAdvancedInfoPanel.name.title=高級工業顯示器
+
 #Integration Blocks
 tile.blockBRPart.name=大反應堆監測器
 tile.NetworkLink.name=ME網絡監測器
