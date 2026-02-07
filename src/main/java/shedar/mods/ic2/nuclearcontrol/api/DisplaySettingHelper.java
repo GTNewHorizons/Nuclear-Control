@@ -55,7 +55,7 @@ public class DisplaySettingHelper {
      * @param buf packet's ByteBuf
      */
     public DisplaySettingHelper(ByteBuf buf) {
-        this.length = buf.readShort();
+        this.length = buf.readUnsignedShort();
         int bytesToRead = (length + 7) / 8;
         this.bits = new BitSet(length);
 
