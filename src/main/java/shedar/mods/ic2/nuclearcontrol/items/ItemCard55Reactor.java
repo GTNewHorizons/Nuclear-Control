@@ -151,7 +151,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         // Energy Created Frequency
         if (displaySettings.getSetting(DISPLAY_INPUTTank)) {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tarkin", tIn, showLabels);
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanel55.tankin", tIn, showLabels);
             result.add(line);
         }
 
