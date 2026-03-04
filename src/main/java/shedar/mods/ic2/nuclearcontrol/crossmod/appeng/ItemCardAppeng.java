@@ -11,6 +11,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
@@ -64,9 +65,9 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
                 TileCraftingMonitorTile monitorTile = (TileCraftingMonitorTile) check;
                 Item crafter;
                 int size;
-                if (monitorTile.getJobProgress() != null) {
-                    crafter = monitorTile.getJobProgress().getItemStack().getItem();
-                    size = (int) monitorTile.getJobProgress().getStackSize();
+                if (monitorTile.getJobProgress() instanceof IAEItemStack ais) {
+                    crafter = ais.getItem();
+                    size = (int) ais.getStackSize();
                 } else {
                     crafter = CrossAppeng.cardAppeng;
                     size = 0;
@@ -104,9 +105,9 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
                 TileCraftingMonitorTile monitorTile = (TileCraftingMonitorTile) check;
                 Item crafter;
                 int size;
-                if (monitorTile.getJobProgress() != null) {
-                    crafter = monitorTile.getJobProgress().getItemStack().getItem();
-                    size = (int) monitorTile.getJobProgress().getStackSize();
+                if (monitorTile.getJobProgress() instanceof IAEItemStack ais) {
+                    crafter = ais.getItem();
+                    size = (int) ais.getStackSize();
                 } else {
                     crafter = CrossAppeng.cardAppeng;
                     size = 0;

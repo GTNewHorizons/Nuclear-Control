@@ -1,6 +1,7 @@
 // Add your dependencies here
 
 dependencies {
+    api("com.github.GTNewHorizons:GTNHLib:0.9.33:dev")
     api("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
 
     compileOnly("com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-853-GTNH:dev") {transitive = false}
