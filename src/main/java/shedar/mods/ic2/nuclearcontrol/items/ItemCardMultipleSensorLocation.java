@@ -189,7 +189,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
             case ItemKitMultipleSensor.TYPE_LIQUID:
                 return getSettingsListLiquid();
             case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return getSettingsListGenerator();
+                return null;
         }
         return null;
     }
@@ -352,10 +352,6 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
                         DISPLAY_LIQUID_PERCENTAGE,
                         CARD_TYPE_LIQUID));
         return result;
-    }
-
-    public List<PanelSetting> getSettingsListGenerator() {
-        return null;
     }
 
     @Override

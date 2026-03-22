@@ -45,11 +45,6 @@ public class IC2ExpCross extends IC2Cross {
     }
 
     @Override
-    public boolean isSteamReactor(TileEntity par1) {
-        return false;
-    }
-
-    @Override
     public EnergyStorageData getStorageData(TileEntity target) {
         if (target instanceof IEnergyStorage) {
             IEnergyStorage storage = (IEnergyStorage) target;

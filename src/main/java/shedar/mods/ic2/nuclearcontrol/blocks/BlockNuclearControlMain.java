@@ -389,10 +389,6 @@ public class BlockNuclearControlMain extends BlockContainer {
                 Math.max(baseZ1, baseZ2));
     }
 
-    public String getInvName() {
-        return "IC2 Thermo";
-    }
-
     @Override
     public boolean canProvidePower() {
         return true;
@@ -445,10 +441,6 @@ public class BlockNuclearControlMain extends BlockContainer {
             }
             return true;
         }
-        return false;
-    }
-
-    public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l) {
         return false;
     }
 

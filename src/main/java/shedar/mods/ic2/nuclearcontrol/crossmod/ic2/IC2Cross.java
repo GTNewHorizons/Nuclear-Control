@@ -17,7 +17,9 @@ public abstract class IC2Cross {
 
     public abstract int getNuclearCellTimeLeft(ItemStack par1);
 
-    public abstract boolean isSteamReactor(TileEntity par1);
+    public boolean isSteamReactor(TileEntity par1) {
+        return false;
+    }
 
     public abstract EnergyStorageData getStorageData(TileEntity target);
 

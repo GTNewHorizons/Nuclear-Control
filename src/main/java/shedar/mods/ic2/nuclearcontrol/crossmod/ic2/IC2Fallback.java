@@ -33,11 +33,6 @@ public class IC2Fallback extends IC2Cross {
     }
 
     @Override
-    public boolean isSteamReactor(TileEntity par1) {
-        return false;
-    }
-
-    @Override
     public ReactorInfo getReactorInfo(TileEntity par1) {
         return null;
     }
