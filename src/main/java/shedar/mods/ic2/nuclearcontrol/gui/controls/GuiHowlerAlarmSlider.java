@@ -54,7 +54,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
         if (alarm.getRange() != newValue) {
             // alarm.setRange(newValue);
 
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(alarm, newValue);
+            IC2.network.get().initiateClientTileEntityEvent(alarm, newValue);
         }
         displayString = String.format(label, newValue);
     }

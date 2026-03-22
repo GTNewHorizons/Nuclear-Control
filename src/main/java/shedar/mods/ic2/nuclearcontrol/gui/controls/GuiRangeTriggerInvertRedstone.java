@@ -51,7 +51,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
             int value = checked ? -2 : -1;
             // trigger.setInvertRedstone(checked);
 
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(trigger, value);
+            IC2.network.get().initiateClientTileEntityEvent(trigger, value);
 
             return true;
         } else return false;

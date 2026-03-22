@@ -64,7 +64,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
                 IC2NuclearControl.instance.screenManager.registerInfoPanelExtender(this);
             }
 
-            ((NetworkManager) IC2.network.get()).updateTileEntityField(this, "facing");
+            IC2.network.get().updateTileEntityField(this, "facing");
         }
 
         prevFacing = f;

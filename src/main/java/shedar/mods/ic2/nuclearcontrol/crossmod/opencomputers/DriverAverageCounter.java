@@ -54,7 +54,7 @@ public class DriverAverageCounter extends DriverTileEntity {
 
         @Callback(doc = "function():number -- gets the average of the counter.")
         public Object[] getAverage(final Context context, final Arguments args) {
-            return new Object[] { ((int) tileEntity.getClientAverage()) };
+            return new Object[] {tileEntity.getClientAverage()};
         }
 
         @Callback(doc = "function():number -- gets the energy type (0 for EU, 1 for RF, -1 for unknown/nil)")

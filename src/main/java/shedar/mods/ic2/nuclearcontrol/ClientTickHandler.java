@@ -63,7 +63,7 @@ public class ClientTickHandler {
                 IResource iresource = (IResource) list.get(i);
 
                 try {
-                    Map map = (Map) gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+                    Map map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
 
                     for (Object o : map.entrySet()) {
                         Entry entry = (Entry) o;

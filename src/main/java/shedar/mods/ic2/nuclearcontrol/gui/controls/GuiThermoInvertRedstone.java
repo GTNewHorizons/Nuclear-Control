@@ -50,7 +50,7 @@ public class GuiThermoInvertRedstone extends GuiButton {
             checked = !checked;
             int value = checked ? -2 : -1;
             thermo.setInvertRedstone(checked);
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(thermo, value);
+            IC2.network.get().initiateClientTileEntityEvent(thermo, value);
             return true;
         } else return false;
     }

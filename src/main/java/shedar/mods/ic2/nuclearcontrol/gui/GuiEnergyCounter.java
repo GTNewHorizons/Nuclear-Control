@@ -78,6 +78,6 @@ public class GuiEnergyCounter extends GuiContainer {
     @Override
     protected void actionPerformed(GuiButton guiButton) {
         if (guiButton.id == 0)
-            ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.energyCounter, 0);
+            IC2.network.get().initiateClientTileEntityEvent(container.energyCounter, 0);
     }
 }

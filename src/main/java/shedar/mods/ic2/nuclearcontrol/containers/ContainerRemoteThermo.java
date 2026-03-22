@@ -78,7 +78,7 @@ public class ContainerRemoteThermo extends Container {
                 {
                     mergeItemStack(items, remoteThermo.getSizeInventory(), inventorySlots.size(), false);
                     if (items.stackSize == 0) {
-                        slot.putStack((ItemStack) null);
+                        slot.putStack(null);
                     } else {
                         slot.onSlotChanged();
                         if (initialCount != items.stackSize) return items;
@@ -93,12 +93,12 @@ public class ContainerRemoteThermo extends Container {
                         if (targetStack == null) {
                             Slot targetSlot = (Slot) this.inventorySlots.get(i);
                             targetSlot.putStack(items);
-                            slot.putStack((ItemStack) null);
+                            slot.putStack(null);
                             break;
                         } else if (items.isStackable() && items.isItemEqual(targetStack)) {
                             mergeItemStack(items, i, i + 1, false);
                             if (items.stackSize == 0) {
-                                slot.putStack((ItemStack) null);
+                                slot.putStack(null);
                             } else {
                                 slot.onSlotChanged();
                                 if (initialCount != items.stackSize) return items;
