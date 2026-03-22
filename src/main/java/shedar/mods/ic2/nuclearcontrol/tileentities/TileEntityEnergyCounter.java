@@ -38,7 +38,7 @@ public class TileEntityEnergyCounter extends TileEntity
 
     private static final int BASE_PACKET_SIZE = 32;
     private boolean init;
-    private ItemStack inventory[];
+    private ItemStack[] inventory;
 
     protected int updateTicker;
     protected int tickRate;

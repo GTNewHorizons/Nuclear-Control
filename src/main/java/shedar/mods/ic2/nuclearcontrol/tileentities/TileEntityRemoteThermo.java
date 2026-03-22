@@ -56,7 +56,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
     public int prevRotation;
     public double energy;
     private boolean addedToEnergyNet;
-    private ItemStack inventory[];
+    private ItemStack[] inventory;
 
     public TileEntityRemoteThermo() {
         super();

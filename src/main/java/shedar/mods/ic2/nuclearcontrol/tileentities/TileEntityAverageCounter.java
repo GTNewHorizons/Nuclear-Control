@@ -41,7 +41,7 @@ public class TileEntityAverageCounter extends TileEntity
     protected static final int DATA_POINTS = 11 * 20;
 
     private boolean init;
-    private ItemStack inventory[];
+    private ItemStack[] inventory;
 
     // check out shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData
     private byte prevPowerType;

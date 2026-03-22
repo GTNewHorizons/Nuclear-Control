@@ -69,7 +69,7 @@ public class TileEntityInfoPanel extends TileEntity
     protected int dt;
     protected int updatedataTicker;
     public boolean init;
-    public ItemStack inventory[];
+    public ItemStack[] inventory;
     public NBTTagCompound screenData;
     protected Screen screen;
     protected ItemStack card;

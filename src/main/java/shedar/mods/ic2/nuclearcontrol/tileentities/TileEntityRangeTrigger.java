@@ -50,7 +50,7 @@ public class TileEntityRangeTrigger extends TileEntity
     protected int updateTicker;
     protected int tickRate;
     protected boolean init;
-    private ItemStack inventory[];
+    private ItemStack[] inventory;
 
     @ClientModifiable
     private ItemStack card;
