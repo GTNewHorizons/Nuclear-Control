@@ -423,7 +423,7 @@ public class TileEntityRangeTrigger extends TileEntity
             }
 
         }
-    };
+    }
 
     @Override
     public boolean isItemValid(int slotIndex, ItemStack itemstack) {
@@ -440,7 +440,7 @@ public class TileEntityRangeTrigger extends TileEntity
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
         return !entityPlayer.isSneaking() && getFacing() != face;
-    };
+    }
 
     @Override
     public float getWrenchDropRate() {

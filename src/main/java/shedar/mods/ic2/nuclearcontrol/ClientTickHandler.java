@@ -79,11 +79,9 @@ public class ClientTickHandler {
                         }
                     }
                 } catch (RuntimeException runtimeexception) {
-                    ;
                 }
             }
         } catch (IOException ioexception) {
-            ;
         }
 
         ncInstance.serverAllowedAlarms = new ArrayList<String>();

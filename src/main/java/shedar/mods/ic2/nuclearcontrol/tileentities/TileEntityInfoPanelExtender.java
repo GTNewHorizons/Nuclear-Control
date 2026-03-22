@@ -162,7 +162,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
         return !entityPlayer.isSneaking() && getFacing() != face;
-    };
+    }
 
     @Override
     public float getWrenchDropRate() {

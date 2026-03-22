@@ -335,7 +335,7 @@ public class TileEntityAverageCounter extends TileEntity
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
         return getFacing() != face;
-    };
+    }
 
     @Override
     public boolean wrenchCanRemove(EntityPlayer entityPlayer) {

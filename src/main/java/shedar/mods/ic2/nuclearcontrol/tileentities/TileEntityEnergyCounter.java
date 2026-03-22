@@ -275,7 +275,7 @@ public class TileEntityEnergyCounter extends TileEntity
             MinecraftForge.EVENT_BUS.post(event);
             addedToEnergyNet = true;
         }
-    };
+    }
 
     @Override
     public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) {
@@ -295,7 +295,7 @@ public class TileEntityEnergyCounter extends TileEntity
     @Override
     public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int face) {
         return getFacing() != face;
-    };
+    }
 
     @Override
     public boolean wrenchCanRemove(EntityPlayer entityPlayer) {

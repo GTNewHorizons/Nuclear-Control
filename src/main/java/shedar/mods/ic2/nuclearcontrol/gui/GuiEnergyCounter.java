@@ -41,7 +41,7 @@ public class GuiEnergyCounter extends GuiContainer {
     public void initGui() {
         super.initGui();
         initControls();
-    };
+    }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
