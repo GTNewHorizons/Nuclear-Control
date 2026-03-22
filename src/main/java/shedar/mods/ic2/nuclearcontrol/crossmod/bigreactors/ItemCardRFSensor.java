@@ -182,7 +182,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
                     txtColor = 0xff0000;
                     text = LangHelper.translate("msg.nc.InfoPanelOff");
                 }
-                if (result.size() > 0) {
+                if (!result.isEmpty()) {
                     PanelString firstLine = result.get(0);
                     firstLine.textRight = text;
                     firstLine.colorRight = txtColor;
@@ -236,7 +236,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
                     txtColor = 0xff0000;
                     text = LangHelper.translate("msg.nc.InfoPanelOff");
                 }
-                if (result.size() > 0) {
+                if (!result.isEmpty()) {
                     PanelString firstLine = result.get(0);
                     firstLine.textRight = text;
                     firstLine.colorRight = txtColor;

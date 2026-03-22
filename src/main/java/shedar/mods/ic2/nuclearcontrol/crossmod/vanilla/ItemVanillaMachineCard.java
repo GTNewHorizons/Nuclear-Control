@@ -180,7 +180,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                     text = StatCollector.translateToLocal("msg.nc.Vanilla.notBrewing");
                 }
 
-                if (result.size() > 0 && result.get(0).textRight == null) {
+                if (!result.isEmpty() && result.get(0).textRight == null) {
                     // Attach to the right of the first line if available
                     PanelString firstLine = result.get(0);
                     firstLine.textRight = text;

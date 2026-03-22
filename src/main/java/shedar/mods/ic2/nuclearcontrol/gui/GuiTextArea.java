@@ -109,7 +109,7 @@ public class GuiTextArea extends Gui {
     }
 
     public void deleteFromCursor(int count) {
-        if (text[cursorLine].length() != 0) {
+        if (!text[cursorLine].isEmpty()) {
             boolean back = count < 0;
             String curLine = text[cursorLine];
             int left = back ? cursorPosition + count : cursorPosition;
@@ -131,12 +131,12 @@ public class GuiTextArea extends Gui {
         String filteredText = ChatAllowedCharacters.filerAllowedCharacters(additionalText);
         int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
-        if (text[cursorLine].length() > 0) newLine = newLine + text[cursorLine].substring(0, cursorPosition);
+        if (!text[cursorLine].isEmpty()) newLine = newLine + text[cursorLine].substring(0, cursorPosition);
 
         if (freeCharCount < filteredText.length()) newLine = newLine + filteredText.substring(0, freeCharCount);
         else newLine = newLine + filteredText;
 
-        if (text[cursorLine].length() > 0 && cursorPosition < text[cursorLine].length())
+        if (!text[cursorLine].isEmpty() && cursorPosition < text[cursorLine].length())
             newLine = newLine + text[cursorLine].substring(cursorPosition);
 
         text[cursorLine] = newLine;

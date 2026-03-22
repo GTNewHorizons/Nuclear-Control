@@ -79,7 +79,7 @@ public class InventoryItem implements IInventory, ISlotItemFilter {
 
     @Override
     public boolean hasCustomInventoryName() {
-        return name.length() > 0;
+        return !name.isEmpty();
     }
 
     @Override
