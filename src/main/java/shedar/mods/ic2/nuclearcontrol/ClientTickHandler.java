@@ -64,10 +64,9 @@ public class ClientTickHandler {
 
                 try {
                     Map map = (Map) gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
-                    Iterator iterator1 = map.entrySet().iterator();
 
-                    while (iterator1.hasNext()) {
-                        Entry entry = (Entry) iterator1.next();
+                    for (Object o : map.entrySet()) {
+                        Entry entry = (Entry) o;
                         if (entry.getKey().toString().startsWith("alarm-")) {
                             String cleanedUpName = entry.getKey().toString().replace("alarm-", "");
                             if (ncInstance.availableAlarms.contains(cleanedUpName)) {
