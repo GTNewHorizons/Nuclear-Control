@@ -282,10 +282,8 @@ public class BlockNuclearControlMain extends BlockContainer {
             return true;
         }
         if (!canPlaceBlockAtlocal(world, x, y, z)) {
-            if (world.getBlock(x, y, z) == world.getBlock(x, y, z)) {
-                dropBlockAsItem(world, x, y, z, metadata, 0);
-                world.setBlockToAir(x, y, z);
-            }
+            dropBlockAsItem(world, x, y, z, metadata, 0);
+            world.setBlockToAir(x, y, z);
             return false;
         } else {
             return true;

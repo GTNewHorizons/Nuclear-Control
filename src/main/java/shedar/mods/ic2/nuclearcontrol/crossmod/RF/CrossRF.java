@@ -54,7 +54,6 @@ public class CrossRF {
     public EnergyStorageData getStorageData(TileEntity target) {
         if (!_RFModPresent || target == null) return null;
         RFTileEntityAverageCounter tile = new RFTileEntityAverageCounter();
-        if (tile.storage == null) return null;
         EnergyStorageData result = new EnergyStorageData();
         result.capacity = tile.storage.getMaxEnergyStored();
         result.stored = tile.storage.getEnergyStored();

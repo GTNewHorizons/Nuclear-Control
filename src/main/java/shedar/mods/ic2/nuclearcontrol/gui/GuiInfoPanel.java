@@ -276,7 +276,7 @@ public class GuiInfoPanel extends GuiContainer {
         } else if (button.id == 111) {
             ItemStack card = getActiveCard();
             if (card == null) return;
-            if (card != null && card.getItem() instanceof IAdvancedCardSettings) {
+            if (card.getItem() instanceof IAdvancedCardSettings) {
                 ICardWrapper helper = new CardWrapperImpl(card, 0);
                 Object guiObject = ((IAdvancedCardSettings) card.getItem()).getSettingsScreen(helper);
                 if (!(guiObject instanceof GuiScreen gui)) {

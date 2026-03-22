@@ -142,7 +142,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
         boolean showEach = displaySettings.getSetting(DISPLAY_EACH);
         boolean showSummary = displaySettings.getSetting(DISPLAY_TOTAL);
         boolean showName = displaySettings.getSetting(DISPLAY_NAME);
-        boolean showAmount = true;// displaySettings.getNewSetting(DISPLAY_AMOUNT) > 0;
+        boolean showAmount = true;
         boolean showFree = displaySettings.getSetting(DISPLAY_FREE);
         boolean showCapacity = displaySettings.getSetting(DISPLAY_CAPACITY);
         boolean showPercentage = displaySettings.getSetting(DISPLAY_PERCENTAGE);
@@ -176,15 +176,13 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
                         else line.textLeft = StringUtils.getFormatted("", amount, false);
                         result.add(line);
                     }
-                    if (showAmount) {
-                        line = new PanelString();
-                        if (showLabels) line.textLeft = StringUtils.getFormattedKey(
-                                "msg.nc.InfoPanelLiquidN",
-                                i + 1,
-                                StringUtils.getFormatted("", amount, false));
-                        else line.textLeft = StringUtils.getFormatted("", amount, false);
-                        result.add(line);
-                    }
+                    line = new PanelString();
+                    if (showLabels) line.textLeft = StringUtils.getFormattedKey(
+                            "msg.nc.InfoPanelLiquidN",
+                            i + 1,
+                            StringUtils.getFormatted("", amount, false));
+                    else line.textLeft = StringUtils.getFormatted("", amount, false);
+                    result.add(line);
                     if (showFree) {
                         line = new PanelString();
                         if (showLabels) line.textLeft = StringUtils.getFormattedKey(
@@ -221,11 +219,9 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
             }
         }
         if (showSummary) {
-            if (showAmount) {
-                line = new PanelString();
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidAmount", totalAmount, showLabels);
-                result.add(line);
-            }
+            line = new PanelString();
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelLiquidAmount", totalAmount, showLabels);
+            result.add(line);
             if (showFree) {
                 line = new PanelString();
                 line.textLeft = StringUtils

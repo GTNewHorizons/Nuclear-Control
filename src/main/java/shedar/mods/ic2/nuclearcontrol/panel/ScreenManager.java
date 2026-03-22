@@ -178,8 +178,7 @@ public class ScreenManager {
         boolean isCoreDestroyed = part instanceof TileEntityInfoPanel;
         if (!isCoreDestroyed && core != null) {
             Screen newScreen = tryBuildFromPanel(core);
-            if (newScreen == null) unusedPanels.get(getWorldKey(core.getWorldObj())).add(core);
-            else screens.get(getWorldKey(core.getWorldObj())).add(newScreen);
+            screens.get(getWorldKey(core.getWorldObj())).add(newScreen);
         }
 
     }
@@ -198,8 +197,7 @@ public class ScreenManager {
             }
         }
         Screen screen = tryBuildFromPanel(panel);
-        if (screen != null) screens.get(getWorldKey(panel.getWorldObj())).add(screen);
-        else unusedPanels.get(getWorldKey(panel.getWorldObj())).add(panel);
+        screens.get(getWorldKey(panel.getWorldObj())).add(screen);
     }
 
     public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
@@ -241,13 +239,8 @@ public class ScreenManager {
         }
         for (TileEntityInfoPanel panel : rebuildPanels) {
             Screen screen = tryBuildFromPanel(panel);
-            if (screen != null) {
-                screens.get(getWorldKey(extender.getWorldObj())).add(screen);
-                unusedPanels.get(getWorldKey(extender.getWorldObj())).remove(panel);
-            } else {
-                if (!unusedPanels.get(getWorldKey(extender.getWorldObj())).contains(panel))
-                    unusedPanels.get(getWorldKey(extender.getWorldObj())).add(panel);
-            }
+            screens.get(getWorldKey(extender.getWorldObj())).add(screen);
+            unusedPanels.get(getWorldKey(extender.getWorldObj())).remove(panel);
         }
     }
 

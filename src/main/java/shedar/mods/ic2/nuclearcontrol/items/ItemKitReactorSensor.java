@@ -60,7 +60,7 @@ public class ItemKitReactorSensor extends ItemSensorKitBase {
                 NuclearNetworkHelper.chatMessage(player, "SensorKit");
             }
             return true;
-        } else if (position == null) {
+        } else {
             Block check = world.getBlock(x, y, z);
             if (check == Block.getBlockFromItem(IC2Items.getItem("reactorRedstonePort").getItem())
                     || check == Block.getBlockFromItem(Ic2Items.reactorvessel.getItem())

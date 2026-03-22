@@ -80,7 +80,7 @@ public class ContainerRemoteMonitor extends Container {
         if (slots.getStack() != null)
             if (slots.getStack().getItem() == IC2NuclearControl.itemRemoteMonitor) return null;
 
-        if (slots != null && slots.getHasStack()) {
+        if (slots.getHasStack()) {
             ItemStack itemstackR = slots.getStack();
             stack = itemstackR.copy();
 

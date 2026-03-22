@@ -285,7 +285,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                             panelString.textCenter,
                             -fontRenderer.getStringWidth(panelString.textCenter) / 2,
                             offsetY - realHeight / 2 + row * lineHeight,
-                            panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
+                            panel.getColorTextHex());
                 }
                 if (panelString.textRight != null) {
                     fontRenderer.drawString(

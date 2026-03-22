@@ -46,9 +46,7 @@ public abstract class IC2Cross {
         try {
             if (Loader.isModLoaded("IC2")) {
                 Class clz = Class.forName("shedar.mods.ic2.nuclearcontrol.crossmod.ic2.IC2ExpCross");
-                if (clz != null) {
-                    return (IC2Cross) clz.newInstance();
-                }
+                return (IC2Cross) clz.newInstance();
             }
         } catch (Exception e) {
 

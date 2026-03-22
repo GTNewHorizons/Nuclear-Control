@@ -715,9 +715,9 @@ public class TileEntityInfoPanel extends TileEntity
                     cardHelper.setState(CardState.INVALID_CARD);
                 } else {
                     int dx = target.posX - xCoord;
-                    int dy = 0;// target.posY - yCoord;
+                    int dy = 0;
                     int dz = target.posZ - zCoord;
-                    if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
+                    if (Math.abs(dx) > range || 0 > range || Math.abs(dz) > range) {
                         needUpdate = false;
                         cardHelper.setState(CardState.OUT_OF_RANGE);
                     }
