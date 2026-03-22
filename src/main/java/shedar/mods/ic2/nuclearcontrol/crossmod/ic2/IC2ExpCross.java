@@ -59,7 +59,7 @@ public class IC2ExpCross extends IC2Cross {
 
     @Override
     public ReactorInfo getReactorInfo(TileEntity par1) {
-        if (par1 == null || !(par1 instanceof TileEntityNuclearReactorElectric reactor)) {
+        if (!(par1 instanceof TileEntityNuclearReactorElectric reactor)) {
             return null;
         }
         ReactorInfo info = new ReactorInfo();

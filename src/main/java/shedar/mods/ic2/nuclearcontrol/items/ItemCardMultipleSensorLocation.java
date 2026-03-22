@@ -149,12 +149,12 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         ChunkCoordinates target = card.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tileEntity = world.getTileEntity(target.posX, target.posY, target.posZ);
-        if (tileEntity != null && tileEntity instanceof TileEntityEnergyCounter counter) {
+        if (tileEntity instanceof TileEntityEnergyCounter counter) {
             card.setDouble("energy", counter.counter);
             card.setDouble("range_trigger_amount", counter.counter);
             card.setInt("powerType", (int) counter.powerType);
             return CardState.OK;
-        } else if (tileEntity != null && tileEntity instanceof TileEntityAverageCounter avgCounter) {
+        } else if (tileEntity instanceof TileEntityAverageCounter avgCounter) {
             card.setInt("average", avgCounter.getClientAverage());
             card.setDouble("range_trigger_amount", (double) avgCounter.getClientAverage());
             card.setInt("powerType", (int) avgCounter.powerType);

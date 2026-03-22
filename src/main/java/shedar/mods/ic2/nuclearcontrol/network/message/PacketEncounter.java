@@ -45,7 +45,7 @@ public class PacketEncounter implements IMessage, IMessageHandler<PacketEncounte
     public IMessage onMessage(PacketEncounter message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                 .getTileEntity(message.x, message.y, message.z);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityEnergyCounter tileCounter)) {
+        if (!(tileEntity instanceof TileEntityEnergyCounter tileCounter)) {
             return null;
         }
         tileCounter.counter = message.counter;

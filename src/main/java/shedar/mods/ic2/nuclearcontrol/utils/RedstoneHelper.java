@@ -14,7 +14,7 @@ public class RedstoneHelper {
     }
 
     public static void checkPowered(World world, TileEntity tileentity) {
-        if (world != null && tileentity != null && tileentity instanceof IRedstoneConsumer) {
+        if (world != null && tileentity instanceof IRedstoneConsumer) {
             boolean powered = world
                     .isBlockIndirectlyGettingPowered(tileentity.xCoord, tileentity.yCoord, tileentity.zCoord)
                     || isPoweredWire(world, tileentity.xCoord + 1, tileentity.yCoord, tileentity.zCoord)

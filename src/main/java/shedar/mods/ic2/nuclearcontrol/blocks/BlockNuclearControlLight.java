@@ -48,7 +48,7 @@ public class BlockNuclearControlLight extends Block {
 
     @Override
     public int damageDropped(int i) {
-        if (i == 0 || i % 2 == 0) return i;
+        if (i % 2 == 0) return i;
         return i - 1;
     }
 

@@ -77,7 +77,6 @@ public class NuclearNetworkHelper {
     // server
     public static void setSensorCardField(TileEntity panel, byte slot, Map<String, Object> fields) {
         if (fields == null || fields.isEmpty()
-                || panel == null
                 || !(panel instanceof TileEntityInfoPanel)
                 || slot == -1)
             return;
@@ -107,7 +106,6 @@ public class NuclearNetworkHelper {
     public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, int slot) {
         if (card == null || fields == null
                 || fields.isEmpty()
-                || panelTE == null
                 || !(panelTE instanceof TileEntityInfoPanel))
             return;
 

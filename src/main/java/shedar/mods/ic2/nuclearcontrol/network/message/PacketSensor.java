@@ -151,7 +151,7 @@ public class PacketSensor implements IMessage, IMessageHandler<PacketSensor, IMe
     public IMessage onMessage(PacketSensor message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                 .getTileEntity(message.x, message.y, message.z);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel panel)) {
+        if (!(tileEntity instanceof TileEntityInfoPanel panel)) {
             return null;
         }
         ItemStack stack = panel.getStackInSlot(message.slot);

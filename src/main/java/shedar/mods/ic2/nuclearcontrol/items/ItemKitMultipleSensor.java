@@ -78,8 +78,7 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase {
         switch (damage) {
             case TYPE_COUNTER:
                 TileEntity entity = world.getTileEntity(x, y, z);
-                if (entity != null
-                        && (entity instanceof TileEntityEnergyCounter || entity instanceof TileEntityAverageCounter)) {
+                if ((entity instanceof TileEntityEnergyCounter || entity instanceof TileEntityAverageCounter)) {
                     return new ChunkCoordinates(x, y, z);
                 }
                 break;
@@ -91,7 +90,7 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase {
                 break;
             case TYPE_GENERATOR:
                 TileEntity tileentity = world.getTileEntity(x, y, z);
-                if (tileentity != null && tileentity instanceof TileEntityBaseGenerator) {
+                if (tileentity instanceof TileEntityBaseGenerator) {
                     return new ChunkCoordinates(x, y, z);
                 }
                 break;
