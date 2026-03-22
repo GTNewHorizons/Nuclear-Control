@@ -60,12 +60,6 @@ public class TileEntityBlockFetcher extends TileEntityReactorPartBase implements
     }
 
     @Override
-    public void onMachineBroken() {
-        super.onMachineBroken();
-
-    }
-
-    @Override
     public void onMultiblockServerTick() {
         if (shouldBlockCache) {
             isReactorOn = this.getReactorController().getActive();

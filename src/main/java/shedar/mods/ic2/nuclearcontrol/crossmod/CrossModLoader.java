@@ -12,10 +12,6 @@ public class CrossModLoader {
 
     public static CrossMekanism crossMekanism;
 
-    public static void preinit() {
-
-    }
-
     public static void init() {
         // Registers waila stuff
         FMLInterModComms.sendMessage(

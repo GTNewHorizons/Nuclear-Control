@@ -194,7 +194,6 @@ public class IC2NuclearControl {
             FMLCommonHandler.instance().bus().register(ClientTickHandler.instance);
         }
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-        CrossModLoader.preinit();
     }
 
     @EventHandler

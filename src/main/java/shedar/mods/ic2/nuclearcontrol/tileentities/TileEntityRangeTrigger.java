@@ -261,11 +261,6 @@ public class TileEntityRangeTrigger extends TileEntity
     }
 
     @Override
-    public void invalidate() {
-        super.invalidate();
-    }
-
-    @Override
     public void writeToNBT(NBTTagCompound nbttagcompound) {
         super.writeToNBT(nbttagcompound);
         nbttagcompound.setShort("facing", facing);
