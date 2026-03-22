@@ -46,8 +46,8 @@ public class ContainerRemoteThermo extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         int energy = (int) remoteThermo.energy; // ?
-        for (int i = 0; i < crafters.size(); i++) {
-            ICrafting crafting = (ICrafting) crafters.get(i);
+        for (Object crafter : crafters) {
+            ICrafting crafting = (ICrafting) crafter;
 
             if (lastEnergy != energy) {
                 crafting.sendProgressBarUpdate(this, 0, energy);

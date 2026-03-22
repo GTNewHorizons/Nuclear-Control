@@ -46,8 +46,8 @@ public class ContainerEnergyCounter extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         double counter = energyCounter.counter;
-        for (int i = 0; i < crafters.size(); i++) {
-            ICrafting crafting = (ICrafting) crafters.get(i);
+        for (Object crafter : crafters) {
+            ICrafting crafting = (ICrafting) crafter;
 
             if (lastCounter != counter) {
                 NuclearNetworkHelper.sendEnergyCounterValue(energyCounter, crafting);

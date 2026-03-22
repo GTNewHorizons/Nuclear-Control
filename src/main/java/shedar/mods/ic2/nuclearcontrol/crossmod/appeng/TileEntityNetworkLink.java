@@ -49,8 +49,7 @@ public class TileEntityNetworkLink extends AENetworkTile {
         int CacheItemT = 0;
         int CacheItem = 0;
         List<TileEntity> tileEntity = getTiles();
-        for (int i = 0; i < tileEntity.size(); i++) {
-            TileEntity tile = tileEntity.get(i);
+        for (TileEntity tile : tileEntity) {
             if (tile instanceof TileDrive) {
                 TileDrive drive = (TileDrive) tile;
                 for (int x = 0; x < drive.getInternalInventory().getSizeInventory(); x++) {

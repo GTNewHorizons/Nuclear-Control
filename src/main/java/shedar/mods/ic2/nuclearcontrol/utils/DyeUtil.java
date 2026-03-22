@@ -28,9 +28,9 @@ public class DyeUtil {
 
     public static boolean isADye(ItemStack itemstack) {
         Item toFind = itemstack.getItem(); // There's no setStackSize() apperently
-        for (int s = 0; s < ALL_DYES_DYE.length; s++) {
-            for (int z = 0; z < ALL_DYES_DYE[s].setDyes().length; z++) {
-                if (ALL_DYES_DYE[s].setDyes()[z].getItem().equals(toFind)) {
+        for (Dye dye : ALL_DYES_DYE) {
+            for (int z = 0; z < dye.setDyes().length; z++) {
+                if (dye.setDyes()[z].getItem().equals(toFind)) {
                     return true;
                 }
             }

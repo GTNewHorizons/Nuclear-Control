@@ -46,8 +46,8 @@ public class ContainerAverageCounter extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         int average = averageCounter.getClientAverage();
-        for (int i = 0; i < crafters.size(); i++) {
-            ICrafting crafting = (ICrafting) crafters.get(i);
+        for (Object crafter : crafters) {
+            ICrafting crafting = (ICrafting) crafter;
 
             if (lastAverage != average) {
                 NuclearNetworkHelper.sendAverageCounterValue(averageCounter, crafting, average);
