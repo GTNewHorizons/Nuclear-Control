@@ -66,7 +66,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             }
             List<ItemStack> cards = panel.getCards();
             boolean anyCardFound = false;
-            List<PanelString> joinedData = new LinkedList<PanelString>();
+            List<PanelString> joinedData = new LinkedList<>();
             for (ItemStack card : cards) {
                 if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
                     continue;

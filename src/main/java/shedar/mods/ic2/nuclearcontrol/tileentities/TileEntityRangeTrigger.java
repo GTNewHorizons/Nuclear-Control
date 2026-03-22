@@ -201,7 +201,7 @@ public class TileEntityRangeTrigger extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        List<String> list = new ArrayList<String>(7);
+        List<String> list = new ArrayList<>(7);
         list.add("facing");
         list.add("rotation");
         list.add("card");

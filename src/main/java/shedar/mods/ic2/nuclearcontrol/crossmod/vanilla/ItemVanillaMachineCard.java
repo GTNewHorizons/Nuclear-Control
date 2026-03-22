@@ -125,7 +125,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
 
         String machineType = card.getString("entity");
@@ -286,7 +286,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>();
+        List<PanelSetting> result = new ArrayList<>();
         result.add(
                 new NewPanelSetting(
                         StatCollector.translateToLocal("msg.nc.Vanilla.setting.activeTime"),

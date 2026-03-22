@@ -37,7 +37,7 @@ public class StringUtils {
     }
 
     public static List<PanelString> getStateMessage(CardState state) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line = new PanelString();
         switch (state) {
             case OUT_OF_RANGE:

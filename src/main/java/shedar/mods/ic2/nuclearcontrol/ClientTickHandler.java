@@ -53,7 +53,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void importSound(SoundLoadEvent event) {
         IC2NuclearControl ncInstance = IC2NuclearControl.instance;
-        ncInstance.availableAlarms = new ArrayList<String>();
+        ncInstance.availableAlarms = new ArrayList<>();
 
         try {
             List list = Minecraft.getMinecraft().getResourceManager()
@@ -83,6 +83,6 @@ public class ClientTickHandler {
         } catch (IOException ioexception) {
         }
 
-        ncInstance.serverAllowedAlarms = new ArrayList<String>();
+        ncInstance.serverAllowedAlarms = new ArrayList<>();
     }
 }

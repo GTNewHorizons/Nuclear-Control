@@ -41,7 +41,7 @@ public class StorageArrayRecipe implements IRecipe {
         int cardCountLiquid = 0;
         int arrayCountLiquid = 0;
         ItemStack array = null;
-        Vector<ItemStack> cards = new Vector<ItemStack>();
+        Vector<ItemStack> cards = new Vector<>();
         for (int i = 0; i < inventoryLength; i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
             if (itemStack == null) continue;

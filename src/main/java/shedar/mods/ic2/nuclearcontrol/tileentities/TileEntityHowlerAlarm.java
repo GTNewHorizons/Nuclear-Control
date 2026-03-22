@@ -237,7 +237,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
 
     @Override
     public List<String> getNetworkedFields() {
-        Vector<String> vector = new Vector<String>(2);
+        Vector<String> vector = new Vector<>(2);
         vector.add("facing");
         vector.add("powered");
         vector.add("range");

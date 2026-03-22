@@ -57,7 +57,7 @@ public class GuiRemoteMonitor extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        List<PanelString> joinedData = new LinkedList<PanelString>();
+        List<PanelString> joinedData = new LinkedList<>();
         boolean anyCardFound = true;
         InventoryItem itemInv = new InventoryItem(e.getHeldItem());
 
@@ -81,7 +81,7 @@ public class GuiRemoteMonitor extends GuiContainer {
 
     private List<PanelString> getRemoteCustomMSG() {
         PanelString line = new PanelString();
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         line.textCenter = LangHelper.translate("nc.msg.notValid");
         result.add(line);
         line = new PanelString();

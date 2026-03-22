@@ -70,7 +70,7 @@ public class BlockNuclearControlMain extends BlockContainer {
         super(Material.iron);
         setHardness(0.5F);
         setCreativeTab(IC2NuclearControl.tabIC2NC);
-        subblocks = new HashMap<Integer, Subblock>();
+        subblocks = new HashMap<>();
         register(new ThermalMonitor());
         register(new IndustrialAlarm());
         register(new HowlerAlarm());

@@ -24,8 +24,8 @@ public class ScreenManager {
     private final Map<Integer, List<TileEntityInfoPanel>> unusedPanels;
 
     public ScreenManager() {
-        screens = new HashMap<Integer, List<Screen>>();
-        unusedPanels = new HashMap<Integer, List<TileEntityInfoPanel>>();
+        screens = new HashMap<>();
+        unusedPanels = new HashMap<>();
     }
 
     public int getWorldKey(World world) {
@@ -119,8 +119,8 @@ public class ScreenManager {
 
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 Integer key = getWorldKey(panel.getWorldObj());
-                if (!screens.containsKey(key)) screens.put(key, new ArrayList<Screen>());
-                if (!unusedPanels.containsKey(key)) unusedPanels.put(key, new ArrayList<TileEntityInfoPanel>());
+                if (!screens.containsKey(key)) screens.put(key, new ArrayList<>());
+                if (!unusedPanels.containsKey(key)) unusedPanels.put(key, new ArrayList<>());
                 if (!screens.get(key).contains(screen)) {
                     screens.get(key).add(screen);
                 }
@@ -188,9 +188,9 @@ public class ScreenManager {
     public void registerInfoPanel(TileEntityInfoPanel panel) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
         if (!screens.containsKey(getWorldKey(panel.getWorldObj())))
-            screens.put(getWorldKey(panel.getWorldObj()), new ArrayList<Screen>());
+            screens.put(getWorldKey(panel.getWorldObj()), new ArrayList<>());
         if (!unusedPanels.containsKey(getWorldKey(panel.getWorldObj())))
-            unusedPanels.put(getWorldKey(panel.getWorldObj()), new ArrayList<TileEntityInfoPanel>());
+            unusedPanels.put(getWorldKey(panel.getWorldObj()), new ArrayList<>());
         for (Screen screen : screens.get(getWorldKey(panel.getWorldObj()))) {
             if (screen.isBlockPartOf(panel)) {
                 // occurs on chunk unloading/loading
@@ -206,12 +206,12 @@ public class ScreenManager {
     public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
         if (!screens.containsKey(getWorldKey(extender.getWorldObj())))
-            screens.put(getWorldKey(extender.getWorldObj()), new ArrayList<Screen>());
+            screens.put(getWorldKey(extender.getWorldObj()), new ArrayList<>());
         if (!unusedPanels.containsKey(getWorldKey(extender.getWorldObj())))
-            unusedPanels.put(getWorldKey(extender.getWorldObj()), new ArrayList<TileEntityInfoPanel>());
+            unusedPanels.put(getWorldKey(extender.getWorldObj()), new ArrayList<>());
 
-        List<TileEntityInfoPanel> rebuildPanels = new ArrayList<TileEntityInfoPanel>();
-        List<Screen> screensToDestroy = new ArrayList<Screen>();
+        List<TileEntityInfoPanel> rebuildPanels = new ArrayList<>();
+        List<Screen> screensToDestroy = new ArrayList<>();
 
         for (Screen screen : screens.get(getWorldKey(extender.getWorldObj()))) {
             TileEntityInfoPanel core = screen.getCore(extender.getWorldObj());

@@ -135,7 +135,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
         double totalAmount = 0;
         double totalCapacity = 0;
@@ -251,7 +251,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(7);
+        List<PanelSetting> result = new ArrayList<>(7);
         result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidName"), DISPLAY_NAME, CARD_TYPE));
         result.add(
                 new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelLiquidAmount"), DISPLAY_AMOUNT, CARD_TYPE));

@@ -39,7 +39,7 @@ public class PacketChat implements IMessage, IMessageHandler<PacketChat, IMessag
         String[] chunks = messages.message.split(":");
         messages.message = LangHelper.translate("msg.nc." + chunks[0]);
         if (chunks.length > 1) {
-            List<String> list = new ArrayList<String>(Arrays.asList(chunks));
+            List<String> list = new ArrayList<>(Arrays.asList(chunks));
             list.remove(0);
             chunks = list.toArray(chunks);
             messages.message = String.format(messages.message, (Object[]) chunks);

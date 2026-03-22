@@ -48,7 +48,7 @@ public class PacketClientRemoteMonitor implements IMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         int fieldCount = buf.readShort();
-        fields = new HashMap<String, Object>();
+        fields = new HashMap<>();
         for (int i = 0; i < fieldCount; i++) {
             String name = ByteBufUtils.readUTF8String(buf);
             byte type = buf.readByte();

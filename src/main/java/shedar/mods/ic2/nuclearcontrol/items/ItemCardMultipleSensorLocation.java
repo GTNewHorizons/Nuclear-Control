@@ -225,7 +225,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
 
         int capacity = card.getInt("capacity");
@@ -268,7 +268,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public List<PanelString> getStringDataCounter(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
         if (card.hasField("average")) {// average counter
             if (displaySettings.getSetting(DISPLAY_ENERGY)) {
@@ -294,7 +294,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public List<PanelString> getStringDataGenerator(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line = new PanelString();
         line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("production"), showLabels);
         result.add(line);

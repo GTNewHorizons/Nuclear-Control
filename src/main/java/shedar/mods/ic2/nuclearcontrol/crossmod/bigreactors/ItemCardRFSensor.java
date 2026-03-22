@@ -128,7 +128,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
 
         double PerOut = card.getDouble("FillPercent");
@@ -252,7 +252,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+        List<PanelSetting> result = new ArrayList<>(5);
         result.add(new NewPanelSetting(LangHelper.translate("1"), DISPLAY_ON, CARD_TYPE));
         result.add(new NewPanelSetting(LangHelper.translate("2"), DISPLAY_ENERGY, CARD_TYPE));
         result.add(new NewPanelSetting(LangHelper.translate("3"), DISPLAY_OUTPUT, CARD_TYPE));

@@ -309,7 +309,7 @@ public class TileEntityEnergyCounter extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        Vector<String> vector = new Vector<String>(2);
+        Vector<String> vector = new Vector<>(2);
         vector.add("facing");
         vector.add("powerType");
         return vector;

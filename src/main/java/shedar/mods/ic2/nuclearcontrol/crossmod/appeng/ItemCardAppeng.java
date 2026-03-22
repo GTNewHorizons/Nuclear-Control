@@ -125,7 +125,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
         int TYPE = card.getInt("targetType");
 
@@ -182,7 +182,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(4);
+        List<PanelSetting> result = new ArrayList<>(4);
         result.add(new NewPanelSetting(LangHelper.translate("1"), DISPLAY_BYTES, CARD_TYPE));
         result.add(new NewPanelSetting(LangHelper.translate("2"), DISPLAY_ITEMS, CARD_TYPE));
         result.add(new NewPanelSetting(LangHelper.translate("3"), DISPLAY_CRAFTER, CARD_TYPE));

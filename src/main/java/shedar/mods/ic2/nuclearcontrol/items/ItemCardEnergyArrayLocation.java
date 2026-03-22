@@ -127,7 +127,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
         double totalEnergy = 0;
         double totalStorage = 0;

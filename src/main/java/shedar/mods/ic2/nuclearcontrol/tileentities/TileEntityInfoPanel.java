@@ -301,7 +301,7 @@ public class TileEntityInfoPanel extends TileEntity
         screen = null;
         card = null;
         init = false;
-        cardData = new HashMap<Integer, List<PanelString>>();
+        cardData = new HashMap<>();
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
         dt = IC2NuclearControl.instance.dataRefreshPeriod;
@@ -326,7 +326,7 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        List<String> list = new ArrayList<String>(9);
+        List<String> list = new ArrayList<>(9);
         list.add("powered");
         list.add("facing");
         list.add("rotation");

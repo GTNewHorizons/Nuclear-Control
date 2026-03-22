@@ -102,7 +102,7 @@ public class TileEntityThermo extends TileEntity implements INetworkDataProvider
 
     @Override
     public List<String> getNetworkedFields() {
-        Vector<String> vector = new Vector<String>(3);
+        Vector<String> vector = new Vector<>(3);
         vector.add("heatLevel");
         vector.add("onFire");
         vector.add("facing");

@@ -90,7 +90,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<>(1);
         list.add("facing");
         return list;
     }

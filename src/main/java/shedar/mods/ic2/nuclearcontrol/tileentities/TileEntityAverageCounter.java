@@ -349,7 +349,7 @@ public class TileEntityAverageCounter extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        Vector<String> vector = new Vector<String>(3);
+        Vector<String> vector = new Vector<>(3);
         vector.add("facing");
         vector.add("period");
         vector.add("powerType");

@@ -52,7 +52,7 @@ public class GuiHowlerAlarm extends GuiContainer {
         List<String> items;
 
         if (alarm.getWorldObj().isRemote) {
-            items = new ArrayList<String>(IC2NuclearControl.instance.availableAlarms);
+            items = new ArrayList<>(IC2NuclearControl.instance.availableAlarms);
             items.retainAll(IC2NuclearControl.instance.serverAllowedAlarms);
         } else items = IC2NuclearControl.instance.availableAlarms;
 

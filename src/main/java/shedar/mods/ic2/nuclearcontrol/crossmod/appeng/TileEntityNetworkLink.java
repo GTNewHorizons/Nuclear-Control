@@ -96,7 +96,7 @@ public class TileEntityNetworkLink extends AENetworkTile {
     }
 
     private List<TileEntity> getTiles() {
-        List<TileEntity> list = new ArrayList<TileEntity>();
+        List<TileEntity> list = new ArrayList<>();
         try {
             IGrid grid = this.getProxy().getNode().getGrid();
             for (Class<? extends IGridHost> clazz : grid.getMachinesClasses()) {

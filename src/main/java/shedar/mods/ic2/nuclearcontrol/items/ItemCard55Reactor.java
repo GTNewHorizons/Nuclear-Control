@@ -124,7 +124,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
 
         double tOut = card.getInt("outputTank");
@@ -188,7 +188,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+        List<PanelSetting> result = new ArrayList<>(5);
         result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cbInfoPanelOnOff"), DISPLAY_ON, CARD_TYPE));
         result.add(
                 new NewPanelSetting(

@@ -37,7 +37,7 @@ public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMess
     @Override
     public IMessage onMessage(PacketAlarm message, MessageContext ctx) {
         IC2NuclearControl.instance.maxAlarmRange = message.maxAlarmRange;
-        IC2NuclearControl.instance.serverAllowedAlarms = new ArrayList<String>(
+        IC2NuclearControl.instance.serverAllowedAlarms = new ArrayList<>(
                 Arrays.asList(message.allowedAlarms.split(",")));
         return null;
     }

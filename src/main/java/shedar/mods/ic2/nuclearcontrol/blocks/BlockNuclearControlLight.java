@@ -24,7 +24,7 @@ public class BlockNuclearControlLight extends Block {
 
     public BlockNuclearControlLight() {
         super(Material.redstoneLight);
-        subblocks = new HashMap<Integer, Boolean>();
+        subblocks = new HashMap<>();
         this.setHardness(0.3F);
         this.setCreativeTab(IC2NuclearControl.tabIC2NC);
         setStepSound(soundTypeGlass);

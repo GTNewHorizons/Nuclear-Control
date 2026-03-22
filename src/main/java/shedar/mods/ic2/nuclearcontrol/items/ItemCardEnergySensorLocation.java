@@ -100,7 +100,7 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new LinkedList<PanelString>();
+        List<PanelString> result = new LinkedList<>();
         PanelString line;
 
         double energy = card.getDouble("energyL");
@@ -134,7 +134,7 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(4); // Initial capacity should be 4
+        List<PanelSetting> result = new ArrayList<>(4); // Initial capacity should be 4
         result.add(
                 new NewPanelSetting(
                         LangHelper.translate("msg.nc.cbInfoPanelEnergyCurrent"),

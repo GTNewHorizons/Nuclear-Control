@@ -27,7 +27,7 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper {
         }
         this.card = card;
         this.panel = panel;
-        updateSet = new HashMap<String, Object>();
+        updateSet = new HashMap<>();
         this.gui = gui;
         this.slot = slot;
     }
@@ -56,7 +56,7 @@ public class CardSettingsWrapperImpl implements ICardSettingsWrapper {
     public void commit() {
         if (!updateSet.isEmpty()) {
             NuclearNetworkHelper.setCardSettings(card, panel, updateSet, slot);
-            updateSet = new HashMap<String, Object>();
+            updateSet = new HashMap<>();
         }
 
     }

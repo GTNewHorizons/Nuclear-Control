@@ -44,7 +44,7 @@ public class ItemTimeCard extends ItemCardBase {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
-        List<PanelString> result = new ArrayList<PanelString>(1);
+        List<PanelString> result = new ArrayList<>(1);
         PanelString item = new PanelString();
         result.add(item);
         int time = (int) ((FMLClientHandler.instance().getClient().theWorld.getWorldTime() + 6000) % 24000);
@@ -65,7 +65,7 @@ public class ItemTimeCard extends ItemCardBase {
 
     @Override
     public List<PanelSetting> getSettingsList() {
-        List<PanelSetting> result = new ArrayList<PanelSetting>(1);
+        List<PanelSetting> result = new ArrayList<>(1);
         result.add(new NewPanelSetting(LangHelper.translate("msg.nc.cb24h"), MODE_24H, CARD_TYPE));
         return result;
     }
