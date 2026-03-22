@@ -23,7 +23,6 @@ public class GuiHowlerAlarmSlider extends GuiButton {
     public boolean dragging;
     private final int minValue = 0;
     private int maxValue = 256;
-    private final int step = 8;
     private final String label;
     private final TileEntityHowlerAlarm alarm;
 
@@ -40,6 +39,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
     }
 
     private int getNormalizedValue() {
+        int step = 8;
         return (minValue + (int) Math.floor((maxValue - minValue) * sliderValue)) / step * step;
     }
 

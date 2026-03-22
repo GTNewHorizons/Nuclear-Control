@@ -66,7 +66,6 @@ public class GuiScrollableList extends GuiScreen {
     private int guiLeft = 0;
     private int guiTop = 0;
     private int guiRight = 0;
-    private int guiBottom = 0;
     int internalLeft = 0;
     private int internalTop = 0;
     private int listRight = 0;
@@ -115,7 +114,7 @@ public class GuiScrollableList extends GuiScreen {
         guiLeft = (width - GUI_WIDTH) / 2;
         guiTop = (height - GUI_HEIGHT) / 2;
         guiRight = (width + GUI_WIDTH) / 2;
-        guiBottom = (height + GUI_HEIGHT) / 2;
+        int guiBottom = (height + GUI_HEIGHT) / 2;
         internalLeft = guiLeft + PADDING_LEFT + 1;
         internalTop = guiTop + PADDING_TOP + 1;
         internalBottom = guiBottom - PADDING_BOTTOM;

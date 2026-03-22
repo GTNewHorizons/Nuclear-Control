@@ -15,11 +15,8 @@ import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public abstract class ItemSensorKitBase extends Item {
 
-    private final String textureItemName;
-
     public ItemSensorKitBase(String textureItemName) {
         super();
-        this.textureItemName = textureItemName;
         setMaxStackSize(1);
         setTextureName(TextureResolver.getItemTexture(textureItemName));
         setCreativeTab(IC2NuclearControl.tabIC2NC);
