@@ -57,8 +57,6 @@ public class ItemUpgrade extends Item {
     @Override
     public IIcon getIconFromDamage(int damage) {
         switch (damage) {
-            case DAMAGE_RANGE:
-                return iconRange;
             case DAMAGE_COLOR:
                 return iconColor;
             case DAMAGE_WEB:

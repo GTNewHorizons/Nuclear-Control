@@ -506,9 +506,6 @@ public class TileEntityRangeTrigger extends TileEntity
             case 3:
                 r = 2;
                 break;
-            case 2:
-                r = 0;
-                break;
             default:
                 r = 0;
                 break;

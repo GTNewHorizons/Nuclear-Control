@@ -49,10 +49,6 @@ public class StringUtils {
             case NO_TARGET:
                 line.textCenter = LangHelper.translate("msg.nc.InfoPanelNoTarget");
                 break;
-            case CUSTOM_ERROR:
-                break;
-            case OK:
-                break;
             default:
                 break;
         }
