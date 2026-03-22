@@ -31,8 +31,7 @@ public class WrenchHelper {
                         }
                         return true;
                     }
-                } else if (bcWrench && tileEntity instanceof IWrenchable) {
-                    IWrenchable wrenchable = (IWrenchable) tileEntity;
+                } else if (bcWrench && tileEntity instanceof IWrenchable wrenchable) {
 
                     if (player.isSneaking()) {
                         side += side % 2 * -2 + 1;

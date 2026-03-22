@@ -49,8 +49,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
         int targetType = card.getInt("targetType");
         if (targetType == 1) {
             TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileEntityNetworkLink) {
-                TileEntityNetworkLink tileNetworkLink = (TileEntityNetworkLink) check;
+            if (check instanceof TileEntityNetworkLink tileNetworkLink) {
                 card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
                 card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
                 card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
@@ -61,8 +60,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
             }
         } else if (targetType == 2) {
             TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileCraftingMonitorTile) {
-                TileCraftingMonitorTile monitorTile = (TileCraftingMonitorTile) check;
+            if (check instanceof TileCraftingMonitorTile monitorTile) {
                 Item crafter;
                 int size;
                 if (monitorTile.getJobProgress() instanceof IAEItemStack ais) {
@@ -89,8 +87,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
         int targetType = card.getInt("targetType");
         if (targetType == 1) {
             TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileEntityNetworkLink) {
-                TileEntityNetworkLink tileNetworkLink = (TileEntityNetworkLink) check;
+            if (check instanceof TileEntityNetworkLink tileNetworkLink) {
                 card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
                 card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
                 card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
@@ -101,8 +98,7 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
             }
         } else if (targetType == 2) {
             TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileCraftingMonitorTile) {
-                TileCraftingMonitorTile monitorTile = (TileCraftingMonitorTile) check;
+            if (check instanceof TileCraftingMonitorTile monitorTile) {
                 Item crafter;
                 int size;
                 if (monitorTile.getJobProgress() instanceof IAEItemStack ais) {

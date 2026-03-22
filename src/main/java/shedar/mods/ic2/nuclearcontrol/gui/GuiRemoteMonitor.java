@@ -62,8 +62,7 @@ public class GuiRemoteMonitor extends GuiContainer {
         InventoryItem itemInv = new InventoryItem(e.getHeldItem());
 
         if (inv.getStackInSlot(0) != null && itemInv.getStackInSlot(0) != null
-                && inv.getStackInSlot(0).getItem() instanceof IPanelDataSource) {
-            IPanelDataSource card = (IPanelDataSource) inv.getStackInSlot(0).getItem();
+                && inv.getStackInSlot(0).getItem() instanceof IPanelDataSource card) {
             CardWrapperImpl helper = new CardWrapperImpl(itemInv.getStackInSlot(0), 0);
             joinedData.clear();
             ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));

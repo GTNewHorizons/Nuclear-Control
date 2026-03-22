@@ -94,14 +94,12 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
 
                 }
             }
-            if (tileEntity instanceof TileEntityAdvancedInfoPanel) {
-                TileEntityAdvancedInfoPanel advancedCore = (TileEntityAdvancedInfoPanel) tileEntity;
+            if (tileEntity instanceof TileEntityAdvancedInfoPanel advancedCore) {
                 if (advancedCore.getScreen() != null)
                     new ModelInfoPanel().renderScreen(block, advancedCore, x, y, z, renderer);
                 else renderer.renderStandardBlock(block, x, y, z);
 
-            } else if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender) {
-                TileEntityAdvancedInfoPanelExtender advancedExtender = (TileEntityAdvancedInfoPanelExtender) tileEntity;
+            } else if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender advancedExtender) {
                 boolean wasRendered = false;
 
                 if (IC2NuclearControl.instance.screenManager == null

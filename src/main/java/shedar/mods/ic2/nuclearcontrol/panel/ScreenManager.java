@@ -166,8 +166,7 @@ public class ScreenManager {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
         if (!screens.containsKey(getWorldKey(part.getWorldObj()))) return;
         if (!unusedPanels.containsKey(getWorldKey(part.getWorldObj()))) return;
-        if (!(part instanceof IScreenPart)) return;
-        IScreenPart screenPart = (IScreenPart) part;
+        if (!(part instanceof IScreenPart screenPart)) return;
         Screen screen = screenPart.getScreen();
         if (screen == null) {
             if (part instanceof TileEntityInfoPanel && unusedPanels.get(getWorldKey(part.getWorldObj())).contains(part))

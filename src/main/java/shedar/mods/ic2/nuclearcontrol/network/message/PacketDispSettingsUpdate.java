@@ -60,10 +60,9 @@ public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<Packe
     public IMessage onMessage(PacketDispSettingsUpdate message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                 .getTileEntity(message.x, message.y, message.z);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel)) {
+        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel panel)) {
             return null;
         }
-        TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
         panel.getDisplaySettingsForSlot(message.slot).put(new UUID(message.most, message.least), message.value);
         panel.resetCardData();
         return null;

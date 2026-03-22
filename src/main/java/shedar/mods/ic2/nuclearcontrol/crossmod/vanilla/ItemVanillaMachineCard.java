@@ -52,8 +52,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
 
-        if (tile instanceof TileEntityBrewingStand) {
-            TileEntityBrewingStand brewingStand = (TileEntityBrewingStand) tile;
+        if (tile instanceof TileEntityBrewingStand brewingStand) {
             card.setString("entity", BREW_STAND);
             card.setBoolean("brewing", brewingStand.getBrewTime() > 0);
             card.setInt("brewTime", brewingStand.getBrewTime());
@@ -69,8 +68,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
             card.setTag("BrewInfo", tag);
             return CardState.OK;
             // brewingStand.getStackInSlot(3).getItem().isPotionIngredient(brewingStand.getStackInSlot(3));
-        } else if (tile instanceof TileEntityFurnace) {
-            TileEntityFurnace furnace = (TileEntityFurnace) tile;
+        } else if (tile instanceof TileEntityFurnace furnace) {
             card.setString("entity", "furnace");
             card.setBoolean("burning", furnace.isBurning());
             card.setInt("burnTime", furnace.furnaceBurnTime);

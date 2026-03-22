@@ -45,8 +45,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
         if (target == null) return CardState.NO_TARGET;
         // int targetType = card.getInt("targetType");
         TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-        if (check instanceof TileEntityBlockFetcher) {
-            TileEntityBlockFetcher bf = (TileEntityBlockFetcher) check;
+        if (check instanceof TileEntityBlockFetcher bf) {
             MultiblockReactor reactorController = bf.getReactorController();
 
             // TODO gamerforEA code start
@@ -91,8 +90,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
         if (target == null) return CardState.NO_TARGET;
         // int targetType = card.getInt("targetType");
         TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
-        if (check instanceof TileEntityBlockFetcher) {
-            TileEntityBlockFetcher BF = (TileEntityBlockFetcher) check;
+        if (check instanceof TileEntityBlockFetcher BF) {
             card.setBoolean("Online", BF.isReactorOnline());
             card.setDouble("storedEnergy", (double) BF.getEnergyStored());
             card.setDouble("createdEnergy", (double) BF.getEnergyGenerated());

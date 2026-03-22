@@ -81,10 +81,9 @@ public class PacketDataSorter implements IMessage, IMessageHandler<PacketDataSor
         } else if (ctx.side == Side.CLIENT) {
             TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                     .getTileEntity(message.x, message.y, message.z);
-            if (tileEntity == null || !(tileEntity instanceof TileEntityAdvancedInfoPanel)) {
+            if (tileEntity == null || !(tileEntity instanceof TileEntityAdvancedInfoPanel panel)) {
                 return null;
             }
-            TileEntityAdvancedInfoPanel panel = (TileEntityAdvancedInfoPanel) tileEntity;
             panel.setDataSorter(message.slot, message.sorter, false);
         }
 

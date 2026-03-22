@@ -35,8 +35,7 @@ public class ItemCardRFEnergyLocation extends ItemCardEnergySensorLocation {
         ChunkCoordinates target = card.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-        if (tile instanceof IEnergyHandler) {
-            IEnergyHandler iEnergyStorage = (IEnergyHandler) tile;
+        if (tile instanceof IEnergyHandler iEnergyStorage) {
             card.setInt("energyL", iEnergyStorage.getEnergyStored(ForgeDirection.UNKNOWN));
             card.setInt("maxStorageL", iEnergyStorage.getMaxEnergyStored(ForgeDirection.UNKNOWN));
             card.setInt("range_trigger_amount", iEnergyStorage.getEnergyStored(ForgeDirection.UNKNOWN));
@@ -51,8 +50,7 @@ public class ItemCardRFEnergyLocation extends ItemCardEnergySensorLocation {
         ChunkCoordinates target = card.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
-        if (tile instanceof IEnergyHandler) {
-            IEnergyHandler iEnergyStorage = (IEnergyHandler) tile;
+        if (tile instanceof IEnergyHandler iEnergyStorage) {
             card.setInt("energyL", iEnergyStorage.getEnergyStored(ForgeDirection.UNKNOWN));
             card.setInt("maxStorageL", iEnergyStorage.getMaxEnergyStored(ForgeDirection.UNKNOWN));
             card.setInt("range_trigger_amount", iEnergyStorage.getEnergyStored(ForgeDirection.UNKNOWN));

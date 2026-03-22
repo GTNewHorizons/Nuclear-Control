@@ -179,8 +179,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
             int consumption = IC2NuclearControl.instance.remoteThermalMonitorEnergyConsumption;
             if (inventory[SLOT_CHARGER] != null) {
                 if (energy < maxStorage) {
-                    if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem) {
-                        IElectricItem ielectricitem = (IElectricItem) inventory[SLOT_CHARGER].getItem();
+                    if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem ielectricitem) {
 
                         if (ielectricitem.canProvideEnergy(inventory[SLOT_CHARGER])) {
                             double k = ElectricItem.manager
@@ -421,8 +420,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
                 if (Item.getIdFromItem(itemstack.getItem())
                         == Item.getIdFromItem(IC2Items.getItem("suBattery").getItem()))
                     return true;
-                if (itemstack.getItem() instanceof IElectricItem) {
-                    IElectricItem item = (IElectricItem) itemstack.getItem();
+                if (itemstack.getItem() instanceof IElectricItem item) {
                     if (item.canProvideEnergy(itemstack) && item.getTier(itemstack) <= tier) {
                         return true;
                     }

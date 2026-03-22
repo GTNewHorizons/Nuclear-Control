@@ -46,8 +46,7 @@ public class IC2ExpCross extends IC2Cross {
 
     @Override
     public EnergyStorageData getStorageData(TileEntity target) {
-        if (target instanceof IEnergyStorage) {
-            IEnergyStorage storage = (IEnergyStorage) target;
+        if (target instanceof IEnergyStorage storage) {
             EnergyStorageData result = new EnergyStorageData();
             result.capacity = storage.getCapacity();
             result.stored = storage.getStored();
@@ -60,10 +59,9 @@ public class IC2ExpCross extends IC2Cross {
 
     @Override
     public ReactorInfo getReactorInfo(TileEntity par1) {
-        if (par1 == null || !(par1 instanceof TileEntityNuclearReactorElectric)) {
+        if (par1 == null || !(par1 instanceof TileEntityNuclearReactorElectric reactor)) {
             return null;
         }
-        TileEntityNuclearReactorElectric reactor = (TileEntityNuclearReactorElectric) par1;
         ReactorInfo info = new ReactorInfo();
         info.isOnline = reactor.getActive();
         info.outTank = reactor.getoutputtank().getFluidAmount();

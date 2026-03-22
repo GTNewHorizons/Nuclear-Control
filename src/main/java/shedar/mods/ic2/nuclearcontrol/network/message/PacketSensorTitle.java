@@ -53,10 +53,9 @@ public class PacketSensorTitle implements IMessage, IMessageHandler<PacketSensor
     public IMessage onMessage(PacketSensorTitle message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                 .getTileEntity(message.x, message.y, message.z);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel)) {
+        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel panel)) {
             return null;
         }
-        TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
         ItemStack itemStack = panel.getStackInSlot(message.slot);
         if (itemStack == null || !(itemStack.getItem() instanceof IPanelDataSource)) {
             return null;

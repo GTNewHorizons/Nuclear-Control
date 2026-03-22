@@ -153,9 +153,8 @@ public class GuiInfoPanel extends GuiContainer {
             buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
             delta = 15;
         }
-        if (card != null && card.getItem() instanceof IPanelDataSource) {
+        if (card != null && card.getItem() instanceof IPanelDataSource source) {
             byte slot = container.panel.getIndexOfCard(card);
-            IPanelDataSource source = (IPanelDataSource) card.getItem();
             if (source instanceof IAdvancedCardSettings) {
                 buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
             }
@@ -280,12 +279,11 @@ public class GuiInfoPanel extends GuiContainer {
             if (card != null && card.getItem() instanceof IAdvancedCardSettings) {
                 ICardWrapper helper = new CardWrapperImpl(card, 0);
                 Object guiObject = ((IAdvancedCardSettings) card.getItem()).getSettingsScreen(helper);
-                if (!(guiObject instanceof GuiScreen)) {
+                if (!(guiObject instanceof GuiScreen gui)) {
                     IC2NuclearControl.logger
                             .warn("Invalid card, getSettingsScreen method should return GuiScreen object");
                     return;
                 }
-                GuiScreen gui = (GuiScreen) guiObject;
                 ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, 0);
                 ((ICardGui) gui).setCardSettingsHelper(wrapper);
                 mc.displayGuiScreen(gui);

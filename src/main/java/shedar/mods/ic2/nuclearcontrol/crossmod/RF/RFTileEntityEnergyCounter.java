@@ -102,8 +102,7 @@ public class RFTileEntityEnergyCounter extends TileEntityEnergyCounter implement
             TileEntity tile = getWorldObj()
                     .getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
             if (!(tile instanceof RFTileEntityAverageCounter)) {
-                if (tile instanceof IEnergyHandler) {
-                    IEnergyHandler receiver = (IEnergyHandler) tile;
+                if (tile instanceof IEnergyHandler receiver) {
                     this.sendMaxTo(receiver, direction.getOpposite());
                 }
             }

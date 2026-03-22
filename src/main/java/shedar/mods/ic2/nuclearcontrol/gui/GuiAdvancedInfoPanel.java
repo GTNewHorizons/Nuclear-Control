@@ -227,9 +227,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                         192,
                         15 + 80));
 
-        if (card != null && card.getItem() instanceof IPanelDataSource) {
-            byte slot = container.panel.getIndexOfCard(card);
-            IPanelDataSource source = (IPanelDataSource) card.getItem();
+        if (card != null && card.getItem() instanceof IPanelDataSource source) {
             if (source instanceof IAdvancedCardSettings) {
                 // settings
                 buttonList.add(
@@ -346,8 +344,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             }
             case ID_LABELS -> {
                 boolean checked = !container.panel.getShowLabels();
-                if (button instanceof IconButton) {
-                    IconButton iButton = (IconButton) button;
+                if (button instanceof IconButton iButton) {
                     iButton.textureTop = getIconLabelsTopOffset(checked);
                 }
                 int value = checked ? -1 : -2;
@@ -357,8 +354,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             }
             case ID_POWER -> {
                 byte mode = ((TileEntityAdvancedInfoPanel) container.panel).getNextPowerMode();
-                if (button instanceof IconButton) {
-                    IconButton iButton = (IconButton) button;
+                if (button instanceof IconButton iButton) {
                     iButton.textureTop = getIconPowerTopOffset(mode);
                 }
                 IC2.network.get().initiateClientTileEntityEvent(container.panel, mode);

@@ -75,10 +75,9 @@ public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDi
     public IMessage onMessage(PacketDispSettingsAll message, MessageContext ctx) {
         TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld
                 .getTileEntity(message.x, message.y, message.z);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel)) {
+        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel panel)) {
             return null;
         }
-        TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
         for (Map.Entry<Byte, Map<UUID, DisplaySettingHelper>> slotData : message.settings.entrySet()) {
             Map<UUID, DisplaySettingHelper> setting = panel.getDisplaySettingsForSlot(slotData.getKey());
             for (Map.Entry<UUID, DisplaySettingHelper> item : slotData.getValue().entrySet()) {

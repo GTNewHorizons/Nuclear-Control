@@ -163,8 +163,7 @@ public class BlockNuclearControlMain extends BlockContainer {
             metadata = 0;
         }
 
-        if (block instanceof IWrenchable) {
-            IWrenchable wrenchable = (IWrenchable) block;
+        if (block instanceof IWrenchable wrenchable) {
             wrenchable.setFacing((short) side);
             if (player != null && !isSolidBlockRequired(metadata)) {
                 int rotationSegment = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
@@ -494,8 +493,7 @@ public class BlockNuclearControlMain extends BlockContainer {
                                 != null)) {
             return 0;
         }
-        if (tileentity instanceof TileEntityRemoteThermo) {
-            TileEntityRemoteThermo thermo = (TileEntityRemoteThermo) tileentity;
+        if (tileentity instanceof TileEntityRemoteThermo thermo) {
             if (thermo.getEnergy() > 0) {
                 return thermo.getOnFire() >= thermo.getHeatLevel() ^ thermo.isInvertRedstone() ? 15 : 0;
             } else {
@@ -557,8 +555,7 @@ public class BlockNuclearControlMain extends BlockContainer {
         } else if (entity instanceof TileEntityInfoPanel) {
             if (((TileEntityInfoPanel) entity).getPowered()) return 7;
             else return 0;
-        } else if (entity instanceof TileEntityInfoPanelExtender) {
-            TileEntityInfoPanelExtender extender = (TileEntityInfoPanelExtender) entity;
+        } else if (entity instanceof TileEntityInfoPanelExtender extender) {
             if (extender.getScreen() != null) {
                 TileEntityInfoPanel core = extender.getScreen().getCore(extender.getWorldObj());
                 if (core != null && core.getPowered()) return 7;
@@ -598,10 +595,9 @@ public class BlockNuclearControlMain extends BlockContainer {
         Random rand = new Random();
 
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
-        IInventory inventory = (IInventory) tileEntity;
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack item = inventory.getStackInSlot(i);

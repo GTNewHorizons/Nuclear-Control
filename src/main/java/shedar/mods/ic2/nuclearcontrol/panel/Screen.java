@@ -74,8 +74,7 @@ public class Screen {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
                     TileEntity tileEntity = world.getTileEntity(x, y, z);
-                    if (tileEntity == null || !(tileEntity instanceof IScreenPart)) continue;
-                    IScreenPart part = (IScreenPart) tileEntity;
+                    if (tileEntity == null || !(tileEntity instanceof IScreenPart part)) continue;
                     Screen targetScreen = part.getScreen();
                     if (targetScreen != null && targetScreen.equals(this)) {
                         part.setScreen(null);

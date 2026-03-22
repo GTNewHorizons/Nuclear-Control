@@ -60,8 +60,7 @@ public class BlockActiveReactorInfoFetch extends BlockContainer {
 
     private IIcon getMagicIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity te = blockAccess.getTileEntity(x, y, z);
-        if (te instanceof TileEntityBlockFetcher) {
-            TileEntityBlockFetcher part = (TileEntityBlockFetcher) te;
+        if (te instanceof TileEntityBlockFetcher part) {
             if (!isReactorAssembled(part) || isOutwardsSide(part, side)) {
                 return this.blockStates[1];
             }

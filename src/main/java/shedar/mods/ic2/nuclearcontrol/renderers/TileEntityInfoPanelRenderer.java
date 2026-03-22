@@ -176,8 +176,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             double angleHor = 0;
             double angleVert = 0;
             double[] deltas = null;
-            if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
-                TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
+            if (panel instanceof TileEntityAdvancedInfoPanel advPanel && screen != null) {
                 ModelInfoPanel model = new ModelInfoPanel();
                 deltas = model.getDeltas(advPanel, screen);
                 thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);

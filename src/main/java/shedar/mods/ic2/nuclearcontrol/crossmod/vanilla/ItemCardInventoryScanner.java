@@ -39,8 +39,7 @@ public class ItemCardInventoryScanner extends ItemCardBase {
         ChunkCoordinates target = card.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
-        if (tile instanceof IInventory) {
-            IInventory inv = (IInventory) tile;
+        if (tile instanceof IInventory inv) {
             int inUse = 0;
             for (int z = 0; z < inv.getSizeInventory(); z++) {
                 if (inv.getStackInSlot(z) != null) {

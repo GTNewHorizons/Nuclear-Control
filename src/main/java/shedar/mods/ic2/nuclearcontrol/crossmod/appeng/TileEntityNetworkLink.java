@@ -50,15 +50,13 @@ public class TileEntityNetworkLink extends AENetworkTile {
         int CacheItem = 0;
         List<TileEntity> tileEntity = getTiles();
         for (TileEntity tile : tileEntity) {
-            if (tile instanceof TileDrive) {
-                TileDrive drive = (TileDrive) tile;
+            if (tile instanceof TileDrive drive) {
                 for (int x = 0; x < drive.getInternalInventory().getSizeInventory(); x++) {
                     ItemStack is = drive.getInternalInventory().getStackInSlot(x);
                     if (is != null) {
                         IMEInventoryHandler inventory = AEApi.instance().registries().cell()
                                 .getCellInventory(is, null, StorageChannel.ITEMS);
-                        if (inventory instanceof ICellInventoryHandler) {
-                            ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
+                        if (inventory instanceof ICellInventoryHandler handler) {
                             ICellInventory cellInventory = handler.getCellInv();
                             if (cellInventory != null) {
 
@@ -70,14 +68,12 @@ public class TileEntityNetworkLink extends AENetworkTile {
                         }
                     }
                 }
-            } else if (tile instanceof TileChest) {
-                TileChest chest = (TileChest) tile;
+            } else if (tile instanceof TileChest chest) {
                 ItemStack is = chest.getInternalInventory().getStackInSlot(0);
                 if (is != null) {
                     IMEInventoryHandler inventory = AEApi.instance().registries().cell()
                             .getCellInventory(is, null, StorageChannel.ITEMS);
-                    if (inventory instanceof ICellInventoryHandler) {
-                        ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
+                    if (inventory instanceof ICellInventoryHandler handler) {
                         ICellInventory cellInventory = handler.getCellInv();
                         if (cellInventory != null) {
                             CacheByteT += cellInventory.getTotalBytes();
