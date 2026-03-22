@@ -364,15 +364,9 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                 willReturn = true;
                 mc.displayGuiScreen(slopeGui);
             }
-            case ID_TRANSPARENCY -> {
-                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_TRANSPARENCY);
-            }
-            case ID_ROTATELEFT -> {
-                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATELEFT);
-            }
-            case ID_ROTATERIGHT -> {
-                IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
-            }
+            case ID_TRANSPARENCY -> IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_TRANSPARENCY);
+            case ID_ROTATELEFT -> IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATELEFT);
+            case ID_ROTATERIGHT -> IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
             case ID_LINES -> {
                 ItemStack card = getActiveCard();
                 if (((IPanelDataSource) card.getItem()).getSettingsList() != null) {
