@@ -63,11 +63,6 @@ public class GuiHowlerAlarm extends GuiContainer {
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
-        return false;
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
         fontRendererObj.drawString(StatCollector.translateToLocal("msg.nc.HowlerAlarmSound"), 12, 53, 0x404040);

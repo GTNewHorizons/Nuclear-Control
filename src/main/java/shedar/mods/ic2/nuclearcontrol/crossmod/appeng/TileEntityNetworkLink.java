@@ -43,17 +43,6 @@ public class TileEntityNetworkLink extends AENetworkTile {
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
-    @Override
-    public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this);
-    }
-
-    @Override
-    public AECableType getCableConnectionType(ForgeDirection forgeDirection) {
-        return AECableType.SMART;
-    }
-
-    // @TileEvent(TileEventType.TICK)
     public void updateNetworkCache() {
         int CacheByteT = 0;
         int CacheByte = 0;

@@ -41,16 +41,6 @@ public class AdvancedInfoPanel extends InfoPanel {
     }
 
     @Override
-    public boolean isSolidBlockRequired() {
-        return false;
-    }
-
-    @Override
-    public boolean hasGui() {
-        return true;
-    }
-
-    @Override
     public float[] getBlockBounds(TileEntity tileEntity) {
         if (tileEntity == null) return BOUNDS;
         float[] bounds = BOUNDS.clone();

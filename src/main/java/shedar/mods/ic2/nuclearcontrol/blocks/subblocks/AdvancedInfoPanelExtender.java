@@ -39,11 +39,6 @@ public class AdvancedInfoPanelExtender extends InfoPanel {
     }
 
     @Override
-    public boolean isSolidBlockRequired() {
-        return false;
-    }
-
-    @Override
     public boolean hasGui() {
         return false;
     }
