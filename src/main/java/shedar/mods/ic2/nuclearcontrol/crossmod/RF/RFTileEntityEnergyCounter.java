@@ -71,14 +71,10 @@ public class RFTileEntityEnergyCounter extends TileEntityEnergyCounter implement
     @Override
     public void updateEntity() {
         super.updateEntity();
-        // NCLog.error(storage.getEnergyStored());
         if (getNeibough()) {
             if (!worldObj.isRemote) {
-                // if (updateTicker-- == 0) {
-                // updateTicker = tickRate - 1;
                 counter += rec; // If rec / 2
                 this.setPowerType((byte) EnergyStorageData.TARGET_TYPE_RF);
-                // }
                 rec = 0;
             }
             if (storage.getEnergyStored() > 0) {

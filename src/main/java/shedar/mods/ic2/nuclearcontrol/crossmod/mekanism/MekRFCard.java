@@ -38,7 +38,6 @@ public class MekRFCard extends ItemCardEnergySensorLocation {
         ChunkCoordinates target = card.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
-        // NCLog.fatal(tile instanceof IEnergyHandler);
         if (tile instanceof mekanism.api.energy.IStrictEnergyStorage) {
             mekanism.api.energy.IStrictEnergyStorage storage = (mekanism.api.energy.IStrictEnergyStorage) tile;
             card.setDouble("energyL", storage.getEnergy());

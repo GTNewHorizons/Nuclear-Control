@@ -73,11 +73,6 @@ public class TileEntityBlockFetcher extends TileEntityReactorPartBase implements
             energyGen = this.getReactorController().getEnergyGeneratedLastTick();
             EstoredPer = this.getReactorController().getEnergyStoredPercentage();
             temp = (int) this.getReactorController().getFuelHeat();
-            // NCLog.fatal(this.getReactorController().getEnergyStored());//Current Stored Energy
-            // NCLog.fatal(energyStored);
-            // NCLog.fatal(this.getReactorController().getActive());//On or Off
-            // NCLog.fatal(this.getReactorController().getEnergyGeneratedLastTick());//String.format("%.2f flux per
-            // tick", this.getReactorController().getEnergyGeneratedLastTick())
         }
     }
 

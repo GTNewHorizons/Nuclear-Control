@@ -29,7 +29,6 @@ public class PacketServerUpdate implements IMessage {
 
     public PacketServerUpdate(ItemStack card) {
         this.itemstack = card;
-        // NCLog.error(card);
     }
 
     @Override
@@ -54,13 +53,9 @@ public class PacketServerUpdate implements IMessage {
                 if (stackInSlot != null) stack = stackInSlot.copy();
             }
 
-            // NCLog.error(stack);
-
             if (stack != null && stack.getItem() instanceof ItemCardBase) {
                 CardWrapperImpl helper = this.processCard(stack, 10, 0);
-                // CardState state = ((IPanelDataSource) stack.getItem()).update(ContainerRemoteMonitor.panel, helper,
-                // 100);
-                // NCLog.fatal(helper.getUpdateSet().entrySet());
+
                 if (helper != null) return new PacketClientRemoteMonitor(helper.getUpdateSet());
             }
             return null;

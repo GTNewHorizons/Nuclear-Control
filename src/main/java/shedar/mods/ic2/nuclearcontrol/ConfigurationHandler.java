@@ -6,7 +6,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-// import java.util.UUID;
+
 
 public class ConfigurationHandler {
 
@@ -41,12 +41,7 @@ public class ConfigurationHandler {
                     .get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
             IC2NuclearControl.instance.SMPMaxAlarmRange = configuration
                     .get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
-            // IC2NuclearControl.isHttpSensorAvailableClient = configuration.getBoolean("isHttpSensorAvailableClient",
-            // Configuration.CATEGORY_GENERAL, false, "Turns on/off the recipes for the web upgrade client side");
-            // IC2NuclearControl.isHttpSensorAvailableServer = configuration.getBoolean("isHttpSensorAvailableServer",
-            // Configuration.CATEGORY_GENERAL, true, "Turns on/off the recipes for the web upgrade server side");
-            // IC2NuclearControl.instance.httpSensorKey = configuration.get(Configuration.CATEGORY_GENERAL,
-            // "httpSensorKey", UUID.randomUUID().toString().replace("-", "")).getString();
+
             IC2NuclearControl.instance.recipes = configuration.getString(
                     "recipes",
                     Configuration.CATEGORY_GENERAL,

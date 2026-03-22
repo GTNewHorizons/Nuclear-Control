@@ -135,9 +135,7 @@ public class ItemCardRFSensor extends ItemCardEnergySensorLocation {
         double energyStored = card.getDouble("storedEnergy");
         double outputlvl = card.getDouble("createdEnergy");
         double coreTemp = card.getDouble("Temp");
-        // NCLog.error(on);
-        // NCLog.error(PerOut);
-        // NCLog.error(energyStored);
+
         int ioutputlvl = (int) outputlvl;
         int ienergyStored = (int) energyStored;
         boolean passive = card.getBoolean("isPassive");

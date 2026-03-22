@@ -74,7 +74,6 @@ public class RFTileEntityAverageCounter extends TileEntityAverageCounter impleme
     @Override
     public void updateEntity() {
         super.updateEntity();
-        // NCLog.error(storage.getEnergyStored());
         if (getNeibough()) {
             if (storage.getEnergyStored() > 0) {
                 transferEnergy();
@@ -86,8 +85,7 @@ public class RFTileEntityAverageCounter extends TileEntityAverageCounter impleme
                 AVG = duration * send;
                 clientAverage = AVG;
                 data[index] = AVG;
-                // NCLog.fatal(send);
-                // NCLog.fatal(AVG);
+
                 setPowerType((byte) EnergyStorageData.TARGET_TYPE_RF);
                 send = 0;
                 rec = 0;

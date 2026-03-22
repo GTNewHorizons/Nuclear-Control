@@ -162,7 +162,6 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
                     sound.stopAlarm();
                 }
             }
-            // NetworkHelper.updateTileEntityField(this, "powered");
             IC2.network.get().updateTileEntityField(this, "powered");
         }
 

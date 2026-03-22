@@ -75,7 +75,6 @@ public class GuiRemoteThermo extends GuiContainer {
             if (heat < 0) heat = 0;
             if (heat >= 1000000) heat = 1000000;
             if (container.remoteThermo.getHeatLevel().intValue() != heat) {
-                // container.remoteThermo.setHeatLevel(heat);
                 ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.remoteThermo, heat);
             }
 

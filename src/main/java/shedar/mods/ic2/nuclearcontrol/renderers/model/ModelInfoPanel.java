@@ -117,8 +117,7 @@ public class ModelInfoPanel {
     }
 
     private void addSlopes(TileEntityAdvancedInfoPanel panel, Screen screen, double[] deltas) {
-        // if (panel.rotateVert == 0 && panel.rotateHor == 0)
-        // return;
+
         double dTopLeft = deltas[0];
         double dTopRight = deltas[1];
         double dBottomLeft = deltas[2];

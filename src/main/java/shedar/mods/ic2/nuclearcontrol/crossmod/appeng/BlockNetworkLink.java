@@ -43,7 +43,6 @@ public class BlockNetworkLink extends BlockContainer {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
 
         TileEntity tile = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-        // NCLog.fatal((x+dir.offsetX) + " " + (y+dir.offsetY) + " " + (z+dir.offsetZ));
         if (tile instanceof TileCableBus) return this.face;
         return this.side;
     }

@@ -97,7 +97,6 @@ public class TileEntityRangeTrigger extends TileEntity
     public void setInvertRedstone(boolean value) {
         invertRedstone = value;
         if (prevInvertRedstone != value) {
-            // worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
             worldObj.notifyBlockChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
             IC2.network.get().updateTileEntityField(this, "invertRedstone");
         }

@@ -110,8 +110,6 @@ public class IC2NuclearControl {
     public int alarmRange;
     public int SMPMaxAlarmRange;
     public int maxAlarmRange;
-    // public static boolean isHttpSensorAvailableClient;
-    // public static boolean isHttpSensorAvailableServer;
     public String httpSensorKey;
     public List<String> availableAlarms;
     public int remoteThermalMonitorEnergyConsumption;
@@ -207,11 +205,6 @@ public class IC2NuclearControl {
         proxy.registerTileEntities();
         CrossModLoader.init();
         if (Loader.isModLoaded("OpenComputers")) crossOC = new CrossOpenComputers();
-        // Registers waila stuff
-        // FMLInterModComms.sendMessage("Waila", "register",
-        // "shedar.mods.ic2.nuclearcontrol.crossmod.waila.CrossWaila.callbackRegister");
-        // CrossBigReactors.doStuff();
-        // CrossAppeng.RegistrationCheck();
     }
 
     @EventHandler

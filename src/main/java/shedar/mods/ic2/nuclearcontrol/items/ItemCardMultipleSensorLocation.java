@@ -171,7 +171,6 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         if (target == null) return CardState.NO_TARGET;
         TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (entity instanceof TileEntityBaseGenerator) {
-            // int production = ((TileEntityBaseGenerator)entity).production;
             int production = (int) EnergyNet.instance.getNodeStats(entity).getEnergyOut();
             card.setInt("production", production);
             card.setDouble("range_trigger_amount", (double) production);

@@ -114,8 +114,6 @@ public class TileEntityInfoPanel extends TileEntity
 
     private void setCard(ItemStack value) {
         card = value;
-        // IC2.network.get().updateTileEntityField(this, "card");
-        // ((NetworkManager)IC2.network.get()).updateTileEntityField(this, "card");
     }
 
     private void setSide(short f) {
