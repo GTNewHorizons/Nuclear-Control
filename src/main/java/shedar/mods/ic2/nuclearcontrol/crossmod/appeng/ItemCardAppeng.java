@@ -50,10 +50,10 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
         if (targetType == 1) {
             TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
             if (check instanceof TileEntityNetworkLink tileNetworkLink) {
-                card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
-                card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
-                card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
-                card.setInt("UsedItems", tileNetworkLink.getUSEDITEMTYPE());
+                card.setInt("ByteTotal", TileEntityNetworkLink.getTOTALBYTES());
+                card.setInt("UsedBytes", TileEntityNetworkLink.getUSEDBYTES());
+                card.setInt("ItemsTotal", TileEntityNetworkLink.getITEMTYPETOTAL());
+                card.setInt("UsedItems", TileEntityNetworkLink.getUSEDITEMTYPE());
                 return CardState.OK;
             } else {
                 return CardState.NO_TARGET;
@@ -88,10 +88,10 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
         if (targetType == 1) {
             TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
             if (check instanceof TileEntityNetworkLink tileNetworkLink) {
-                card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
-                card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
-                card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
-                card.setInt("UsedItems", tileNetworkLink.getUSEDITEMTYPE());
+                card.setInt("ByteTotal", TileEntityNetworkLink.getTOTALBYTES());
+                card.setInt("UsedBytes", TileEntityNetworkLink.getUSEDBYTES());
+                card.setInt("ItemsTotal", TileEntityNetworkLink.getITEMTYPETOTAL());
+                card.setInt("UsedItems", TileEntityNetworkLink.getUSEDITEMTYPE());
                 return CardState.OK;
             } else {
                 return CardState.NO_TARGET;

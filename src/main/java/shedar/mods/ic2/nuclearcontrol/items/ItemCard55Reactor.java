@@ -50,7 +50,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
         if (isReactorPart(check) || panel.getWorldObj().getBlock(target.posX, target.posY, target.posZ)
                 == Block.getBlockFromItem(IC2Items.getItem("reactorvessel").getItem())) {
-            IReactor reactor = this.getReactor(panel.getWorldObj(), target.posX, target.posY, target.posZ);
+            IReactor reactor = getReactor(panel.getWorldObj(), target.posX, target.posY, target.posZ);
             if (reactor != null) {
                 ReactorInfo info = IC2NuclearControl.instance.crossIc2.getReactorInfo((TileEntity) reactor);
                 if (info == null) {
@@ -77,7 +77,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (isReactorPart(check) || world.getBlock(target.posX, target.posY, target.posZ)
                 == Block.getBlockFromItem(IC2Items.getItem("reactorvessel").getItem())) {
-            IReactor reactor = this.getReactor(world, target.posX, target.posY, target.posZ);
+            IReactor reactor = getReactor(world, target.posX, target.posY, target.posZ);
             if (reactor != null) {
                 ReactorInfo info = IC2NuclearControl.instance.crossIc2.getReactorInfo((TileEntity) reactor);
                 if (info == null) {

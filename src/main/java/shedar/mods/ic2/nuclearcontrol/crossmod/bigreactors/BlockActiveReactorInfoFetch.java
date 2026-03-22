@@ -34,10 +34,10 @@ public class BlockActiveReactorInfoFetch extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockStates[0] = iconRegister.registerIcon("nuclearcontrol:BRBlock/blockReactorPart"); // This is the
+        blockStates[0] = iconRegister.registerIcon("nuclearcontrol:BRBlock/blockReactorPart"); // This is the
                                                                                                     // Default from Big
                                                                                                     // Reactors
-        this.blockStates[1] = iconRegister.registerIcon("nuclearcontrol:BRBlock/" + textureName); // This is the Mod's
+        blockStates[1] = iconRegister.registerIcon("nuclearcontrol:BRBlock/" + textureName); // This is the Mod's
                                                                                                   // Version of the
                                                                                                   // block
     }
@@ -62,18 +62,18 @@ public class BlockActiveReactorInfoFetch extends BlockContainer {
         TileEntity te = blockAccess.getTileEntity(x, y, z);
         if (te instanceof TileEntityBlockFetcher part) {
             if (!isReactorAssembled(part) || isOutwardsSide(part, side)) {
-                return this.blockStates[1];
+                return blockStates[1];
             }
         }
-        return this.blockStates[0];
+        return blockStates[0];
     }
 
     @Override
     public IIcon getIcon(int side, int metadata) {
         if (side > 1 && (metadata >= 0 && metadata < blockStates.length)) {
-            return this.blockStates[1];
+            return blockStates[1];
         }
-        return this.blockStates[0];
+        return blockStates[0];
     }
 
     private boolean isOutwardsSide(TileEntityBlockFetcher part, int side) {
