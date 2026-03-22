@@ -32,8 +32,8 @@ public class Vanilla {
 
         Recipes.advRecipes.addRecipe(
                 new ItemStack(vanillaKit),
-                new Object[] { "PL ", "FC ", 'P', Items.paper, 'C', "circuitBasic", 'F',
-                        IC2Items.getItem("frequencyTransmitter"), 'L', Blocks.lever });
+                "PL ", "FC ", 'P', Items.paper, 'C', "circuitBasic", 'F',
+                IC2Items.getItem("frequencyTransmitter"), 'L', Blocks.lever);
 
     }
 }
