@@ -38,7 +38,7 @@ public class CrossGregTech {
                 int maxDamage = rod.getMaxDamageEx();
                 int currentDmg = ItemRadioactiveCellIC.getDurabilityOfStack(stack);
                 int dmg = maxDamage - currentDmg;
-                return (dmg > 0) ? dmg : 0;
+                return Math.max(dmg, 0);
             } else {
                 return -1;
             }

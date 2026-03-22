@@ -305,7 +305,7 @@ public class TileEntityInfoPanel extends TileEntity
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
         dt = IC2NuclearControl.instance.dataRefreshPeriod;
-        dataTicker = (dt > tickRate) ? tickRate : dt;
+        dataTicker = Math.min(dt, tickRate);
         updatedataTicker = dataTicker;
         displaySettings = new HashMap<>(1);
         displaySettings.put((byte) 0, new HashMap<>());
