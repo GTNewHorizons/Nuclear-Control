@@ -51,7 +51,7 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
         boolean started = false;
         for (int i = 9; i >= 0; i--) {
             String text = card.getString("line_" + i);
-            if (text.equals("") && !started) {
+            if (text.isEmpty() && !started) {
                 continue;
             }
             started = true;
