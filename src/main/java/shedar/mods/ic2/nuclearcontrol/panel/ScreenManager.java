@@ -169,7 +169,7 @@ public class ScreenManager {
         if (!(part instanceof IScreenPart screenPart)) return;
         Screen screen = screenPart.getScreen();
         if (screen == null) {
-            if (part instanceof TileEntityInfoPanel && unusedPanels.get(getWorldKey(part.getWorldObj())).contains(part))
+            if (part instanceof TileEntityInfoPanel)
                 unusedPanels.get(getWorldKey(part.getWorldObj())).remove(part);
             return;
         }
@@ -243,8 +243,7 @@ public class ScreenManager {
             Screen screen = tryBuildFromPanel(panel);
             if (screen != null) {
                 screens.get(getWorldKey(extender.getWorldObj())).add(screen);
-                if (unusedPanels.get(getWorldKey(extender.getWorldObj())).contains(panel))
-                    unusedPanels.get(getWorldKey(extender.getWorldObj())).remove(panel);
+                unusedPanels.get(getWorldKey(extender.getWorldObj())).remove(panel);
             } else {
                 if (!unusedPanels.get(getWorldKey(extender.getWorldObj())).contains(panel))
                     unusedPanels.get(getWorldKey(extender.getWorldObj())).add(panel);
