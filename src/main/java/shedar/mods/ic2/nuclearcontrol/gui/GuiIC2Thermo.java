@@ -50,7 +50,7 @@ public class GuiIC2Thermo extends GuiContainer {
             if (thermo.getHeatLevel() != heat) {
                 ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(thermo, heat);
             }
-            textboxHeat.setText(new Integer(heat).toString());
+            textboxHeat.setText(Integer.toString(heat));
         }
     }
 

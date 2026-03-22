@@ -78,7 +78,7 @@ public class GuiRemoteThermo extends GuiContainer {
                 ((NetworkManager) IC2.network.get()).initiateClientTileEntityEvent(container.remoteThermo, heat);
             }
 
-            textboxHeat.setText(new Integer(heat).toString());
+            textboxHeat.setText(Integer.toString(heat));
         }
     }
 
