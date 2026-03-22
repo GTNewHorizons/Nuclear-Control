@@ -10,8 +10,8 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRangeTrigger;
 
 public class ContainerRangeTrigger extends Container {
 
-    public TileEntityRangeTrigger trigger;
-    public EntityPlayer player;
+    public final TileEntityRangeTrigger trigger;
+    public final EntityPlayer player;
 
     public ContainerRangeTrigger(EntityPlayer player, TileEntityRangeTrigger trigger) {
         super();

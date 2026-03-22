@@ -42,7 +42,7 @@ public class GuiInfoPanel extends GuiContainer {
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     protected String name;
-    protected ContainerInfoPanel container;
+    protected final ContainerInfoPanel container;
     public ItemStack prevCard;
     protected GuiTextField textboxTitle;
     protected boolean modified;

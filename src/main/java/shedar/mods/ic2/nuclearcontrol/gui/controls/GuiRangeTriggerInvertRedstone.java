@@ -18,7 +18,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIRangeTrigger.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    TileEntityRangeTrigger trigger;
+    final TileEntityRangeTrigger trigger;
     private boolean checked;
 
     public GuiRangeTriggerInvertRedstone(int id, int x, int y, TileEntityRangeTrigger trigger) {

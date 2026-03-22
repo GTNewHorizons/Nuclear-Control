@@ -19,9 +19,9 @@ import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 public class CardWrapperImpl implements ICardWrapper {
 
-    private ItemStack card;
-    private Map<String, Object> updateSet;
-    private byte slot;
+    private final ItemStack card;
+    private final Map<String, Object> updateSet;
+    private final byte slot;
 
     public CardWrapperImpl(ItemStack card, int slot) {
         if (!(card.getItem() instanceof IPanelDataSource)) {

@@ -11,7 +11,7 @@ import shedar.mods.ic2.nuclearcontrol.crossmod.ModLib;
 
 public class CrossGregTech {
 
-    private boolean _isApiAvailable;
+    private final boolean _isApiAvailable;
 
     public CrossGregTech() {
         if (Loader.isModLoaded(ModLib.GT)) {

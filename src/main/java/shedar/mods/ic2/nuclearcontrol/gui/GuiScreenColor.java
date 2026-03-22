@@ -15,15 +15,15 @@ public class GuiScreenColor extends GuiScreen {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIColors.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private GuiInfoPanel parentGui;
+    private final GuiInfoPanel parentGui;
 
-    protected int xSize = 226;
-    protected int ySize = 94;
+    protected final int xSize = 226;
+    protected final int ySize = 94;
     protected int guiLeft;
     protected int guiTop;
     private int colorText;
     private int colorBack;
-    private TileEntityInfoPanel panel;
+    private final TileEntityInfoPanel panel;
 
     public GuiScreenColor(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
         this.parentGui = parentGui;

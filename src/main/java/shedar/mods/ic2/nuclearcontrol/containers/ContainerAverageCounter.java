@@ -12,8 +12,8 @@ import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 public class ContainerAverageCounter extends Container {
 
-    public TileEntityAverageCounter averageCounter;
-    private EntityPlayer player;
+    public final TileEntityAverageCounter averageCounter;
+    private final EntityPlayer player;
     private double lastAverage = -1;
 
     public ContainerAverageCounter(EntityPlayer player, TileEntityAverageCounter averageCounter) {

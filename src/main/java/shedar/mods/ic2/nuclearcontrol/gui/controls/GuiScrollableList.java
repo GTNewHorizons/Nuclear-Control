@@ -76,8 +76,8 @@ public class GuiScrollableList extends GuiScreen {
 
     private List<GuiToggleButton> buttonListFull = new ArrayList<>();
     private List<GuiToggleButton> originalButtonList = new ArrayList<>();
-    private List<GuiToggleButton> visibleButtonList = new ArrayList<>();
-    private List<SmallGuiButton> functionButtons = new ArrayList<>();
+    private final List<GuiToggleButton> visibleButtonList = new ArrayList<>();
+    private final List<SmallGuiButton> functionButtons = new ArrayList<>();
     private final GuiAdvancedInfoPanel parentGui;
 
     private int scrollOffset = 0;

@@ -27,7 +27,7 @@ public class EnergyCounter extends Subblock {
             { I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_INPUT },
             { I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_INPUT, I_OUTPUT } };
 
-    private IIcon[] icons = new IIcon[2];
+    private final IIcon[] icons = new IIcon[2];
 
     public EnergyCounter() {
         super(DAMAGE, "tile.blockEnergyCounter");

@@ -17,8 +17,8 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemRemoteMonitor;
 
 public class ContainerRemoteMonitor extends Container {
 
-    protected ItemStack is;
-    public InventoryItem item;
+    protected final ItemStack is;
+    public final InventoryItem item;
 
     private static final String NBT_KEY_UID = "UID";
     private final ItemStack itemStack;

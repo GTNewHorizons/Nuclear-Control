@@ -74,7 +74,7 @@ public class IC2NuclearControl {
     public static CommonProxy proxy;
 
     // Mod's creative tab
-    public static IC2NCCreativeTabs tabIC2NC = new IC2NCCreativeTabs();
+    public static final IC2NCCreativeTabs tabIC2NC = new IC2NCCreativeTabs();
 
     // For logging purposes
     public static Logger logger;

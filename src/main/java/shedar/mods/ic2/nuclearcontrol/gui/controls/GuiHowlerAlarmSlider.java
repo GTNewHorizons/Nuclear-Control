@@ -21,11 +21,11 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 
     public float sliderValue;
     public boolean dragging;
-    private int minValue = 0;
+    private final int minValue = 0;
     private int maxValue = 256;
-    private int step = 8;
-    private String label;
-    private TileEntityHowlerAlarm alarm;
+    private final int step = 8;
+    private final String label;
+    private final TileEntityHowlerAlarm alarm;
 
     public GuiHowlerAlarmSlider(int id, int x, int y, String label, TileEntityHowlerAlarm alarm) {
         super(id, x, y, 107, 16, label);

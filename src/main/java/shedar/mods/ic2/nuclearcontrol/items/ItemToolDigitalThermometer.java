@@ -17,9 +17,9 @@ import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public class ItemToolDigitalThermometer extends ItemToolThermometer implements IElectricItem {
 
-    public int tier;
-    public int ratio;
-    public int transfer;
+    public final int tier;
+    public final int ratio;
+    public final int transfer;
 
     public ItemToolDigitalThermometer(int k, int l, int i1) {
         super();

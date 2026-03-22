@@ -31,7 +31,7 @@ public class IndustrialAlarm extends Subblock {
     public static final byte I_FACE_MID = 8;
     public static final byte I_FACE_BRIGHT = 9;
 
-    private IIcon[] icons = new IIcon[10];
+    private final IIcon[] icons = new IIcon[10];
 
     private static final byte[][] mapping = {
             { I_BACK, I_FACE_DARK, I_SIDES_HOR_DARK, I_SIDES_HOR_DARK, I_SIDES_HOR_DARK, I_SIDES_HOR_DARK },

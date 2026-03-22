@@ -17,7 +17,7 @@ public class GuiInfoPanelShowLabels extends GuiButton {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIInfoPanel.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private TileEntityInfoPanel panel;
+    private final TileEntityInfoPanel panel;
     private boolean checked;
 
     public GuiInfoPanelShowLabels(int id, int x, int y, TileEntityInfoPanel panel) {

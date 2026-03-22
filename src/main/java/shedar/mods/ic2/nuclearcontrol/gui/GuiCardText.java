@@ -16,11 +16,11 @@ public class GuiCardText extends GuiScreen implements ICardGui {
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private ICardSettingsWrapper wrapper;
-    private ICardWrapper helper;
+    private final ICardWrapper helper;
     private GuiTextArea textArea;
 
-    protected int xSize = 226;
-    protected int ySize = 146;
+    protected final int xSize = 226;
+    protected final int ySize = 146;
     protected int guiLeft;
     protected int guiTop;
 

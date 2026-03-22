@@ -15,7 +15,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public abstract class ItemSensorKitBase extends Item {
 
-    private String textureItemName;
+    private final String textureItemName;
 
     public ItemSensorKitBase(String textureItemName) {
         super();

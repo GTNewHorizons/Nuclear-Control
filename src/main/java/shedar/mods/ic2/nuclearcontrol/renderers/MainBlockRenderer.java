@@ -22,7 +22,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelEx
 @SideOnly(Side.CLIENT)
 public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
 
-    private int modelId;
+    private final int modelId;
 
     public MainBlockRenderer(int modelId) {
         this.modelId = modelId;

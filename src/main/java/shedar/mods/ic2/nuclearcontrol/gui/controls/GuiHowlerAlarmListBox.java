@@ -28,12 +28,12 @@ public class GuiHowlerAlarmListBox extends GuiButton {
     private static final int SCROLL_WIDTH = 10;
     private static final int SCROLL_BUTTON_HEIGHT = 8;
 
-    public int fontColor;
-    public int selectedColor;
-    public int selectedFontColor;
+    public final int fontColor;
+    public final int selectedColor;
+    public final int selectedFontColor;
     private int scrollTop;
-    private List<String> items;
-    private TileEntityHowlerAlarm alarm;
+    private final List<String> items;
+    private final TileEntityHowlerAlarm alarm;
     public int lineHeight;
     private int sliderHeight;
     public boolean dragging;

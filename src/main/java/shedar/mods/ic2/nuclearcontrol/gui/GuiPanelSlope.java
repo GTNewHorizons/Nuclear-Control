@@ -14,13 +14,13 @@ public class GuiPanelSlope extends GuiScreen {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUISlope.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    protected int xSize = 171;
-    protected int ySize = 94;
+    protected final int xSize = 171;
+    protected final int ySize = 94;
     protected int guiLeft;
     protected int guiTop;
 
-    private GuiInfoPanel parentGui;
-    private TileEntityAdvancedInfoPanel panel;
+    private final GuiInfoPanel parentGui;
+    private final TileEntityAdvancedInfoPanel panel;
 
     public GuiPanelSlope(GuiInfoPanel parentGui, TileEntityAdvancedInfoPanel panel) {
         this.parentGui = parentGui;

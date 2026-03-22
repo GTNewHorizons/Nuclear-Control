@@ -21,10 +21,10 @@ public class GuiInfoPanelCheckBox extends GuiButton {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIInfoPanel.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private TileEntityInfoPanel panel;
+    private final TileEntityInfoPanel panel;
     private boolean checked;
-    private PanelSetting setting;
-    private byte slot;
+    private final PanelSetting setting;
+    private final byte slot;
 
     public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, byte slot,
             FontRenderer renderer) {

@@ -26,7 +26,7 @@ public class RemoteThermo extends Subblock {
             { I_SIDE, I_SIDE, I_FACE, I_BACK, I_SIDE, I_SIDE }, { I_SIDE, I_SIDE, I_SIDE, I_SIDE, I_BACK, I_FACE },
             { I_SIDE, I_SIDE, I_SIDE, I_SIDE, I_FACE, I_BACK } };
 
-    private IIcon[] icons = new IIcon[4];
+    private final IIcon[] icons = new IIcon[4];
 
     public RemoteThermo() {
         super(DAMAGE, "tile.blockRemoteThermo");

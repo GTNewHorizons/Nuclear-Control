@@ -20,7 +20,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.LightDamages;
 public class BlockNuclearControlLight extends Block {
 
     public static Map<Integer, Boolean> subblocks;
-    private IIcon[] icon;
+    private final IIcon[] icon;
 
     public BlockNuclearControlLight() {
         super(Material.redstoneLight);

@@ -52,8 +52,8 @@ public class DyeUtil {
 
     private static class Dye {
 
-        private String name;
-        private int id;
+        private final String name;
+        private final int id;
         public final ItemStack[] DYES;
 
         private Dye(String name, int id) {

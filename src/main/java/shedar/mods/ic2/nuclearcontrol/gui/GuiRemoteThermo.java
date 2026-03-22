@@ -23,9 +23,9 @@ public class GuiRemoteThermo extends GuiContainer {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIRemoteThermo.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private ContainerRemoteThermo container;
+    private final ContainerRemoteThermo container;
     private GuiTextField textboxHeat = null;
-    private String name;
+    private final String name;
 
     public GuiRemoteThermo(Container container) {
         super(container);

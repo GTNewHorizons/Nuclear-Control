@@ -41,7 +41,7 @@ public class TileEntityEnergyCounter extends TileEntity
     private ItemStack[] inventory;
 
     protected int updateTicker;
-    protected int tickRate;
+    protected final int tickRate;
 
     public double counter;
 

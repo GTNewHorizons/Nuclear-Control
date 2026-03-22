@@ -13,8 +13,8 @@ import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
 
 public abstract class Subblock {
 
-    protected int damage;
-    protected String name;
+    protected final int damage;
+    protected final String name;
 
     public Subblock(int damage, String name) {
         this.damage = damage;

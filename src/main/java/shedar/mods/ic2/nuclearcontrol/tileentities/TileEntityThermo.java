@@ -39,7 +39,7 @@ public class TileEntityThermo extends TileEntity implements INetworkDataProvider
     public short facing;
     private boolean prevInvertRedstone;
     private boolean invertRedstone;
-    private static int[] Coords = new int[3];
+    private static final int[] Coords = new int[3];
 
     protected int updateTicker;
     protected int tickRate;

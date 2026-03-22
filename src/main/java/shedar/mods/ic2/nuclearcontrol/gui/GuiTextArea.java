@@ -11,12 +11,12 @@ import org.lwjgl.opengl.GL11;
 public class GuiTextArea extends Gui {
 
     private final int lineCount;
-    private int maxStringLength = 32;
+    private final int maxStringLength = 32;
     private int cursorCounter;
     private int cursorPosition = 0;
     private int cursorLine = 0;
     private boolean isFocused = false;
-    private String[] text;
+    private final String[] text;
 
     private final FontRenderer fontRenderer;
 

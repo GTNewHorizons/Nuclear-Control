@@ -18,7 +18,7 @@ public class PanelSetting {
     /**
      * A bit mask of the display setting
      */
-    public int displayBit;
+    public final int displayBit;
 
     /**
      * Identifier of the card. Should be same as {@link IPanelDataSource#getCardType()}.

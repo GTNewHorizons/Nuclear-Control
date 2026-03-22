@@ -64,9 +64,9 @@ public class TileEntityInfoPanel extends TileEntity
     private static final byte LOCATION_RANGE = 8;
 
     protected int updateTicker;
-    protected int dataTicker;
-    protected int tickRate;
-    protected int dt;
+    protected final int dataTicker;
+    protected final int tickRate;
+    protected final int dt;
     protected int updatedataTicker;
     public boolean init;
     public ItemStack[] inventory;

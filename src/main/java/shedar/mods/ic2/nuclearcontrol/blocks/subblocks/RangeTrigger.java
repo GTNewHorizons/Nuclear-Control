@@ -29,7 +29,7 @@ public class RangeTrigger extends Subblock {
             { I_SIDE, I_SIDE, I_SIDE, I_SIDE, I_BACK, I_FACE_GRAY },
             { I_SIDE, I_SIDE, I_SIDE, I_SIDE, I_FACE_GRAY, I_BACK } };
 
-    private IIcon[] icons = new IIcon[5];
+    private final IIcon[] icons = new IIcon[5];
 
     public RangeTrigger() {
         super(DAMAGE, "tile.blockRangeTrigger");

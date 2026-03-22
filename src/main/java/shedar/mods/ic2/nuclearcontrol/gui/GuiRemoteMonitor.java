@@ -28,8 +28,8 @@ import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 public class GuiRemoteMonitor extends GuiContainer {
 
     public static final int REMOTEMONITOR_GUI = 17;
-    private InventoryItem inv;
-    private EntityPlayer e;
+    private final InventoryItem inv;
+    private final EntityPlayer e;
 
     public GuiRemoteMonitor(InventoryPlayer inv, ItemStack stack, InventoryItem inventoryItem, EntityPlayer player) {
         super(new ContainerRemoteMonitor(inv, stack, inventoryItem));

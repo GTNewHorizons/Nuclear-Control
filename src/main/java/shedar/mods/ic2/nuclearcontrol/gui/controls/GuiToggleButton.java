@@ -22,8 +22,8 @@ public class GuiToggleButton extends GuiButton {
     private final PanelSetting setting;
     private boolean isChecked;
     int dragOffsetY = 0; // Stores how much offset from mouse click
-    private TileEntityAdvancedInfoPanel panel;
-    private String fullTitle;
+    private final TileEntityAdvancedInfoPanel panel;
+    private final String fullTitle;
 
     public GuiToggleButton(int id, int x, int y, String title, PanelSetting setting, TileEntityAdvancedInfoPanel panel,
             byte slot) {

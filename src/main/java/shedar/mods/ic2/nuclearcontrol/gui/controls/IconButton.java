@@ -12,8 +12,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class IconButton extends GuiButton {
 
-    private ResourceLocation textureLocation;
-    public int textureLeft;
+    private final ResourceLocation textureLocation;
+    public final int textureLeft;
     public int textureTop;
 
     public IconButton(int id, int left, int top, int width, int height, ResourceLocation textureLocation,

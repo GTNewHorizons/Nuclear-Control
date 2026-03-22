@@ -52,10 +52,10 @@ public class TileEntityAverageCounter extends TileEntity
     private short prevFacing;
     public short facing;
 
-    protected double[] data;
+    protected final double[] data;
     protected int index;
     protected int updateTicker;
-    protected int tickRate;
+    protected final int tickRate;
     protected short prevPeriod;
     public short period;
     protected int clientAverage = -1;

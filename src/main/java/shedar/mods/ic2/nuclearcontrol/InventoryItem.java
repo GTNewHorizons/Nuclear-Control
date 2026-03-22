@@ -11,10 +11,10 @@ import shedar.mods.ic2.nuclearcontrol.items.ItemRemoteMonitor;
 
 public class InventoryItem implements IInventory, ISlotItemFilter {
 
-    private String name = "Inventory Item";
+    private final String name = "Inventory Item";
 
     public static final int INV_SIZE = 1;
-    private ItemStack[] inventory = new ItemStack[INV_SIZE];
+    private final ItemStack[] inventory = new ItemStack[INV_SIZE];
 
     /** Provides NBT Tag Compound to reference */
     private final ItemStack invItem;

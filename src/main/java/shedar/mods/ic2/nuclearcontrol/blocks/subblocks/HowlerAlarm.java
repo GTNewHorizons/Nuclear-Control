@@ -28,7 +28,7 @@ public class HowlerAlarm extends Subblock {
             { I_SIDE_VERT, I_SIDE_VERT, I_SIDE_VERT, I_SIDE_VERT, I_BACK, I_FACE },
             { I_SIDE_VERT, I_SIDE_VERT, I_SIDE_VERT, I_SIDE_VERT, I_FACE, I_BACK } };
 
-    private IIcon[] icons = new IIcon[4];
+    private final IIcon[] icons = new IIcon[4];
 
     public HowlerAlarm() {
         super(DAMAGE, "tile.blockHowlerAlarm");

@@ -22,8 +22,8 @@ public class GuiAverageCounter extends GuiContainer {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIEnergyCounter.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private String name;
-    private ContainerAverageCounter container;
+    private final String name;
+    private final ContainerAverageCounter container;
 
     public GuiAverageCounter(Container container) {
         super(container);

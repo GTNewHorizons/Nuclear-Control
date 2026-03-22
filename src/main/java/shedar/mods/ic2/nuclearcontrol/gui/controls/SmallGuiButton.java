@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 public class SmallGuiButton extends GuiButton {
 
-    private Runnable onClick;
+    private final Runnable onClick;
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(
             "nuclearcontrol:textures/gui/GUIAdvancedInfoPanelLinesButtons.png");

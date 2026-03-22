@@ -18,9 +18,9 @@ public class GuiIndustrialAlarm extends GuiContainer {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIIndustrialAlarm.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private TileEntityHowlerAlarm alarm;
+    private final TileEntityHowlerAlarm alarm;
     private GuiHowlerAlarmSlider slider;
-    private String name;
+    private final String name;
 
     public GuiIndustrialAlarm(TileEntityHowlerAlarm alarm) {
         super(new ContainerEmpty(alarm));

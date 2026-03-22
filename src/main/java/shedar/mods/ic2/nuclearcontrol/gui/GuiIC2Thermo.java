@@ -23,9 +23,9 @@ public class GuiIC2Thermo extends GuiContainer {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIThermalMonitor.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private TileEntityThermo thermo;
+    private final TileEntityThermo thermo;
     private GuiTextField textboxHeat = null;
-    private String name;
+    private final String name;
 
     public GuiIC2Thermo(TileEntityThermo thermo) {
         super(new ContainerEmpty(thermo));

@@ -8,7 +8,7 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 
 public class ContainerEmpty extends Container {
 
-    public TileEntity entity;
+    public final TileEntity entity;
 
     public ContainerEmpty(TileEntity entity) {
         super();

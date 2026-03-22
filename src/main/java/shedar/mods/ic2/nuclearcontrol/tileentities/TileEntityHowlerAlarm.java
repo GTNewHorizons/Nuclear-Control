@@ -49,7 +49,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     private String prevSoundName;
 
     private int updateTicker;
-    protected int tickRate;
+    protected final int tickRate;
     private TileEntitySound sound;
     private int color;
 

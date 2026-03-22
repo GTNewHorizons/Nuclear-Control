@@ -32,7 +32,7 @@ public class PanelString {
     /**
      * Color of the centered part of the line.
      */
-    public int colorCenter = 0;
+    public final int colorCenter = 0;
 
     /**
      * Color of the right aligned part of the line.

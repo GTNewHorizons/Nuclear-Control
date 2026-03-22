@@ -12,8 +12,8 @@ import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 public class ContainerEnergyCounter extends Container {
 
-    public TileEntityEnergyCounter energyCounter;
-    private EntityPlayer player;
+    public final TileEntityEnergyCounter energyCounter;
+    private final EntityPlayer player;
     private double lastCounter = -1;
 
     public ContainerEnergyCounter(EntityPlayer player, TileEntityEnergyCounter energyCounter) {

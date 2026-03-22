@@ -48,7 +48,7 @@ public class TileEntityRangeTrigger extends TileEntity
     private static final int STATE_ACTIVE = 1;
 
     protected int updateTicker;
-    protected int tickRate;
+    protected final int tickRate;
     protected boolean init;
     private ItemStack[] inventory;
 

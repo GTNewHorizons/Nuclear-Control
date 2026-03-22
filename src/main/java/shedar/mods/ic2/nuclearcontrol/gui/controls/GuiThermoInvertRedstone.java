@@ -18,7 +18,7 @@ public class GuiThermoInvertRedstone extends GuiButton {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIThermalMonitor.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    TileEntityThermo thermo;
+    final TileEntityThermo thermo;
     private boolean checked;
 
     public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermo thermo) {

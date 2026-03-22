@@ -23,8 +23,8 @@ public class GuiRangeTrigger extends GuiContainer {
     private static final String TEXTURE_FILE = "nuclearcontrol:textures/gui/GUIRangeTrigger.png";
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
-    private String name;
-    private ContainerRangeTrigger container;
+    private final String name;
+    private final ContainerRangeTrigger container;
     private ItemStack prevCard;
 
     public GuiRangeTrigger(Container container) {

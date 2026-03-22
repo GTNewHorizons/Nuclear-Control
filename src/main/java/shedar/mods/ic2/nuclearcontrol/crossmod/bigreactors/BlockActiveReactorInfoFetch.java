@@ -16,8 +16,8 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 
 public class BlockActiveReactorInfoFetch extends BlockContainer {
 
-    private static IIcon[] blockStates = new IIcon[2];// Reference to 1.8...
-    private static String textureName = "RFReactorPart";
+    private static final IIcon[] blockStates = new IIcon[2];// Reference to 1.8...
+    private static final String textureName = "RFReactorPart";
 
     public BlockActiveReactorInfoFetch() {
         super(Material.iron);

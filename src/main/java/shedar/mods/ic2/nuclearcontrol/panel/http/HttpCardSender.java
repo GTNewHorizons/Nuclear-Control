@@ -24,11 +24,11 @@ public class HttpCardSender {
 
     private static final String ID_URL_TEMPLATE = "http://sensors.modstats.org/api/v1/register?p=";
     private static final String DATA_URL_TEMPLATE = "http://sensors.modstats.org/api/v1/report";
-    public static HttpCardSender instance = new HttpCardSender();
+    public static final HttpCardSender instance = new HttpCardSender();
 
     @SuppressWarnings("rawtypes")
     private final ConcurrentHashMap<Long, JsonNodeBuilder> unsent = new ConcurrentHashMap<Long, JsonNodeBuilder>();
-    public ConcurrentLinkedQueue<Long> availableIds = new ConcurrentLinkedQueue<Long>();
+    public final ConcurrentLinkedQueue<Long> availableIds = new ConcurrentLinkedQueue<Long>();
     // single thread executor service with a maximum queue size of 64 elements
     private final ExecutorService executor = new ThreadPoolExecutor(
             1,

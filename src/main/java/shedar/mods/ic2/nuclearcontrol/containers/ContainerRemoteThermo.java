@@ -11,8 +11,8 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityRemoteThermo;
 
 public class ContainerRemoteThermo extends Container {
 
-    public TileEntityRemoteThermo remoteThermo;
-    private EntityPlayer player;
+    public final TileEntityRemoteThermo remoteThermo;
+    private final EntityPlayer player;
     private double lastEnergy = -1;
 
     public ContainerRemoteThermo(EntityPlayer player, TileEntityRemoteThermo remoteThermo) {

@@ -24,7 +24,7 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketServerUpdate;
 
 public class ChannelHandler {
 
-    public static SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel("IC2NC");
+    public static final SimpleNetworkWrapper network = NetworkRegistry.INSTANCE.newSimpleChannel("IC2NC");
 
     public static void init() {
         network.registerMessage(PacketAlarm.class, PacketAlarm.class, 1, Side.CLIENT);

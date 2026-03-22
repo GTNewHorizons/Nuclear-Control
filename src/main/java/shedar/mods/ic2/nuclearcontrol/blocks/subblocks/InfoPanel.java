@@ -35,7 +35,7 @@ public class InfoPanel extends Subblock {
             { I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_BACK, I_COLOR_DEFAULT },
             { I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_PANEL_SIDE, I_COLOR_DEFAULT, I_PANEL_BACK } };
 
-    protected IIcon[] icons = new IIcon[486];
+    protected final IIcon[] icons = new IIcon[486];
 
     public InfoPanel() {
         super(DAMAGE, "tile.blockInfoPanel");

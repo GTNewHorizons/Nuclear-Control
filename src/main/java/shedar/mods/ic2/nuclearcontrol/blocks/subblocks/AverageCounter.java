@@ -27,7 +27,7 @@ public class AverageCounter extends Subblock {
             { I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_INPUT },
             { I_OUTPUT, I_OUTPUT, I_OUTPUT, I_OUTPUT, I_INPUT, I_OUTPUT } };
 
-    private IIcon[] icons = new IIcon[2];
+    private final IIcon[] icons = new IIcon[2];
 
     public AverageCounter() {
         super(DAMAGE, "tile.blockAverageCounter");

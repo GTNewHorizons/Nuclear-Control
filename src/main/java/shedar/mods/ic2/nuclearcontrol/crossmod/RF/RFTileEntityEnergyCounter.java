@@ -11,7 +11,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 
 public class RFTileEntityEnergyCounter extends TileEntityEnergyCounter implements IEnergyHandler {
 
-    protected EnergyStorage storage = new EnergyStorage(32000);
+    protected final EnergyStorage storage = new EnergyStorage(32000);
     private int rec;
     private int send;
 
