@@ -33,11 +33,11 @@ public class CrossAppeng {
         GameRegistry.registerItem(cardAppeng, "CardAppeng");
         GameRegistry.registerTileEntity(TileEntityNetworkLink.class, "networkLink");
 
-        if (IC2NuclearControl.instance.recipes.toLowerCase().equals("normal")) {
+        if (IC2NuclearControl.instance.recipes.equalsIgnoreCase("normal")) {
             AppengRecipes.addRecipesToRegistry();
         }
 
-        if (IC2NuclearControl.instance.recipes.toLowerCase().equals("gregtech")) {
+        if (IC2NuclearControl.instance.recipes.equalsIgnoreCase("gregtech")) {
             AppengRecipes.addGregtechRecipes();
         }
     }

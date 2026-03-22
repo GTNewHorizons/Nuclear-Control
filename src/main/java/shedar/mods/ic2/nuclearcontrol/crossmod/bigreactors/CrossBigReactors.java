@@ -35,11 +35,11 @@ public class CrossBigReactors {
         GameRegistry.registerItem(kitRFsensor, "NC-BRrfsensorKit");
         GameRegistry.registerTileEntity(TileEntityBlockFetcher.class, "NC-BRinfoFetch");
 
-        if (IC2NuclearControl.instance.recipes.toLowerCase().equals("normal")) {
+        if (IC2NuclearControl.instance.recipes.equalsIgnoreCase("normal")) {
             BigReactorsRecipesNew.addRecipes();
         }
 
-        if (IC2NuclearControl.instance.recipes.toLowerCase().equals("gregtech")) {
+        if (IC2NuclearControl.instance.recipes.equalsIgnoreCase("gregtech")) {
             BigReactorsRecipesGregtech.addRecipes();
         }
     }
