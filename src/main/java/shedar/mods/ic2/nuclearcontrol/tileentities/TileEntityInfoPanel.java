@@ -754,19 +754,15 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public boolean isItemValid(int slotIndex, ItemStack itemstack) {
-        switch (slotIndex) {
-            case SLOT_CARD:
-                return itemstack.getItem() instanceof IPanelDataSource;
-            case SLOT_UPGRADE_RANGE:
-                return itemstack.getItem() instanceof ItemUpgrade
-                        && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-            case SLOT_UPGRADE_COLOR:
-                return itemstack.getItem() instanceof ItemUpgrade
-                        && (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR
-                                || itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB);
-            default:
-                return false;
-        }
+        return switch (slotIndex) {
+            case SLOT_CARD -> itemstack.getItem() instanceof IPanelDataSource;
+            case SLOT_UPGRADE_RANGE -> itemstack.getItem() instanceof ItemUpgrade
+                    && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+            case SLOT_UPGRADE_COLOR -> itemstack.getItem() instanceof ItemUpgrade
+                    && (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR
+                    || itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB);
+            default -> false;
+        };
 
     }
 
@@ -840,21 +836,12 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void rotate() {
-        int r;
-        switch (rotation) {
-            case 0:
-                r = 1;
-                break;
-            case 1:
-                r = 3;
-                break;
-            case 3:
-                r = 2;
-                break;
-            default:
-                r = 0;
-                break;
-        }
+        int r = switch (rotation) {
+            case 0 -> 1;
+            case 1 -> 3;
+            case 3 -> 2;
+            default -> 0;
+        };
         setRotation(r);
     }
 

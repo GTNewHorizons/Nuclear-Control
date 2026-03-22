@@ -455,21 +455,12 @@ public class TileEntityRemoteThermo extends TileEntityThermo
 
     @Override
     public void rotate() {
-        int r;
-        switch (rotation) {
-            case 0:
-                r = 1;
-                break;
-            case 1:
-                r = 3;
-                break;
-            case 3:
-                r = 2;
-                break;
-            default:
-                r = 0;
-                break;
-        }
+        int r = switch (rotation) {
+            case 0 -> 1;
+            case 1 -> 3;
+            case 3 -> 2;
+            default -> 0;
+        };
         setRotation(r);
     }
 

@@ -302,17 +302,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     }
 
     private int getIconPowerTopOffset(byte mode) {
-        switch (mode) {
-            case TileEntityAdvancedInfoPanel.POWER_REDSTONE:
-                return 15 + 16 * 2;
-            case TileEntityAdvancedInfoPanel.POWER_INVERTED:
-                return 15 + 16 * 3;
-            case TileEntityAdvancedInfoPanel.POWER_ON:
-                return 15 + 16 * 4;
-            case TileEntityAdvancedInfoPanel.POWER_OFF:
-                return 15 + 16 * 5;
-        }
-        return 15 + 16 * 2;
+        return switch (mode) {
+            case TileEntityAdvancedInfoPanel.POWER_REDSTONE -> 15 + 16 * 2;
+            case TileEntityAdvancedInfoPanel.POWER_INVERTED -> 15 + 16 * 3;
+            case TileEntityAdvancedInfoPanel.POWER_ON -> 15 + 16 * 4;
+            case TileEntityAdvancedInfoPanel.POWER_OFF -> 15 + 16 * 5;
+            default -> 15 + 16 * 2;
+        };
     }
 
     @Override

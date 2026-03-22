@@ -46,17 +46,12 @@ public enum CardState {
     }
 
     public static CardState fromInteger(int value) {
-        switch (value) {
-            case 1:
-                return OK;
-            case 2:
-                return NO_TARGET;
-            case 3:
-                return OUT_OF_RANGE;
-            case 4:
-                return INVALID_CARD;
-            default:
-                return CUSTOM_ERROR;
-        }
+        return switch (value) {
+            case 1 -> OK;
+            case 2 -> NO_TARGET;
+            case 3 -> OUT_OF_RANGE;
+            case 4 -> INVALID_CARD;
+            default -> CUSTOM_ERROR;
+        };
     }
 }

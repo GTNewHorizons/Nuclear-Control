@@ -79,43 +79,34 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         int damage = stack.getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return "item.itemCounterSensorLocationCard";
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return "item.ItemLiquidSensorLocationCard";
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return "item.ItemGeneratorSensorLocationCard";
-        }
-        return "";
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> "item.itemCounterSensorLocationCard";
+            case ItemKitMultipleSensor.TYPE_LIQUID -> "item.ItemLiquidSensorLocationCard";
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> "item.ItemGeneratorSensorLocationCard";
+            default -> "";
+        };
     }
 
     @Override
     public CardState update(TileEntity panel, ICardWrapper card, int range) {
         int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return updateCounter(panel.getWorldObj(), card, range);
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return updateLiquid(panel.getWorldObj(), card, range);
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return updateGenerator(panel.getWorldObj(), card, range);
-        }
-        return CardState.INVALID_CARD;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> updateCounter(panel.getWorldObj(), card, range);
+            case ItemKitMultipleSensor.TYPE_LIQUID -> updateLiquid(panel.getWorldObj(), card, range);
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> updateGenerator(panel.getWorldObj(), card, range);
+            default -> CardState.INVALID_CARD;
+        };
     }
 
     @Override
     public CardState update(World world, ICardWrapper card, int range) {
         int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return updateCounter(world, card, range);
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return updateLiquid(world, card, range);
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return updateGenerator(world, card, range);
-        }
-        return CardState.INVALID_CARD;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> updateCounter(world, card, range);
+            case ItemKitMultipleSensor.TYPE_LIQUID -> updateLiquid(world, card, range);
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> updateGenerator(world, card, range);
+            default -> CardState.INVALID_CARD;
+        };
     }
 
     public CardState updateLiquid(World world, ICardWrapper card, int range) {
@@ -181,44 +172,35 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     @Override
     public List<PanelSetting> getSettingsList(ICardWrapper card) {
         int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return getSettingsListCounter();
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return getSettingsListLiquid();
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return null;
-        }
-        return null;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> getSettingsListCounter();
+            case ItemKitMultipleSensor.TYPE_LIQUID -> getSettingsListLiquid();
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> null;
+            default -> null;
+        };
     }
 
     @Override
     public UUID getCardType(ICardWrapper card) {
         int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return CARD_TYPE_COUNTER;
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return CARD_TYPE_LIQUID;
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return CARD_TYPE_GENERATOR;
-        }
-        return null;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> CARD_TYPE_COUNTER;
+            case ItemKitMultipleSensor.TYPE_LIQUID -> CARD_TYPE_LIQUID;
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> CARD_TYPE_GENERATOR;
+            default -> null;
+        };
     }
 
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
         int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return getStringDataCounter(displaySettings, card, showLabels);
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return getStringDataLiquid(displaySettings, card, showLabels);
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return getStringDataGenerator(displaySettings, card, showLabels);
-        }
-        return null;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> getStringDataCounter(displaySettings, card, showLabels);
+            case ItemKitMultipleSensor.TYPE_LIQUID -> getStringDataLiquid(displaySettings, card, showLabels);
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> getStringDataGenerator(displaySettings, card, showLabels);
+            default -> null;
+        };
     }
 
     public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, ICardWrapper card,
@@ -301,15 +283,12 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     @Override
     public IIcon getIconFromDamage(int damage) {
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return iconCounter;
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return iconLiquid;
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return iconGenerator;
-        }
-        return null;
+        return switch (damage) {
+            case ItemKitMultipleSensor.TYPE_COUNTER -> iconCounter;
+            case ItemKitMultipleSensor.TYPE_LIQUID -> iconLiquid;
+            case ItemKitMultipleSensor.TYPE_GENERATOR -> iconGenerator;
+            default -> null;
+        };
     }
 
     public List<PanelSetting> getSettingsListCounter() {

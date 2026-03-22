@@ -421,13 +421,11 @@ public class TileEntityRangeTrigger extends TileEntity
 
     @Override
     public boolean isItemValid(int slotIndex, ItemStack itemstack) {
-        switch (slotIndex) {
-            case SLOT_CARD:
-                return itemstack.getItem() instanceof IRangeTriggerable;
-            default:
-                return itemstack.getItem() instanceof ItemUpgrade
-                        && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-        }
+        return switch (slotIndex) {
+            case SLOT_CARD -> itemstack.getItem() instanceof IRangeTriggerable;
+            default -> itemstack.getItem() instanceof ItemUpgrade
+                    && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+        };
 
     }
 
@@ -495,21 +493,12 @@ public class TileEntityRangeTrigger extends TileEntity
 
     @Override
     public void rotate() {
-        int r;
-        switch (rotation) {
-            case 0:
-                r = 1;
-                break;
-            case 1:
-                r = 3;
-                break;
-            case 3:
-                r = 2;
-                break;
-            default:
-                r = 0;
-                break;
-        }
+        int r = switch (rotation) {
+            case 0 -> 1;
+            case 1 -> 3;
+            case 3 -> 2;
+            default -> 0;
+        };
         setRotation(r);
     }
 

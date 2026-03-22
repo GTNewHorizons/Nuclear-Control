@@ -42,16 +42,12 @@ public class ItemUpgrade extends Item {
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
         int damage = itemStack.getItemDamage();
-        switch (damage) {
-            case DAMAGE_RANGE:
-                return "item.itemRangeUpgrade";
-            case DAMAGE_COLOR:
-                return "item.ItemColorUpgrade";
-            case DAMAGE_WEB:
-                return "item.ItemWebUpgrade";
-            default:
-                return "";
-        }
+        return switch (damage) {
+            case DAMAGE_RANGE -> "item.itemRangeUpgrade";
+            case DAMAGE_COLOR -> "item.ItemColorUpgrade";
+            case DAMAGE_WEB -> "item.ItemWebUpgrade";
+            default -> "";
+        };
     }
 
     @Override

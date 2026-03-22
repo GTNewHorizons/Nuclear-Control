@@ -40,15 +40,12 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         int damage = stack.getItemDamage();
-        switch (damage) {
-            case TYPE_COUNTER:
-                return "item.ItemCounterSensorKit";
-            case TYPE_LIQUID:
-                return "item.ItemLiquidSensorKit";
-            case TYPE_GENERATOR:
-                return "item.ItemGeneratorSensorKit";
-        }
-        return "";
+        return switch (damage) {
+            case TYPE_COUNTER -> "item.ItemCounterSensorKit";
+            case TYPE_LIQUID -> "item.ItemLiquidSensorKit";
+            case TYPE_GENERATOR -> "item.ItemGeneratorSensorKit";
+            default -> "";
+        };
     }
 
     @Override
@@ -60,15 +57,12 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase {
 
     @Override
     public IIcon getIconFromDamage(int damage) {
-        switch (damage) {
-            case TYPE_COUNTER:
-                return iconCounter;
-            case TYPE_LIQUID:
-                return iconLiquid;
-            case TYPE_GENERATOR:
-                return iconGenerator;
-        }
-        return null;
+        return switch (damage) {
+            case TYPE_COUNTER -> iconCounter;
+            case TYPE_LIQUID -> iconLiquid;
+            case TYPE_GENERATOR -> iconGenerator;
+            default -> null;
+        };
     }
 
     @Override
@@ -102,15 +96,12 @@ public class ItemKitMultipleSensor extends ItemSensorKitBase {
 
     @Override
     protected ItemStack getItemStackByDamage(int damage) {
-        switch (damage) {
-            case TYPE_COUNTER:
-                return new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_COUNTER);
-            case TYPE_LIQUID:
-                return new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_LIQUID);
-            case TYPE_GENERATOR:
-                return new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_GENERATOR);
-        }
-        return null;
+        return switch (damage) {
+            case TYPE_COUNTER -> new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_COUNTER);
+            case TYPE_LIQUID -> new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_LIQUID);
+            case TYPE_GENERATOR -> new ItemStack(IC2NuclearControl.itemMultipleSensorLocationCard, 1, TYPE_GENERATOR);
+            default -> null;
+        };
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

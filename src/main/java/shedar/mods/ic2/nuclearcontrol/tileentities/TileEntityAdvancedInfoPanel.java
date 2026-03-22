@@ -101,18 +101,13 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
     @Override
     public boolean isItemValid(int slotIndex, ItemStack itemstack) {
-        switch (slotIndex) {
-            case SLOT_CARD1:
-            case SLOT_CARD2:
-            case SLOT_CARD3:
-                return itemstack.getItem() instanceof IPanelDataSource;
-            case SLOT_UPGRADE_RANGE:
-                return itemstack.getItem() instanceof ItemUpgrade
-                        && (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE
-                                || itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB);
-            default:
-                return false;
-        }
+        return switch (slotIndex) {
+            case SLOT_CARD1, SLOT_CARD2, SLOT_CARD3 -> itemstack.getItem() instanceof IPanelDataSource;
+            case SLOT_UPGRADE_RANGE -> itemstack.getItem() instanceof ItemUpgrade
+                    && (itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE
+                    || itemstack.getItemDamage() == ItemUpgrade.DAMAGE_WEB);
+            default -> false;
+        };
     }
 
     @Override
@@ -206,32 +201,24 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     }
 
     public byte getNextPowerMode() {
-        switch (powerMode) {
-            case POWER_REDSTONE:
-                return POWER_INVERTED;
-            case POWER_INVERTED:
-                return POWER_ON;
-            case POWER_ON:
-                return POWER_OFF;
-            case POWER_OFF:
-                return POWER_REDSTONE;
-        }
-        return POWER_REDSTONE;
+        return switch (powerMode) {
+            case POWER_REDSTONE -> POWER_INVERTED;
+            case POWER_INVERTED -> POWER_ON;
+            case POWER_ON -> POWER_OFF;
+            case POWER_OFF -> POWER_REDSTONE;
+            default -> POWER_REDSTONE;
+        };
     }
 
     @Override
     public boolean getPowered() {
-        switch (powerMode) {
-            case POWER_ON:
-                return true;
-            case POWER_OFF:
-                return false;
-            case POWER_REDSTONE:
-                return powered;
-            case POWER_INVERTED:
-                return !powered;
-        }
-        return false;
+        return switch (powerMode) {
+            case POWER_ON -> true;
+            case POWER_OFF -> false;
+            case POWER_REDSTONE -> powered;
+            case POWER_INVERTED -> !powered;
+            default -> false;
+        };
     }
     // </editor-fold>
 

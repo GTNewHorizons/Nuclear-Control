@@ -83,21 +83,13 @@ public class GuiAverageCounter extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton guiButton) {
-        int event = 0;
-        switch (guiButton.id) {
-            case 1:
-                event = 1;
-                break;
-            case 2:
-                event = 3;
-                break;
-            case 3:
-                event = 5;
-                break;
-            case 4:
-                event = 10;
-                break;
-        }
+        int event = switch (guiButton.id) {
+            case 1 -> 1;
+            case 2 -> 3;
+            case 3 -> 5;
+            case 4 -> 10;
+            default -> 0;
+        };
         IC2.network.get().initiateClientTileEntityEvent(container.averageCounter, event);
     }
 }
