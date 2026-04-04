@@ -137,7 +137,7 @@ public class ScreenManager {
     }
 
     private Screen tryBuildFromPanel(TileEntityInfoPanel panel) {
-        boolean advanced = panel instanceof TileEntityAdvancedInfoPanel;
+        boolean isAdvanced = panel instanceof TileEntityAdvancedInfoPanel;
         Screen screen = new Screen();
         screen.maxX = screen.minX = panel.xCoord;
         screen.maxY = screen.minY = panel.yCoord;
@@ -146,12 +146,13 @@ public class ScreenManager {
         int dx = Facing.offsetsXForSide[panel.facing] != 0 ? 0 : -1;
         int dy = Facing.offsetsYForSide[panel.facing] != 0 ? 0 : -1;
         int dz = Facing.offsetsZForSide[panel.facing] != 0 ? 0 : -1;
-        updateScreenBound(screen, dx, 0, 0, panel.getWorldObj(), advanced);
-        updateScreenBound(screen, -dx, 0, 0, panel.getWorldObj(), advanced);
-        updateScreenBound(screen, 0, dy, 0, panel.getWorldObj(), advanced);
-        updateScreenBound(screen, 0, -dy, 0, panel.getWorldObj(), advanced);
-        updateScreenBound(screen, 0, 0, dz, panel.getWorldObj(), advanced);
-        updateScreenBound(screen, 0, 0, -dz, panel.getWorldObj(), advanced);
+        updateScreenBound(screen, dx, 0, 0, panel.getWorldObj(), isAdvanced);
+        updateScreenBound(screen, -dx, 0, 0, panel.getWorldObj(), isAdvanced);
+        updateScreenBound(screen, 0, dy, 0, panel.getWorldObj(), isAdvanced);
+        updateScreenBound(screen, 0, -dy, 0, panel.getWorldObj(), isAdvanced);
+        updateScreenBound(screen, 0, 0, dz, panel.getWorldObj(), isAdvanced);
+        updateScreenBound(screen, 0, 0, -dz, panel.getWorldObj(), isAdvanced);
+        if (isAdvanced) ((TileEntityAdvancedInfoPanel) panel).screenModelInfo.update(screen);
         screen.init(false, panel.getWorldObj());
         panel.updateData();
         return screen;
