@@ -95,8 +95,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
             }
             if (tileEntity instanceof TileEntityAdvancedInfoPanel) {
                 TileEntityAdvancedInfoPanel advancedCore = (TileEntityAdvancedInfoPanel) tileEntity;
-                if (advancedCore.getScreen() != null)
-                    advancedCore.screenModelInfo.renderScreen(block);
+                if (advancedCore.getScreen() != null) advancedCore.screenModelInfo.renderScreen(block);
                 else renderer.renderStandardBlock(block, x, y, z);
 
             } else if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender) {

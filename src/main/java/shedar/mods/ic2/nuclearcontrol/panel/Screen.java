@@ -10,6 +10,7 @@ import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class Screen {
+
     public int minX;
     public int minY;
     public int minZ;

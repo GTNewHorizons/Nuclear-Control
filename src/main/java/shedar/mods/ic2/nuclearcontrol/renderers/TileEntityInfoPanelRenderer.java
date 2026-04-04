@@ -34,7 +34,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         renderPanelTileEntity(panel, joinedPanelStrings, x, y, z);
     }
 
-    private void renderPanelTileEntity(TileEntityInfoPanel panel, List<PanelString> panelStrings, double x, double y, double z) {
+    private void renderPanelTileEntity(TileEntityInfoPanel panel, List<PanelString> panelStrings, double x, double y,
+            double z) {
         GL11.glPushMatrix();
         GL11.glPolygonOffset(-10, -10);
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);

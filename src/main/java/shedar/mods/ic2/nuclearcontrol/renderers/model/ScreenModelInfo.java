@@ -1,12 +1,14 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 
@@ -21,7 +23,7 @@ public class ScreenModelInfo {
     private static final double Vmi = advSideTex.getMinV();
 
     private final double[] coordinates = new double[24];
-    private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, {        0, 4, 7, 3 }, { 6, 5, 1, 2 },
+    private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
             { 5, 4, 0, 1 }, { 2, 3, 7, 6 } };
     private static final byte[][] normalMap = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
             { 1, 0, 0 } };
@@ -220,15 +222,11 @@ public class ScreenModelInfo {
         addPoint(points[3], u2, v1);
     }
 
-    private void drawScreenWithBorder(byte[] points, byte[] n, double u1, double u2, double v1, double v2, double border, int facing) {
+    private void drawScreenWithBorder(byte[] points, byte[] n, double u1, double u2, double v1, double v2,
+            double border, int facing) {
         final Tessellator tess = Tessellator.instance;
         tess.setNormal(n[0], n[1], n[2]);
-        double[][] UVMap = {
-            { u1, v1 },
-            { u1, v2 },
-            { u2, v2 },
-            { u2, v1 }
-        };
+        double[][] UVMap = { { u1, v1 }, { u1, v2 }, { u2, v2 }, { u2, v1 } };
 
         double epsilon = 0.015;
 
