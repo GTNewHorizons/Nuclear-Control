@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.Constants;
@@ -101,6 +102,12 @@ public class TileEntityInfoPanel extends TileEntity
     public boolean colored;
 
     private final Map<Integer, List<PanelString>> cardData;
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        Screen screen = getScreen();
+        return screen == null ? super.getRenderBoundingBox() : screen.getBoundingBox();
+    }
 
     @Override
     public short getFacing() {
