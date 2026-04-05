@@ -17,18 +17,24 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.IC2Cross.ReactorInfo;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
-public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements IRemoteSensor {
+
+import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
+
+public class ItemCard55Reactor extends ItemCardBase implements IRemoteSensor, IRangeTriggerable {
 
     public ItemCard55Reactor() {
-        this.setTextureName("nuclearcontrol:cardReactor");
+        super("nuclearcontrol:cardReactor");
     }
 
     public static final int DISPLAY_ON = 1;
@@ -44,52 +50,31 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        // int targetType = card.getInt("targetType");
-        TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-        if (isReactorPart(check) || panel.getWorldObj().getBlock(target.posX, target.posY, target.posZ)
-                == Block.getBlockFromItem(IC2Items.getItem("reactorvessel").getItem())) {
-            IReactor reactor = this.getReactor(panel.getWorldObj(), target.posX, target.posY, target.posZ);
-            if (reactor != null) {
-                ReactorInfo info = IC2NuclearControl.instance.crossIc2.getReactorInfo((TileEntity) reactor);
-                if (info == null) {
-                    return CardState.INVALID_CARD;
-                }
-                card.setBoolean("Online", info.isOnline);
-                card.setInt("outputTank", info.outTank);
-                card.setInt("inputTank", info.inTank);
-                card.setInt("HeatUnits", info.emitHeat);
-                card.setInt("CoreTempurature", info.coreTemp);
-                return CardState.OK;
-            } else {
-                return CardState.INVALID_CARD;
-            }
-        } else {
-            return CardState.NO_TARGET;
-        }
+    public FFReactorData getLayout() {
+        return new FFReactorData();
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        FFReactorData data = (FFReactorData) layout;
+        ChunkCoordinates target = data.getTarget();
         if (target == null) return CardState.NO_TARGET;
         // int targetType = card.getInt("targetType");
         TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (isReactorPart(check) || world.getBlock(target.posX, target.posY, target.posZ)
                 == Block.getBlockFromItem(IC2Items.getItem("reactorvessel").getItem())) {
-            IReactor reactor = this.getReactor(world, target.posX, target.posY, target.posZ);
+            IReactor reactor = getReactor(world, target.posX, target.posY, target.posZ);
             if (reactor != null) {
                 ReactorInfo info = IC2NuclearControl.instance.crossIc2.getReactorInfo((TileEntity) reactor);
                 if (info == null) {
                     return CardState.INVALID_CARD;
                 }
-                card.setBoolean("Online", info.isOnline);
-                card.setInt("outputTank", info.outTank);
-                card.setInt("inputTank", info.inTank);
-                card.setInt("HeatUnits", info.emitHeat);
-                card.setInt("CoreTempurature", info.coreTemp);
+                data.online.set(info.isOnline);
+                data.outputTank.set(info.outTank);
+                data.inputTank.set(info.inTank);
+                data.heatUnits.set(info.emitHeat);
+                data.coreTempurature.set(info.coreTemp);
+
                 return CardState.OK;
             } else {
                 return CardState.INVALID_CARD;
@@ -124,15 +109,16 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
             boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
+        FFReactorData data = (FFReactorData) layout;
 
-        double tOut = card.getInt("outputTank");
-        double tIn = card.getInt("inputTank");
-        double heatUnits = card.getInt("HeatUnits");
-        double coreTemp = card.getInt("CoreTempurature");
+        double tOut = data.outputTank.get();
+        double tIn = data.inputTank.get();
+        double heatUnits = data.heatUnits.get();
+        double coreTemp = data.coreTempurature.get();
 
         // Temperature
         if (displaySettings.getSetting(DISPLAY_HeatUnits)) {
@@ -166,7 +152,7 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
         int txtColor = 0;
         String text;
         if (displaySettings.getSetting(DISPLAY_ON)) {
-            boolean reactorPowered = card.getBoolean("Online");
+            boolean reactorPowered = data.online.get();
             if (reactorPowered) {
                 txtColor = 0x00ff00;
                 text = LangHelper.translate("msg.nc.InfoPanelOn");
@@ -206,5 +192,13 @@ public class ItemCard55Reactor extends ItemCardEnergySensorLocation implements I
                         DISPLAY_CoreTemp,
                         CARD_TYPE));
         return result;
+    }
+
+    public static class FFReactorData extends NBTCardLayout {
+        public DataAccessor<Boolean> online = boolAccessor("Online");
+        public DataAccessor<Integer> outputTank = intAccessor("outputTank");
+        public DataAccessor<Integer> inputTank = intAccessor("inputTank");
+        public DataAccessor<Integer> heatUnits = intAccessor("HeatUnits");
+        public DataAccessor<Integer> coreTempurature = intAccessor("CoreTempurature");
     }
 }

@@ -23,6 +23,10 @@ import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -45,17 +49,23 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
+    public RSLData getLayout() {
+        return new RSLData();
+    }
+
+    @Override
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        RSLData data = (RSLData) layout;
+        ChunkCoordinates target = data.getTarget();
         if (target == null) return CardState.NO_TARGET;
-        IReactor reactor = NuclearHelper.getReactorAt(panel.getWorldObj(), target.posX, target.posY, target.posZ);
+        IReactor reactor = NuclearHelper.getReactorAt(world, target.posX, target.posY, target.posZ);
         if (reactor != null) {
-            card.setInt("heat", reactor.getHeat());
-            card.setInt("maxHeat", reactor.getMaxHeat());
-            card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
-            card.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
+            data.heat.set(reactor.getHeat());
+            data.maxHeat.set(reactor.getMaxHeat());
+            data.reactorPowered.set(NuclearHelper.isProducing(reactor));
+            data.output.set((int) Math.round(reactor.getReactorEUEnergyOutput()));
             boolean isSteam = NuclearHelper.isSteam(reactor);
-            card.setBoolean("isSteam", isSteam);
+            data.isSteam.set(isSteam);
 
             IInventory inventory = (IInventory) reactor;
             int slotCount = inventory.getSizeInventory();
@@ -67,7 +77,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
                 }
             }
 
-            int timeLeft = 0;
+            int timeLeft;
 
             // Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
             if (isSteam) {
@@ -76,36 +86,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
                 timeLeft = dmgLeft * reactor.getTickRate() / 10;
             }
 
-            card.setInt("timeLeft", timeLeft);
-            return CardState.OK;
-        } else {
-            return CardState.NO_TARGET;
-        }
-    }
-
-    @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        IReactor reactor = NuclearHelper.getReactorAt(world, target.posX, target.posY, target.posZ);
-        if (reactor != null) {
-            card.setInt("heat", reactor.getHeat());
-            card.setInt("maxHeat", reactor.getMaxHeat());
-            card.setBoolean("reactorPoweredB", NuclearHelper.isProducing(reactor));
-            card.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
-            card.setBoolean("isSteam", NuclearHelper.isSteam(reactor));
-
-            IInventory inventory = (IInventory) reactor;
-            int slotCount = inventory.getSizeInventory();
-            int dmgLeft = 0;
-            for (int i = 0; i < slotCount; i++) {
-                ItemStack rStack = inventory.getStackInSlot(i);
-                if (rStack != null) {
-                    dmgLeft = Math.max(dmgLeft, NuclearHelper.getNuclearCellTimeLeft(rStack));
-                }
-            }
-
-            card.setInt("timeLeft", dmgLeft * reactor.getTickRate() / 10);
+            data.timeLeft.set(timeLeft);
             return CardState.OK;
         } else {
             return CardState.NO_TARGET;
@@ -121,10 +102,9 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-        ICardWrapper helper = CardHelper.getWrapper(itemStack);
-        ChunkCoordinates target = helper.getTarget();
+        ChunkCoordinates target = CardAccessors.getCoordinates(itemStack);
         if (target != null) {
-            String title = helper.getTitle();
+            String title = CardAccessors.getTitle(itemStack);
             if (title != null && !title.isEmpty()) {
                 info.add(title);
             }
@@ -134,40 +114,40 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         String text;
         PanelString line;
+        RSLData data = (RSLData) layout;
         if (displaySettings.getSetting(DISPLAY_HEAT)) {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", card.getInt("heat"), showLabels);
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelHeat", data.heat.get(), showLabels);
             result.add(line);
         }
         if (displaySettings.getSetting(DISPLAY_MAXHEAT)) {
             line = new PanelString();
-            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", card.getInt("maxHeat"), showLabels);
+            line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelMaxHeat", data.maxHeat.get(), showLabels);
             result.add(line);
         }
         if (displaySettings.getSetting(DISPLAY_MELTING)) {
             line = new PanelString();
             line.textLeft = StringUtils
-                    .getFormatted("msg.nc.InfoPanelMelting", card.getInt("maxHeat") * 85 / 100, showLabels);
+                    .getFormatted("msg.nc.InfoPanelMelting", (double) (data.maxHeat.get() * 85) / 100, showLabels);
             result.add(line);
         }
         if (displaySettings.getSetting(DISPLAY_OUTPUT)) {
             line = new PanelString();
-            if (card.getBoolean("isSteam")) {
+            if (data.isSteam.get()) {
                 line.textLeft = StringUtils.getFormatted(
                         "msg.nc.InfoPanelOutputSteam",
-                        NuclearHelper.euToSteam(card.getInt("output")),
+                        NuclearHelper.euToSteam(data.output.get()),
                         showLabels);
             } else {
-                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("output"), showLabels);
+                line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", data.output.get(), showLabels);
             }
             result.add(line);
         }
-        int timeLeft = card.getInt("timeLeft");
+        int timeLeft = data.timeLeft.get();
         if (displaySettings.getSetting(DISPLAY_TIME)) {
             int hours = timeLeft / 3600;
             int minutes = (timeLeft % 3600) / 60;
@@ -181,7 +161,7 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
 
         int txtColor = 0;
         if (displaySettings.getSetting(DISPLAY_ONOFF)) {
-            boolean reactorPowered = card.getBoolean("reactorPoweredB");
+            boolean reactorPowered = data.reactorPowered.get();
             if (reactorPowered) {
                 txtColor = 0x00ff00;
                 text = LangHelper.translate("msg.nc.InfoPanelOn");
@@ -216,4 +196,12 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
         return result;
     }
 
+    public static class RSLData extends NBTCardLayout {
+        public DataAccessor<Integer> heat = intAccessor("heat");
+        public DataAccessor<Integer> maxHeat = intAccessor("maxHeat");
+        public DataAccessor<Boolean> reactorPowered = boolAccessor("reactorPoweredB");
+        public DataAccessor<Integer> output = intAccessor("output");
+        public DataAccessor<Boolean> isSteam = boolAccessor("isSteam");
+        public DataAccessor<Integer> timeLeft = intAccessor("timeLeft");
+    }
 }

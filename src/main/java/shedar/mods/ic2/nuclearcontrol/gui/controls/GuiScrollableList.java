@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -18,7 +19,8 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.DataSorter;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
@@ -89,7 +91,7 @@ public class GuiScrollableList extends GuiScreen {
     private GuiToggleButton draggedButton = null;
     private int originalIndex = -1;
     private final TileEntityAdvancedInfoPanel panel;
-    private final ItemStack card;
+    private final IndexedItem<ItemCardBase> card;
     private final byte cardSlot;
     private boolean dataSorterChanged = false;
     private DataSorter newDataSorter = null;
@@ -103,11 +105,11 @@ public class GuiScrollableList extends GuiScreen {
      * @param panel     the TileEntityAdvancedInfoPanel this is shown in
      * @param card      the specific card ItemStack
      */
-    public GuiScrollableList(GuiAdvancedInfoPanel parentGui, TileEntityAdvancedInfoPanel panel, ItemStack card) {
+    public GuiScrollableList(GuiAdvancedInfoPanel parentGui, TileEntityAdvancedInfoPanel panel, IndexedItem<ItemCardBase> card) {
         this.parentGui = parentGui;
         this.panel = panel;
         this.card = card;
-        cardSlot = panel.getIndexOfCard(card);
+        cardSlot = (byte) card.slot;
     }
 
     @Override
@@ -162,10 +164,10 @@ public class GuiScrollableList extends GuiScreen {
                         StatCollector.translateToLocal("tile.blockAdvancedInfoPanel.Cancel"),
                         this::onCancel));
 
-        IPanelDataSource source = (IPanelDataSource) card.getItem();
+        IPanelDataSource source = (IPanelDataSource) card.item;
         List<PanelSetting> settingsList;
-        if (card.getItem() instanceof IPanelMultiCard) {
-            settingsList = ((IPanelMultiCard) source).getSettingsList(new CardWrapperImpl(card, (byte) 0));
+        if (card.item instanceof IPanelMultiCard panelMultiCard) {
+            settingsList = panelMultiCard.getSettingsList(card);
         } else {
             settingsList = source.getSettingsList();
         }
@@ -287,7 +289,7 @@ public class GuiScrollableList extends GuiScreen {
      * @param height height
      */
     private void setScissor(int x, int y, int width, int height) {
-        int scaleFactor = mc.gameSettings.guiScale;
+        int scaleFactor = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight).getScaleFactor();
         GL11.glScissor(
                 x * scaleFactor,
                 (mc.displayHeight - (y + height) * scaleFactor),

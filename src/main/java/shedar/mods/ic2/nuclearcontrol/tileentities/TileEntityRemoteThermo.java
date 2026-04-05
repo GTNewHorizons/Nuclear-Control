@@ -28,8 +28,8 @@ import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCard55Reactor;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardReactorSensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearHelper;
 
 public class TileEntityRemoteThermo extends TileEntityThermo
@@ -99,7 +99,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
             // UUID cardType = null;
             if (reactor == null) {
                 if (inventory[SLOT_CARD] != null) {
-                    ChunkCoordinates target = new CardWrapperImpl(inventory[SLOT_CARD], SLOT_CARD).getTarget();
+                    ChunkCoordinates target = CardAccessors.getCoordinates(inventory[SLOT_CARD]);
 
                     if (target != null) {
                         int x = target.posX;
@@ -358,7 +358,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo
                     }
         }
         if (inventory[SLOT_CARD] != null) {
-            ChunkCoordinates target = new CardWrapperImpl(inventory[SLOT_CARD], SLOT_CARD).getTarget();
+            ChunkCoordinates target = CardAccessors.getCoordinates(inventory[SLOT_CARD]);
             if (target != null) {
                 deltaX = target.posX - xCoord;
                 deltaY = target.posY - yCoord;

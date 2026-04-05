@@ -89,7 +89,6 @@ public class PacketDispSettingsAll implements IMessage, IMessageHandler<PacketDi
                 setting.put(new UUID(key.getMostSignificantBits(), key.getLeastSignificantBits()), item.getValue());
             }
         }
-        panel.resetCardData();
         return null;
     }
 }

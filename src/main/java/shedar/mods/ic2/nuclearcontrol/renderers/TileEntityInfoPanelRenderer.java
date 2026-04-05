@@ -7,21 +7,17 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
-import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
@@ -30,7 +26,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         if (!(tileEntity instanceof TileEntityInfoPanel panel)) return;
         if (!panel.getPowered()) return;
 
-        List<PanelString> joinedPanelStrings = getPanelStrings(panel);
+        List<PanelString> joinedPanelStrings = panel.cardCache.getCachedStrings();
         renderPanelTileEntity(panel, joinedPanelStrings, x, y, z);
     }
 
@@ -256,29 +252,30 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
     private List<PanelString> getPanelStrings(TileEntityInfoPanel panel) {
         List<PanelString> joinedData = new LinkedList<>();
-        for (ItemStack card : panel.getCards()) {
-            if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
-                continue;
-            }
-            DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(card);
 
-            CardWrapperImpl helper = new CardWrapperImpl(card, -1);
-            CardState state = helper.getState();
-            List<PanelString> data;
-            if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
-                data = StringUtils.getStateMessage(state);
-            } else {
-                if (panel instanceof TileEntityAdvancedInfoPanel) {
-                    data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, card, helper);
-                } else {
-                    data = panel.getCardData(displaySettings, card, helper);
-                }
-            }
-            if (data == null) {
-                continue;
-            }
-            joinedData.addAll(data);
+        for (IndexedItem<ItemCardBase> card : panel.getCards()) {
+            joinedData.addAll(panel.getCardData(card));
+//            ItemStack cardStack = card.itemStack;
+//            DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(cardStack);
+//
+//            CardWrapperImpl helper = new CardWrapperImpl(cardStack, -1);
+//            CardState state = helper.getState();
+//            List<PanelString> data;
+//            if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
+//                data = StringUtils.getStateMessage(state);
+//            } else {
+//                if (panel instanceof TileEntityAdvancedInfoPanel) {
+//                    data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, cardStack, helper);
+//                } else {
+//                    data = panel.getCardData(displaySettings, cardStack, helper);
+//                }
+//            }
+//            if (data == null) {
+//                continue;
+//            }
+//            joinedData.addAll(data);
         }
+
         return joinedData;
     }
 }

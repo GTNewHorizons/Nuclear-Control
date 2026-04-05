@@ -10,14 +10,15 @@ import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public abstract class ItemCardBase extends Item implements IPanelDataSource {
-
     public ItemCardBase(String textureItemName) {
         super();
         setMaxStackSize(1);
@@ -38,20 +39,22 @@ public abstract class ItemCardBase extends Item implements IPanelDataSource {
      */
 
     @Override
-    abstract public CardState update(TileEntity panel, ICardWrapper card, int range);
+    public CardState update(TileEntity panel, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        return update(panel.getWorldObj(), card, layout, range);
+    }
 
     @Override
-    abstract public CardState update(World world, ICardWrapper card, int range);
+    abstract public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range);
 
     @Override
     abstract public UUID getCardType();
 
     @Override
-    abstract public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels);
+    abstract public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
 
-    public List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels) {
-        return getStringData(new DisplaySettingHelper(displaySettings), card, true);
+    @Override
+    public List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+        return getStringData(new DisplaySettingHelper(displaySettings), card, layout, showLabels);
     }
 
     @Override

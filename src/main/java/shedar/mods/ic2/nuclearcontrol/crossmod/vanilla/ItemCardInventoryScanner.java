@@ -17,6 +17,9 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -30,13 +33,14 @@ public class ItemCardInventoryScanner extends ItemCardBase {
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        return this.update(panel.getWorldObj(), card, range);
+    public InvData getLayout() {
+        return new InvData();
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        InvData data = (InvData) layout;
+        ChunkCoordinates target = data.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (tile instanceof IInventory) {
@@ -47,9 +51,9 @@ public class ItemCardInventoryScanner extends ItemCardBase {
                     inUse++;
                 }
             }
-            card.setString("name", inv.getInventoryName());
-            card.setInt("totalInv", inv.getSizeInventory());
-            card.setInt("totalInUse", inUse);
+            data.name.set(inv.getInventoryName());
+            data.totalInv.set(inv.getSizeInventory());
+            data.totalInUse.set(inUse);
             return CardState.OK;
         }
         return CardState.INVALID_CARD;
@@ -61,14 +65,15 @@ public class ItemCardInventoryScanner extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
             boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
-        String name = card.getString("name");
-        int TotalInv = card.getInt("totalInv");
-        int TotalInUse = card.getInt("totalInUse");
+        InvData data = (InvData) layout;
+        String name = data.name.get();
+        int TotalInv = data.totalInv.get();
+        int TotalInUse = data.totalInUse.get();
 
         if (displaySettings.getSetting(DISPLAY_NAME)) {
             line = new PanelString();
@@ -98,5 +103,11 @@ public class ItemCardInventoryScanner extends ItemCardBase {
                         DISPLAY_TOTAL,
                         getCardType()));
         return result;
+    }
+
+    public static class InvData extends NBTCardLayout {
+        public DataAccessor<String> name = stringAccessor("name");
+        public DataAccessor<Integer> totalInv = intAccessor("totalInv");
+        public DataAccessor<Integer> totalInUse = intAccessor("totalInUse");
     }
 }

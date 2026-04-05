@@ -39,6 +39,12 @@ public class PanelString {
      */
     public int colorRight = 0;
 
+    public PanelString() {}
+
+    public PanelString(String text) {
+        this.textCenter = text;
+    }
+
     @Override
     public String toString() {
         String rv = textLeft + textCenter + textRight;

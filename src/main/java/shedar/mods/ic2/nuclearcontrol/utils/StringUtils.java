@@ -39,6 +39,7 @@ public class StringUtils {
     public static List<PanelString> getStateMessage(CardState state) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line = new PanelString();
+        if (state == null) return result;
         switch (state) {
             case OUT_OF_RANGE:
                 line.textCenter = LangHelper.translate("msg.nc.InfoPanelOutOfRange");

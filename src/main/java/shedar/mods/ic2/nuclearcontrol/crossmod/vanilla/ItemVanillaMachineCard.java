@@ -23,6 +23,9 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -42,21 +45,22 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        return update(panel.getWorldObj(), card, range);
+    public MachineData getLayout() {
+        return new MachineData();
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        MachineData data = (MachineData) layout;
+        ChunkCoordinates target = data.getTarget();
         if (target == null) return CardState.NO_TARGET;
         TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
 
         if (tile instanceof TileEntityBrewingStand) {
             TileEntityBrewingStand brewingStand = (TileEntityBrewingStand) tile;
-            card.setString("entity", BREW_STAND);
-            card.setBoolean("brewing", brewingStand.getBrewTime() > 0);
-            card.setInt("brewTime", brewingStand.getBrewTime());
+            data.entity.set(BREW_STAND);
+            data.brewing.set(brewingStand.getBrewTime() > 0);
+            data.brewTime.set(brewingStand.getBrewTime());
             NBTTagCompound tag = new NBTTagCompound();
             if (brewingStand.getBrewTime() > 0) {
                 if (brewingStand.getStackInSlot(3) != null && brewingStand.getStackInSlot(0) != null)
@@ -66,14 +70,14 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                 if (brewingStand.getStackInSlot(3) != null && brewingStand.getStackInSlot(2) != null)
                     tag.setString("Slot3", potionFN(brewingStand.getStackInSlot(3), brewingStand.getStackInSlot(2)));
             }
-            card.setTag("BrewInfo", tag);
+            data.brewInfo.set(tag);
             return CardState.OK;
             // brewingStand.getStackInSlot(3).getItem().isPotionIngredient(brewingStand.getStackInSlot(3));
         } else if (tile instanceof TileEntityFurnace) {
             TileEntityFurnace furnace = (TileEntityFurnace) tile;
-            card.setString("entity", "furnace");
-            card.setBoolean("burning", furnace.isBurning());
-            card.setInt("burnTime", furnace.furnaceBurnTime);
+            data.entity.set("furnace");
+            data.burning.set(furnace.isBurning());
+            data.burnTime.set(furnace.furnaceBurnTime);
             NBTTagCompound tag = new NBTTagCompound();
             if (furnace.getStackInSlot(0) != null) {
                 tag.setString("Cooking", furnace.getStackInSlot(0).getDisplayName());
@@ -87,7 +91,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                 tag.setString("Output", furnace.getStackInSlot(2).getDisplayName());
                 tag.setInteger("Osize", furnace.getStackInSlot(2).stackSize);
             }
-            card.setTag("Info", tag);
+            data.info.set(tag);
             return CardState.OK;
         }
         return CardState.INVALID_CARD;
@@ -123,18 +127,19 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
             boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
+        MachineData data = (MachineData) layout;
 
-        String machineType = card.getString("entity");
+        String machineType = data.entity.get();
 
         if (BREW_STAND.equals(machineType)) {
             // ... (Brewing Stand logic as previously discussed and refined) ...
-            Boolean isBrewing = card.getBoolean("brewing");
-            int brewTime = card.getInt("brewTime");
-            NBTTagCompound tag = card.getTag("BrewInfo");
+            Boolean isBrewing = data.brewing.get();
+            int brewTime = data.brewTime.get();
+            NBTTagCompound tag = data.brewInfo.get();
 
             if (displaySettings.getSetting(DISPLAY_TIME)) {
                 line = new PanelString();
@@ -195,9 +200,9 @@ public class ItemVanillaMachineCard extends ItemCardBase {
             }
 
         } else if (FURNACE.equals(machineType)) {
-            boolean isBurning = card.getBoolean("burning");
-            int burnTime = card.getInt("burnTime");
-            NBTTagCompound tagCompound = card.getTag("Info");
+            boolean isBurning = data.burning.get();
+            int burnTime = data.burnTime.get();
+            NBTTagCompound tagCompound = data.info.get();
 
             boolean statusHandled = false;
             String statusText = null;
@@ -313,5 +318,15 @@ public class ItemVanillaMachineCard extends ItemCardBase {
                         DISPLAY_BREWING,
                         getCardType()));
         return result;
+    }
+
+    public static class MachineData extends NBTCardLayout {
+        private DataAccessor<Boolean> brewing = boolAccessor("brewing");
+        private DataAccessor<Integer> brewTime = intAccessor("brewTime");
+        private DataAccessor<Boolean> burning = boolAccessor("burning");
+        private DataAccessor<Integer> burnTime = intAccessor("burnTime");
+        private DataAccessor<NBTTagCompound> brewInfo = tagAccessor("brewInfo");
+        private DataAccessor<String> entity = stringAccessor("entity");
+        private DataAccessor<NBTTagCompound> info = tagAccessor("Info");
     }
 }

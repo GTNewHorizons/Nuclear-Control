@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -16,11 +17,10 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteMonitor;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardText;
 import shedar.mods.ic2.nuclearcontrol.items.ItemTimeCard;
-import shedar.mods.ic2.nuclearcontrol.network.ChannelHandler;
-import shedar.mods.ic2.nuclearcontrol.network.message.PacketServerUpdate;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NCLog;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -61,21 +61,26 @@ public class GuiRemoteMonitor extends GuiContainer {
         boolean anyCardFound = true;
         InventoryItem itemInv = new InventoryItem(e.getHeldItem());
 
-        if (inv.getStackInSlot(0) != null && itemInv.getStackInSlot(0) != null
-                && inv.getStackInSlot(0).getItem() instanceof IPanelDataSource) {
-            IPanelDataSource card = (IPanelDataSource) inv.getStackInSlot(0).getItem();
-            CardWrapperImpl helper = new CardWrapperImpl(itemInv.getStackInSlot(0), 0);
-            joinedData.clear();
-            ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));
+        ItemStack itemStack = inv.getStackInSlot(0);
+        if (itemStack == null) return;
 
-            if (helper.getState() != CardState.OK) if (helper.getState().equals(CardState.CUSTOM_ERROR))
-                if (card instanceof ItemCardText || card instanceof ItemTimeCard)
-                    joinedData = card.getStringData(Integer.MAX_VALUE, helper, true);
-                else joinedData = this.getRemoteCustomMSG();
-            else joinedData = StringUtils.getStateMessage(helper.getState());
-            else joinedData = card.getStringData(Integer.MAX_VALUE, helper, true);
-        }
+        ItemStack invItemStack = itemInv.getStackInSlot(0);
+        if (invItemStack == null) return;
+        Item item = itemStack.getItem();
+        if (!(item instanceof IPanelDataSource panelDataSource)) return;
 
+        IndexedItem<?> indexedItem = new IndexedItem<>(0, itemStack, item);
+        NBTCardLayout data = panelDataSource.getLayout();
+        data.setItem(indexedItem);
+        CardState state = data.getState();
+
+        //ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));
+        if (state != CardState.OK) if (state.equals(CardState.CUSTOM_ERROR))
+            if (item instanceof ItemCardText || item instanceof ItemTimeCard)
+                joinedData = panelDataSource.getStringData(Integer.MAX_VALUE, indexedItem, data, true);
+            else joinedData = this.getRemoteCustomMSG();
+        else joinedData = StringUtils.getStateMessage(state);
+        else joinedData = panelDataSource.getStringData(Integer.MAX_VALUE, indexedItem, data, true);
         drawCardStuff(anyCardFound, joinedData);
     }
 

@@ -3,8 +3,12 @@ package shedar.mods.ic2.nuclearcontrol.api;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 
 /**
  * Custom card for Industrial Information Panel is class, inherited from Item, which implements IPanelDataSource
@@ -14,6 +18,7 @@ import net.minecraft.world.World;
  * @author Shedar, Guid118
  */
 public interface IPanelDataSource {
+    NBTCardLayout getLayout();
 
     /**
      * Method to update card's data. Method called on server side.
@@ -23,7 +28,7 @@ public interface IPanelDataSource {
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
-    CardState update(TileEntity panel, ICardWrapper card, int maxRange);
+    CardState update(TileEntity panel, IndexedItem<?> card, NBTCardLayout layout, int maxRange);
 
     /**
      * Method to update card's data in Remote Monitor. Method called on server side.
@@ -33,7 +38,7 @@ public interface IPanelDataSource {
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
-    CardState update(World world, ICardWrapper card, int maxRange);
+    CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int maxRange);
 
     /**
      * Method returns text representation of card's data. Each line is presented by {@link PanelString} object. Method
@@ -44,10 +49,10 @@ public interface IPanelDataSource {
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
-     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, ICardWrapper, boolean)}
+     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, boolean)}
      *             instead. Will be removed in 3.0.0
      */
-    List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels);
+    List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
 
     /**
      * Method returns text representation of card's data. Each line is presented by {@link PanelString} object. Method
@@ -59,9 +64,8 @@ public interface IPanelDataSource {
      * @return list of string to display.
      * @see PanelString
      */
-    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
-        return getStringData(displaySettings.getAsInteger(), card, showLabels);
+    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+        return getStringData(displaySettings.getAsInteger(), card, layout, showLabels);
     }
 
     /**

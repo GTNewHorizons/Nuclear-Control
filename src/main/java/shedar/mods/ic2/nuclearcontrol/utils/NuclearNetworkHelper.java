@@ -27,8 +27,8 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorterSync;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsAll;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsUpdate;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketEncounter;
-import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensorTitle;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
@@ -60,37 +60,30 @@ public class NuclearNetworkHelper {
                 (EntityPlayerMP) crafter);
     }
 
+    public static void sendItemUpdatedPacket(TileEntity tileEntity, byte slot, ItemStack itemStack) {
+        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, slot, itemStack);
+        //sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(), packet);
+        ChannelHandler.network.sendToServer(packet);
+    }
+
+    public static void sendItemSyncPacket(TileEntity tileEntity, byte slot, ItemStack itemStack) {
+        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, slot, itemStack);
+        sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(), packet);
+    }
+
     // server
     private static void sendPacketToAllAround(int x, int y, int z, int dist, World world, IMessage packet) {
         @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = world.playerEntities;
-        for (EntityPlayerMP player : players) {
+        List<EntityPlayer> players = world.playerEntities;
+        for (EntityPlayer player : players) {
+            if (!(player instanceof EntityPlayerMP playerMP)) continue;
             double dx = x - player.posX;
             double dy = y - player.posY;
             double dz = z - player.posZ;
 
-            if (dx * dx + dy * dy + dz * dz < dist * dist) ChannelHandler.network.sendTo(packet, player);
+            if (dx * dx + dy * dy + dz * dz < dist * dist) ChannelHandler.network.sendTo(packet, playerMP);
         }
 
-    }
-
-    // server
-    public static void setSensorCardField(TileEntity panel, byte slot, Map<String, Object> fields) {
-        if (fields == null || fields.isEmpty()
-                || panel == null
-                || !(panel instanceof TileEntityInfoPanel)
-                || slot == -1)
-            return;
-
-        if (panel.getWorldObj().isRemote) return;
-
-        sendPacketToAllAround(
-                panel.xCoord,
-                panel.yCoord,
-                panel.zCoord,
-                64,
-                panel.getWorldObj(),
-                new PacketSensor(panel.xCoord, panel.yCoord, panel.zCoord, slot, fields));
     }
 
     // client

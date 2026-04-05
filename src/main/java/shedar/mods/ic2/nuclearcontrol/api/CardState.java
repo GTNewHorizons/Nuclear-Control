@@ -9,6 +9,7 @@ package shedar.mods.ic2.nuclearcontrol.api;
  * @author Shedar
  */
 public enum CardState {
+    NONE(0),
 
     /**
      * All required data found, ready to display it

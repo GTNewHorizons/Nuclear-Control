@@ -19,7 +19,7 @@ import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+//import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ScreenModelInfo;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
 import shedar.mods.ic2.nuclearcontrol.utils.DataSorter;
@@ -80,22 +80,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         colored = true;
         thickness = 16;
     }
+
+    @Override
+    protected void checkColorUpgrade(ItemStack item, boolean removed) {
+        // do nothing since this panel is always colored
+    }
     // </editor-fold>
 
     // <editor-fold desc="Inventory Handling">
-    @Override
-    public int getCardSlotsCount() {
-        return 3;
-    }
-
-    @Override
-    public List<ItemStack> getCards() {
-        List<ItemStack> data = new ArrayList<>(3);
-        data.add(inventory[SLOT_CARD1]);
-        data.add(inventory[SLOT_CARD2]);
-        data.add(inventory[SLOT_CARD3]);
-        return data;
-    }
 
     @Override
     protected boolean isCardSlot(int slot) {
@@ -118,17 +110,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         }
     }
 
-    @Override
-    protected ItemStack getRangeUpgrade() {
-        return inventory[SLOT_UPGRADE_RANGE];
-    }
-
-    @Override
-    protected boolean isWebEval() {
-        ItemStack itemStack = inventory[SLOT_UPGRADE_WEB];
-        return itemStack != null && itemStack.getItem() instanceof ItemUpgrade
-                && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_WEB;
-    }
     // </editor-fold>
 
     // <editor-fold desc="Power and Display Settings">
@@ -257,9 +238,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     public void onNetworkUpdate(String field) {
         super.onNetworkUpdate(field);
         if (field.equals("card2")) {
-            inventory[SLOT_CARD2] = card2;
         } else if (field.equals("card3")) {
-            inventory[SLOT_CARD3] = card3;
         } else if (field.equals("powerMode") && prevPowerMode != powerMode) {
             if (screen != null) {
                 screen.turnPower(getPowered(), worldObj);
@@ -369,13 +348,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     }
 
     @Override
-    protected void postReadFromNBT() {
-        if (inventory[SLOT_CARD1] != null) card = inventory[SLOT_CARD1];
-        if (inventory[SLOT_CARD2] != null) card2 = inventory[SLOT_CARD2];
-        if (inventory[SLOT_CARD3] != null) card3 = inventory[SLOT_CARD3];
-    }
-
-    @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         writeDataSortersToNBT(nbt);
@@ -435,37 +407,29 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         return rv;
     }
 
-    /**
-     * get a sorted list of PanelStrings to display on the screen
-     *
-     * @param settings  displaySettings of the screen, used as a bitmask
-     * @param cardStack ItemStack that contains the card
-     * @param helper    Wrapper object, to access field values.
-     * @return a list of PanelStrings to display
-     */
-    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
-            CardWrapperImpl helper) {
-        List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
-        List<PanelString> all_data = new ArrayList<>(
-                this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
-        if (!Objects.equals(helper.getTitle(), "")) {
-            PanelString title = data.remove(0);
-            all_data.remove(0);
-            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-            data.add(0, title);
-        } else {
-            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-        }
-        return data;
-    }
-
-    // </editor-fold>
-
-    // <editor-fold desc="Miscellaneous">
-    @Override
-    protected boolean isColoredEval() {
-        return true;
-    }
+//    /**
+//     * get a sorted list of PanelStrings to display on the screen
+//     *
+//     * @param settings  displaySettings of the screen, used as a bitmask
+//     * @param cardStack ItemStack that contains the card
+//     * @param helper    Wrapper object, to access field values.
+//     * @return a list of PanelStrings to display
+//     */
+//    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+//            CardWrapperImpl helper) {
+//        List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
+//        List<PanelString> all_data = new ArrayList<>(
+//                this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
+//        if (!Objects.equals(helper.getTitle(), "")) {
+//            PanelString title = data.remove(0);
+//            all_data.remove(0);
+//            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+//            data.add(0, title);
+//        } else {
+//            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+//        }
+//        return data;
+//    }
 
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {

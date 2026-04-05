@@ -75,7 +75,11 @@ public class ContainerInfoPanel extends Container {
                         if (targetStack == null) {
                             Slot targetSlot = (Slot) this.inventorySlots.get(i);
                             targetSlot.putStack(items);
-                            slot.putStack((ItemStack) null);
+                            if (items.stackSize <= 0) {
+                                slot.putStack(null);
+                            } else {
+                                slot.onSlotChanged();
+                            }
                             break;
                         } else if (items.isStackable() && items.isItemEqual(targetStack)) {
                             mergeItemStack(items, i, i + 1, false);

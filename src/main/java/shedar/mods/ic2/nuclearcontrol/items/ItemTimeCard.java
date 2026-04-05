@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,9 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -27,12 +31,12 @@ public class ItemTimeCard extends ItemCardBase {
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        return CardState.OK;
+    public NBTCardLayout getLayout() {
+        return new NBTCardLayout();
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         return CardState.OK;
     }
 
@@ -42,12 +46,13 @@ public class ItemTimeCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new ArrayList<PanelString>(1);
         PanelString item = new PanelString();
         result.add(item);
-        int time = (int) ((FMLClientHandler.instance().getClient().theWorld.getWorldTime() + 6000) % 24000);
+        World world = FMLClientHandler.instance().getClient().theWorld;
+        if (world == null) return Collections.emptyList();
+        int time = (int) ((world.getWorldTime() + 6000) % 24000);
         int hours = time / 1000;
         int minutes = (time % 1000) * 6 / 100;
         String suffix = "";
