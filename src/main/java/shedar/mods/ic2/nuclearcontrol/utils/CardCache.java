@@ -55,7 +55,7 @@ public class CardCache {
      */
     public void markExternalSync(int slot) {
         externalSyncs.add(slot);
-        cachedCards.remove(slot); // force string recompute on next update()
+        clear(slot);
     }
 
     /**
@@ -77,10 +77,13 @@ public class CardCache {
         return !isExternal; // local change → send packet; external sync → display only
     }
 
+    public void clear(int slot, boolean triggerDirty) {
+        cachedCards.remove(slot);
+        this.isDirty = this.isDirty || triggerDirty;
+    }
+
     public void clear(int slot) {
-        if (cachedCards.remove(slot) != null) {
-            this.isDirty = true;
-        }
+        clear(slot, false);
     }
 
     @Desugar

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import shedar.mods.ic2.nuclearcontrol.inventory.ITEInventoryHolder;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInventory;
 
 public class SlotUpdateClientHandler implements IMessageHandler<PacketUpdateSlotNBT, IMessage> {
     public SlotUpdateClientHandler() {}
@@ -19,8 +20,12 @@ public class SlotUpdateClientHandler implements IMessageHandler<PacketUpdateSlot
         WorldClient world = FMLClientHandler.instance().getClient().theWorld;
         TileEntity te = world.getTileEntity(msg.x, msg.y, msg.z);
         if (!(te instanceof ITEInventoryHolder inventoryHolder)) return null;
-        inventoryHolder.getInventory().updateNBT(msg.slot, msg.stack);
         if (te instanceof TileEntityInfoPanel panel) panel.cardCache.markExternalSync(msg.slot);
+        TileEntityInventory inventory = inventoryHolder.getInventory();
+
+        if (msg.stack == null) inventory.remove(msg.slot);
+        else inventory.set(msg.slot, msg.stack);
+
         return null;
     }
 }

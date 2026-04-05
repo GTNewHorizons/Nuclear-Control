@@ -2,7 +2,6 @@ package shedar.mods.ic2.nuclearcontrol.tileentities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -58,7 +58,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanel extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, INetworkClientTileEntityEventListener,
-        IWrenchable, IRedstoneConsumer, ITextureHelper, IScreenPart, /* ISidedInventory, */IRotation, IInventory, IInventoryListener, ITEInventoryHolder {
+        IWrenchable, IRedstoneConsumer, ITextureHelper, IScreenPart, ISidedInventory, IRotation, IInventory, IInventoryListener, ITEInventoryHolder {
 
     private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
             0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f };
@@ -73,20 +73,17 @@ public class TileEntityInfoPanel extends TileEntity
     private static final byte SLOT_UPGRADE_WEB = 2;
     private static final byte LOCATION_RANGE = 8;
 
+    private static final int[] HOPPER_SLOTS = new int[] { 0 };
+
     private static final int MAX_RANGE_UPGRADE = 7;
 
-    protected int updateTicker;
-    protected int dataTicker;
-    protected int tickRate;
-    protected int dt;
-    protected int updatedataTicker;
+    private final boolean isServerSide = FMLCommonHandler.instance().getEffectiveSide().isServer();
+
     public boolean init;
     public TileEntityInventory inventory;
     public NBTTagCompound screenData;
     protected Screen screen;
     protected ItemStack card;
-
-    private boolean inServerSync;
 
     private boolean prevPowered;
     protected boolean powered;
@@ -133,7 +130,7 @@ public class TileEntityInfoPanel extends TileEntity
     private void setSide(short f) {
         facing = f;
         if (init && prevFacing != f) {
-            if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !init) {
+            if (isServerSide && !init) {
                 IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
                 IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
             }
@@ -239,7 +236,7 @@ public class TileEntityInfoPanel extends TileEntity
         if (cardType != null) {
             if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<>());
             displaySettings.get(slot).put(cardType, settings);
-            if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            if (isServerSide) {
                 NuclearNetworkHelper.sendDisplaySettingsUpdate(this, slot, cardType, settings);
             }
         }
@@ -310,11 +307,6 @@ public class TileEntityInfoPanel extends TileEntity
         screen = null;
         card = null;
         init = false;
-        tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
-        updateTicker = tickRate;
-        dt = IC2NuclearControl.instance.dataRefreshPeriod;
-        dataTicker = Math.min(dt, tickRate);
-        updatedataTicker = dataTicker;
         displaySettings = new HashMap<>(1);
         displaySettings.put((byte) 0, new HashMap<>());
         powered = false;
@@ -353,12 +345,12 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     protected void initData() {
-        if (worldObj.isRemote) {
+        if (isServerSide) {
             NuclearNetworkHelper.requestDisplaySettings(this);
         } else {
             RedstoneHelper.checkPowered(worldObj, this);
         }
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (isServerSide) {
             IC2.network.get().updateTileEntityField(this, "facing");
             if (screenData == null) {
                 IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
@@ -374,10 +366,13 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void updateEntity() {
+        super.updateEntity();
         if (!init) {
             initData();
         }
-        super.updateEntity();
+        if (!powered) return;
+        if (worldObj.getTotalWorldTime() % IC2NuclearControl.instance.screenRefreshPeriod != 0) return;
+
         boolean isServer = !worldObj.isRemote;
 
         List<IndexedItem<ItemCardBase>> cards = getCards();
@@ -385,7 +380,7 @@ public class TileEntityInfoPanel extends TileEntity
             NBTCardLayout layout = cardCache.getLayout(card);
             if (isServer) {
                 boolean isValid = checkCardValidity(card, layout);
-                if (isValid) card.item.update(worldObj, card, layout, rangeModifiers);
+                if (isValid) layout.setState(card.item.update(worldObj, card, layout, rangeModifiers));
             }
             if (cardCache.update(card, this::getNewStringData)) {
                 if (isServer) {
@@ -423,9 +418,7 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void onDataPacket(net.minecraft.network.NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        this.inServerSync = true;
         readFromNBT(pkt.func_148857_g());
-        this.inServerSync = false;
     }
 
     @Override
@@ -497,7 +490,7 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void invalidate() {
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+        if (isServerSide) {
             IC2NuclearControl.instance.screenManager.unregisterScreenPart(this);
         }
         super.invalidate();
@@ -563,6 +556,7 @@ public class TileEntityInfoPanel extends TileEntity
         ItemStack removed = inventory.removeFromStack(slotNum, amount);
         if (removed != null && inventory.get(slotNum) == null) {
             onItemInventoryUpdate(slotNum, removed, true);
+            if (this.isServerSide) NuclearNetworkHelper.sendItemSyncPacket(this, (byte)slotNum, null);
         }
         return removed;
     }
@@ -582,6 +576,21 @@ public class TileEntityInfoPanel extends TileEntity
             return;
         }
         inventory.set(slotNum, itemStack);
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
+        return HOPPER_SLOTS;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack p_102008_2_, int side) {
+        return slot == SLOT_CARD;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack item, int side) {
+        return slot == SLOT_CARD && item.getItem() instanceof ItemCardBase;
     }
 
     @Override
@@ -609,21 +618,16 @@ public class TileEntityInfoPanel extends TileEntity
     @Override
     public void onItemAdded(int slot, ItemStack item) {
         onItemInventoryUpdate(slot, item, false);
-        if (!inServerSync && FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            NuclearNetworkHelper.sendItemUpdatedPacket(this, (byte)slot, item);
-        }
     }
 
     @Override
     public void onItemRemoved(int slot, ItemStack item) {
         onItemInventoryUpdate(slot, item, true);
-        if (!inServerSync && FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            NuclearNetworkHelper.sendItemUpdatedPacket(this, (byte)slot, null);
-        }
     }
 
     protected void onItemInventoryUpdate(int slot, ItemStack item, boolean removed) {
-        cardCache.clear(slot);
+        cardCache.clear(slot, removed);
+        if (!isServerSide) return;
         checkColorUpgrade(item, removed);
         checkWebUpgrade(item, removed);
         checkRangeUpgrade(item, removed);
@@ -683,6 +687,7 @@ public class TileEntityInfoPanel extends TileEntity
                 return false;
             }
         }
+
         return true;
     }
 
@@ -862,7 +867,7 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void updateData() {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+        if (!isServerSide) {
             return;
         }
         if (screen == null) {

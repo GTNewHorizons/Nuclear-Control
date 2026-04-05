@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class SlotFilter extends Slot {
-
     private final int slotIndex;
 
     public SlotFilter(IInventory inventory, int slotIndex, int x, int y) {
@@ -29,5 +28,4 @@ public class SlotFilter extends Slot {
         }
         return super.getSlotStackLimit();
     }
-
 }

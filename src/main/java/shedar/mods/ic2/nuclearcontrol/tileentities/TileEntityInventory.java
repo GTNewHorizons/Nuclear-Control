@@ -64,7 +64,6 @@ public class TileEntityInventory {
         if (isNewItem) count++;
 
         for (IInventoryListener listener : listeners) {
-            if (!isNewItem) listener.onItemRemoved(slot, oldItem);
             listener.onItemAdded(slot, storedItem);
         }
     }
@@ -97,10 +96,17 @@ public class TileEntityInventory {
     /** Updates only the NBT tag of an existing stack without firing listeners. Used for card data sync. */
     public void updateNBT(int slot, ItemStack incoming) {
         ItemStack existing = items[slot];
+        if (incoming == null) {
+            items[slot] = null;
+            nbt = null;
+            return;
+        }
+
         if (existing == null) {
             set(slot, incoming);
             return;
         }
+
         existing.stackTagCompound = incoming.stackTagCompound != null
                 ? (net.minecraft.nbt.NBTTagCompound) incoming.stackTagCompound.copy()
                 : null;
@@ -113,6 +119,9 @@ public class TileEntityInventory {
         items[slot] = null;
         count--;
         nbt = null;
+        for (IInventoryListener listener : this.listeners) {
+            listener.onItemRemoved(slot, item);
+        }
         return item;
     }
 
