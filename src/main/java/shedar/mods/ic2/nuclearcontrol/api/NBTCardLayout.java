@@ -1,9 +1,7 @@
-package shedar.mods.ic2.nuclearcontrol.inventory.nbt;
+package shedar.mods.ic2.nuclearcontrol.api;
 
 import net.minecraft.util.ChunkCoordinates;
 
-import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 
 public class NBTCardLayout extends NBTLayout {
@@ -13,11 +11,6 @@ public class NBTCardLayout extends NBTLayout {
     private final DataAccessor<Integer> chunkZ = intAccessor("z");
     private final DataAccessor<Integer> state = intAccessor("state", 1);
     public final DataAccessor<String> title = stringAccessor("title", "");
-
-    @Override
-    public IndexedItem<ItemCardBase> getItem() {
-        return (IndexedItem<ItemCardBase>) super.getItem();
-    }
 
     public CardState getState() {
         return CardState.fromInteger(state.get());

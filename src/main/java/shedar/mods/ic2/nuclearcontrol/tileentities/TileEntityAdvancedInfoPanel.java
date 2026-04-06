@@ -18,8 +18,8 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ScreenModelInfo;
@@ -410,7 +410,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     }
 
     @Override
-    protected List<PanelString> getNewStringData(IndexedItem<ItemCardBase> card) {
+    protected List<PanelString> getNewStringData(IndexedItem<IPanelDataSource> card) {
         NBTCardLayout layout = cardCache.getLayout(card);
         CardState state = layout.getState();
         if (state != null && state != CardState.OK) {

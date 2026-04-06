@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import shedar.mods.ic2.nuclearcontrol.inventory.IInventoryListener;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.IInventoryListener;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
 
 public class TileEntityInventory {
 
@@ -95,7 +95,7 @@ public class TileEntityInventory {
         return getItems(Item.class);
     }
 
-    public <T extends Item> List<IndexedItem<T>> getItems(Class<T> type) {
+    public <T> List<IndexedItem<T>> getItems(Class<T> type) {
         List<IndexedItem<T>> indexedItems = new ArrayList<>(count);
         for (int i = 0; i < items.length; i++) {
             ItemStack itemStack = items[i];

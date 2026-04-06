@@ -31,8 +31,8 @@ import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
 import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
@@ -173,7 +173,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public List<PanelSetting> getSettingsList(IndexedItem<ItemCardBase> card) {
+    public List<PanelSetting> getSettingsList(IndexedItem<?> card) {
         int damage = card.itemStack.getItemDamage();
         switch (damage) {
             case ItemKitMultipleSensor.TYPE_COUNTER:
@@ -388,7 +388,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         public DataAccessor<Integer> capacity = intAccessor("capacity");
         public DataAccessor<Double> energy = doubleAccessor("energy");
         public DataAccessor<Integer> liquidId = intAccessor("liquidId");
-        public DataAccessor<NBTTagCompound> liquidTag = tagAccessor("liquidTag");
+        public DataAccessor<NBTTagCompound> liquidTag = compoundAccessor("liquidTag");
         public DataAccessor<Integer> powerType = intAccessor("powerType");
         public DataAccessor<Integer> production = intAccessor("production");
         public DataAccessor<Double> rangeTriggerAmount = doubleAccessor("range_trigger_amount");

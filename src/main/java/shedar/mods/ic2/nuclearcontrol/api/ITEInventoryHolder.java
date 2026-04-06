@@ -1,4 +1,4 @@
-package shedar.mods.ic2.nuclearcontrol.inventory;
+package shedar.mods.ic2.nuclearcontrol.api;
 
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInventory;
 

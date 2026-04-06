@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import shedar.mods.ic2.nuclearcontrol.inventory.ITEInventoryHolder;
+import shedar.mods.ic2.nuclearcontrol.api.ITEInventoryHolder;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInventory;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;

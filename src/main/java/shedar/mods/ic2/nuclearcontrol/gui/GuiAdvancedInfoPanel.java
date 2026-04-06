@@ -26,8 +26,8 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiScrollableList;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.IconButton;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
@@ -157,7 +157,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     @SuppressWarnings("unchecked")
     @Override
     protected void initControls() {
-        IndexedItem<ItemCardBase> activeCard = getActiveCard();
+        IndexedItem<IPanelDataSource> activeCard = getActiveCard();
         if (activeCard == null) return;
         ItemStack card = activeCard.itemStack;
 
@@ -293,8 +293,8 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     }
 
     @Override
-    protected IndexedItem<ItemCardBase> getActiveCard() {
-        List<IndexedItem<ItemCardBase>> cards = container.panel.getCards();
+    protected IndexedItem<IPanelDataSource> getActiveCard() {
+        List<IndexedItem<IPanelDataSource>> cards = container.panel.getCards();
         if (cards.isEmpty()) return null;
         return activeTab < cards.size() ? cards.get(activeTab) : cards.get(0);
     }
@@ -333,7 +333,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 
             }
             case ID_SETTINGS -> {
-                IndexedItem<ItemCardBase> activeCard = getActiveCard();
+                IndexedItem<IPanelDataSource> activeCard = getActiveCard();
                 if (activeCard == null) return;
                 ItemStack card = activeCard.itemStack;
                 NBTCardLayout layout = container.panel.cardCache.getLayout(activeCard);
@@ -385,7 +385,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                 IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
             }
             case ID_LINES -> {
-                IndexedItem<ItemCardBase> activeCard = getActiveCard();
+                IndexedItem<IPanelDataSource> activeCard = getActiveCard();
                 if (activeCard == null) return;
                 ItemStack card = activeCard.itemStack;
                 if (((IPanelDataSource) card.getItem()).getSettingsList() != null) {

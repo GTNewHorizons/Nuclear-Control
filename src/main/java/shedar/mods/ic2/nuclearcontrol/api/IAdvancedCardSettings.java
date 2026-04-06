@@ -1,7 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-
 /**
  * Interface is used to define, that card has own advanced settings (custom GUI), like Text Card. If card implements
  * this interface, Information Panel displays "..." button in its GUI.

@@ -22,8 +22,8 @@ import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -324,8 +324,8 @@ public class ItemVanillaMachineCard extends ItemCardBase {
         private DataAccessor<Integer> brewTime = intAccessor("brewTime");
         private DataAccessor<Boolean> burning = boolAccessor("burning");
         private DataAccessor<Integer> burnTime = intAccessor("burnTime");
-        private DataAccessor<NBTTagCompound> brewInfo = tagAccessor("brewInfo");
+        private DataAccessor<NBTTagCompound> brewInfo = compoundAccessor("brewInfo");
         private DataAccessor<String> entity = stringAccessor("entity");
-        private DataAccessor<NBTTagCompound> info = tagAccessor("Info");
+        private DataAccessor<NBTTagCompound> info = compoundAccessor("Info");
     }
 }

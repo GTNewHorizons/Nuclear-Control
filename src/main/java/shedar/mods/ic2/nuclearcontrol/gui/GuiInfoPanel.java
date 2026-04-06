@@ -30,8 +30,8 @@ import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.CompactButton;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelShowLabels;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
@@ -141,7 +141,7 @@ public class GuiInfoPanel extends GuiContainer {
 
     @SuppressWarnings("unchecked")
     protected void initControls() {
-        IndexedItem<ItemCardBase> cardBase = getActiveCard();
+        IndexedItem<IPanelDataSource> cardBase = getActiveCard();
         if (cardBase == null) {
             textboxTitle = null;
             buttonList.clear();
@@ -251,15 +251,15 @@ public class GuiInfoPanel extends GuiContainer {
         initControls();
     }
 
-    protected IndexedItem<ItemCardBase> getActiveCard() {
-        List<IndexedItem<ItemCardBase>> cards = container.panel.getCards();
+    protected IndexedItem<IPanelDataSource> getActiveCard() {
+        List<IndexedItem<IPanelDataSource>> cards = container.panel.getCards();
         if (cards.isEmpty()) return null;
         return cards.get(0);
     }
 
     protected void updateTitle() {
         if (textboxTitle == null) return;
-        IndexedItem<ItemCardBase> card = getActiveCard();
+        IndexedItem<IPanelDataSource> card = getActiveCard();
         if (card == null) return;
         NBTCardLayout layout = container.panel.cardCache.getLayout(card);
         layout.title.set(textboxTitle.getText());
@@ -280,7 +280,7 @@ public class GuiInfoPanel extends GuiContainer {
             GuiScreen colorGui = new GuiScreenColor(this, container.panel);
             mc.displayGuiScreen(colorGui);
         } else if (button.id == 111) {
-            IndexedItem<ItemCardBase> card = getActiveCard();
+            IndexedItem<IPanelDataSource> card = getActiveCard();
             if (card == null) return;
             NBTCardLayout layout = container.panel.cardCache.getLayout(card);
             if (card.item instanceof IAdvancedCardSettings settings) {

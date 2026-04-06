@@ -18,7 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiAdvancedInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.DataSorter;
@@ -90,7 +90,7 @@ public class GuiScrollableList extends GuiScreen {
     private GuiToggleButton draggedButton = null;
     private int originalIndex = -1;
     private final TileEntityAdvancedInfoPanel panel;
-    private final IndexedItem<ItemCardBase> card;
+    private final IndexedItem<IPanelDataSource> card;
     private final byte cardSlot;
     private boolean dataSorterChanged = false;
     private DataSorter newDataSorter = null;
@@ -105,7 +105,7 @@ public class GuiScrollableList extends GuiScreen {
      * @param card      the specific card ItemStack
      */
     public GuiScrollableList(GuiAdvancedInfoPanel parentGui, TileEntityAdvancedInfoPanel panel,
-            IndexedItem<ItemCardBase> card) {
+            IndexedItem<IPanelDataSource> card) {
         this.parentGui = parentGui;
         this.panel = panel;
         this.card = card;

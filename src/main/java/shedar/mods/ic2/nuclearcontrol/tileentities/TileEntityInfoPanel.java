@@ -3,8 +3,10 @@ package shedar.mods.ic2.nuclearcontrol.tileentities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,10 +43,10 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.InfoPanel;
-import shedar.mods.ic2.nuclearcontrol.inventory.IInventoryListener;
-import shedar.mods.ic2.nuclearcontrol.inventory.ITEInventoryHolder;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IInventoryListener;
+import shedar.mods.ic2.nuclearcontrol.api.ITEInventoryHolder;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
@@ -110,6 +112,7 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
     public int colorText;
 
     public final CardCache cardCache = new CardCache();
+    private final Set<String> nbtFields = new HashSet<>();
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -348,23 +351,21 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
     }
 
     protected void initData() {
-        if (isServerSide) {
-            NuclearNetworkHelper.requestDisplaySettings(this);
+        init = true;
+        if (!isServerSide) return;
+
+        NuclearNetworkHelper.requestDisplaySettings(this);
+        if (!nbtFields.contains("powered")) RedstoneHelper.checkPowered(worldObj, this);
+
+        IC2.network.get().updateTileEntityField(this, "facing");
+        if (screenData == null) {
+            IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
         } else {
-            RedstoneHelper.checkPowered(worldObj, this);
-        }
-        if (isServerSide) {
-            IC2.network.get().updateTileEntityField(this, "facing");
-            if (screenData == null) {
-                IC2NuclearControl.instance.screenManager.registerInfoPanel(this);
-            } else {
-                screen = IC2NuclearControl.instance.screenManager.loadScreen(this);
-                if (screen != null) {
-                    screen.init(true, worldObj);
-                }
+            screen = IC2NuclearControl.instance.screenManager.loadScreen(this);
+            if (screen != null) {
+                screen.init(true, worldObj);
             }
         }
-        init = true;
     }
 
     @Override
@@ -378,13 +379,14 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
 
         boolean isServer = !worldObj.isRemote;
         if (isServer) rangeModifiers = computeRangeModifiers();
+        int range = getMaxRange();
 
-        List<IndexedItem<ItemCardBase>> cards = getCards();
-        for (IndexedItem<ItemCardBase> card : cards) {
+        List<IndexedItem<IPanelDataSource>> cards = getCards();
+        for (IndexedItem<IPanelDataSource> card : cards) {
             NBTCardLayout layout = cardCache.getLayout(card);
             if (isServer) {
                 boolean isValid = checkCardValidity(card, layout);
-                if (isValid) layout.setState(card.item.update(worldObj, card, layout, rangeModifiers));
+                if (isValid) layout.setState(card.item.update(this, card, layout, range));
             }
             if (cardCache.update(card, this::getNewStringData)) {
                 if (isServer) {
@@ -462,10 +464,13 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound) {
         super.readFromNBT(nbttagcompound);
+
         if (nbttagcompound.hasKey("rotation")) {
+            nbtFields.add("rotation");
             prevRotation = rotation = nbttagcompound.getInteger("rotation");
         }
         if (nbttagcompound.hasKey("showLabels")) {
+            nbtFields.add("showLabels");
             prevShowLabels = showLabels = nbttagcompound.getBoolean("showLabels");
         } else {
             // v.1.1.11 compatibility
@@ -475,6 +480,7 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         powered = nbttagcompound.getBoolean("powered");
 
         if (nbttagcompound.hasKey("colorBackground")) {
+            nbtFields.add("colorBackground");
             colorText = nbttagcompound.getInteger("colorText");
             colorBackground = nbttagcompound.getInteger("colorBackground");
         } else {
@@ -483,7 +489,13 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
             colorBackground = ColorUtil.COLOR_GREEN;
         }
 
+        if (nbttagcompound.hasKey("powered")) {
+            nbtFields.add("powered");
+            powered = nbttagcompound.getBoolean("powered");
+        }
+
         if (nbttagcompound.hasKey("screenData")) {
+            nbtFields.add("screenData");
             screenData = (NBTTagCompound) nbttagcompound.getTag("screenData");
         }
         readDisplaySettings(nbttagcompound);
@@ -671,8 +683,8 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         return item != null && item.getItem() instanceof ItemUpgrade && item.getItemDamage() == damage;
     }
 
-    public List<IndexedItem<ItemCardBase>> getCards() {
-        return inventory.getItems(ItemCardBase.class);
+    public List<IndexedItem<IPanelDataSource>> getCards() {
+        return inventory.getItems(IPanelDataSource.class);
     }
 
     public byte getIndexOfCard(Object card) {
@@ -690,10 +702,14 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         return slot;
     }
 
-    private boolean checkCardValidity(IndexedItem<ItemCardBase> card, NBTCardLayout layout) {
-        ItemCardBase cardItem = card.item;
+    private int getMaxRange() {
+        return LOCATION_RANGE * (int) Math.pow(2, MAX_RANGE_UPGRADE);
+    }
+
+    private boolean checkCardValidity(IndexedItem<IPanelDataSource> card, NBTCardLayout layout) {
+        IPanelDataSource cardItem = card.item;
         if (!(cardItem instanceof IRemoteSensor)) return true;
-        int range = LOCATION_RANGE * (int) Math.pow(2, rangeModifiers);
+        int range = getMaxRange();
 
         ChunkCoordinates target = layout.getTarget();
         if (target == null) {
@@ -711,7 +727,7 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         return true;
     }
 
-    protected List<PanelString> getNewStringData(IndexedItem<ItemCardBase> card) {
+    protected List<PanelString> getNewStringData(IndexedItem<IPanelDataSource> card) {
         CardState state = CardAccessors.getState(card);
         if (state != null && state != CardState.OK) {
             return StringUtils.getStateMessage(state);

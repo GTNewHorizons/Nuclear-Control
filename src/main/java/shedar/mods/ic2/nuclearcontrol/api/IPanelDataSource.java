@@ -6,9 +6,6 @@ import java.util.UUID;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-
 /**
  * Custom card for Industrial Information Panel is class, inherited from Item, which implements IPanelDataSource
  * interface. For extended card's behavior it can also implement {@link IRemoteSensor} and {@link IAdvancedCardSettings}

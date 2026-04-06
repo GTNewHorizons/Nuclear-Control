@@ -1,9 +1,9 @@
-package shedar.mods.ic2.nuclearcontrol.inventory.nbt;
+package shedar.mods.ic2.nuclearcontrol.utils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
 
 public class NBTAccessors {
 

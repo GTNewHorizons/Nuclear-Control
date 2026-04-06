@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
 
 public class CardAccessors {
 
@@ -24,6 +24,12 @@ public class CardAccessors {
         NBTTagCompound nbt = item.getTagCompound();
         if (nbt == null) return null;
         return new ChunkCoordinates(nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z"));
+    }
+
+    public static int getTargetType(ItemStack item) {
+        NBTTagCompound nbt = item.getTagCompound();
+        if (nbt == null) return 0;
+        return nbt.getInteger("targetType");
     }
 
     public static ChunkCoordinates getCoordinates(IndexedItem<?> item) {

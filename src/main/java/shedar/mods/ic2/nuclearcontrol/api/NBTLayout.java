@@ -1,17 +1,14 @@
-package shedar.mods.ic2.nuclearcontrol.inventory.nbt;
+package shedar.mods.ic2.nuclearcontrol.api;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
-import shedar.mods.ic2.nuclearcontrol.api.TriConsumer;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-
 public class NBTLayout {
-
     private final Map<String, Object> cachedData = new HashMap<>();
     private boolean isDirty = true;
     protected IndexedItem<?> item;
@@ -56,8 +53,28 @@ public class NBTLayout {
         return stringAccessor(key, null);
     }
 
-    protected DataAccessor<NBTTagCompound> tagAccessor(String key) {
-        return new DataAccessor<>(this, key, NBTTagCompound::getCompoundTag, NBTTagCompound::setTag, null);
+    protected DataAccessor<NBTBase> tagAccessor(String key) {
+        return tagAccessor(key, null);
+    }
+
+    protected DataAccessor<NBTBase> tagAccessor(String key, NBTBase defaultValue) {
+        BiFunction<NBTTagCompound, String, NBTBase> getter = (compound, string) -> {
+            NBTBase tag = compound.getTag(string);
+            return tag == null ? defaultValue : tag;
+        };
+        return new DataAccessor<>(this, key, getter, NBTTagCompound::setTag, defaultValue);
+    }
+
+    protected DataAccessor<NBTTagCompound> compoundAccessor(String key) {
+        return compoundAccessor(key, null);
+    }
+
+    protected DataAccessor<NBTTagCompound> compoundAccessor(String key, NBTTagCompound defaultValue) {
+        BiFunction<NBTTagCompound, String, NBTTagCompound> getter = (compound, string) -> {
+            NBTTagCompound tag = compound.getCompoundTag(string);
+            return tag == null ? defaultValue : tag;
+        };
+        return new DataAccessor<>(this, key, getter, NBTTagCompound::setTag, defaultValue);
     }
 
     public static class DataAccessor<T> {

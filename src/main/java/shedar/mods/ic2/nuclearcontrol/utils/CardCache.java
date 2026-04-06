@@ -11,11 +11,12 @@ import java.util.function.Function;
 
 import com.github.bsideup.jabel.Desugar;
 
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelContent;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.api.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 
 public class CardCache {
@@ -28,7 +29,7 @@ public class CardCache {
     private Integer textWidth;
     private boolean isDirty = false;
 
-    public List<PanelString> getStrings(IndexedItem<ItemCardBase> card) {
+    public List<PanelString> getStrings(IndexedItem<?> card) {
         CardCacheEntry entry = cachedCards.get(card.slot);
         if (entry == null) return Collections.emptyList();
         return entry.content.getLines();
@@ -45,7 +46,7 @@ public class CardCache {
         return displayStrings;
     }
 
-    public NBTCardLayout getLayout(IndexedItem<ItemCardBase> card) {
+    public NBTCardLayout getLayout(IndexedItem<IPanelDataSource> card) {
         CardCacheEntry entry = cachedCards.computeIfAbsent(
                 card.slot,
                 _i -> new CardCacheEntry(new PanelContent(Collections.emptyList()), card.item.getLayout()));
@@ -67,8 +68,8 @@ public class CardCache {
      * Returns {@code true} if the card data changed and an outgoing packet should be sent. Returns {@code false} if
      * unchanged, or if the change came from an external server sync.
      */
-    public boolean update(IndexedItem<ItemCardBase> card,
-            Function<IndexedItem<ItemCardBase>, List<PanelString>> getStringData) {
+    public boolean update(IndexedItem<IPanelDataSource> card,
+            Function<IndexedItem<IPanelDataSource>, List<PanelString>> getStringData) {
         boolean isExternal = externalSyncs.remove(card.slot);
         CardCacheEntry entry = cachedCards.computeIfAbsent(
                 card.slot,

@@ -1,4 +1,4 @@
-package shedar.mods.ic2.nuclearcontrol.inventory;
+package shedar.mods.ic2.nuclearcontrol.api;
 
 import javax.annotation.Nullable;
 
@@ -6,9 +6,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTAccessors;
+import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 
-public class IndexedItem<T extends Item> {
+public class IndexedItem<T> {
 
     public final int slot;
     public final ItemStack itemStack;
@@ -19,18 +19,6 @@ public class IndexedItem<T extends Item> {
         this.itemStack = itemStack;
         this.item = item;
     }
-    // public void updateNBT(INBTUpdater updater) {
-    // if (inventory == null) {
-    // NBTTagCompound nbt = NBTAccessors.getOrCreateTagCompound(itemStack);
-    // updater.updateNBT(nbt, this);
-    // } else {
-    // inventory.updateItemNBT(slot, updater);
-    // }
-    // }
-    //
-    // public void updateNBT() {
-    // if (inventory != null) inventory.updateItemNBT(slot, _ -> {});
-    // }
 
     @Nullable
     public NBTTagCompound getNBT() {
