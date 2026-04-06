@@ -30,6 +30,7 @@ public class ScreenModelInfo {
 
     private double[] deltas = new double[4];
     private TileEntityAdvancedInfoPanel panel;
+    public final float epsilon = 0.015f;
 
     public ScreenModelInfo(TileEntityAdvancedInfoPanel panel) {
         this.panel = panel;
@@ -68,16 +69,16 @@ public class ScreenModelInfo {
         }
     }
 
-    public void update(Screen screen) {
-        calculateDeltas(panel);
-        recomputeCoordinates(panel.getBlockType(), screen);
+    public void update(Screen screen, Block block) {
+        calculateDeltas();
+        recomputeCoordinates(screen, block);
     }
 
     public double[] getDeltas() {
         return deltas;
     }
 
-    private void calculateDeltas(TileEntityAdvancedInfoPanel panel) {
+    private void calculateDeltas() {
         boolean isTopBottom = panel.rotateVert != 0;
         boolean isLeftRight = panel.rotateHor != 0;
         double dTopLeft = 0;
@@ -157,7 +158,7 @@ public class ScreenModelInfo {
         }
     }
 
-    private void recomputeCoordinates(Block block, Screen screen) {
+    private void recomputeCoordinates(Screen screen, Block block) {
         // 5 -------6
         // /| /|
         // 4 -------7 |
@@ -228,8 +229,6 @@ public class ScreenModelInfo {
         tess.setNormal(n[0], n[1], n[2]);
         double[][] UVMap = { { u1, v1 }, { u1, v2 }, { u2, v2 }, { u2, v1 } };
 
-        double epsilon = 0.015;
-
         double cx = 0.0, cy = 0.0, cz = 0.0;
 
         for (int i = 0; i < 4; i++) {
@@ -251,28 +250,24 @@ public class ScreenModelInfo {
             double y = coordinates[idx + 1];
             double z = coordinates[idx + 2];
 
-            switch (facing) {
-                case 0: // down (XZ plane)
-                case 1: // up
-                    x += (x > cx ? -border : border);
-                    z += (z > cz ? -border : border);
-                    y += epsilon * n[1];
-                    break;
+            double dx = cx - x;
+            double dy = cy - y;
+            double dz = cz - z;
 
-                case 2: // north (XY plane)
-                case 3: // south
-                    x += (x > cx ? -border : border);
-                    y += (y > cy ? -border : border);
-                    z += epsilon * n[2];
-                    break;
-
-                case 4: // west (ZY plane)
-                case 5: // east
-                    z += (z > cz ? -border : border);
-                    y += (y > cy ? -border : border);
-                    x += epsilon * n[0];
-                    break;
+            double len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (len > 0) {
+                dx /= len;
+                dy /= len;
+                dz /= len;
             }
+
+            x += dx * border;
+            y += dy * border;
+            z += dz * border;
+
+            x += n[0] * epsilon;
+            y += n[1] * epsilon;
+            z += n[2] * epsilon;
 
             tess.addVertexWithUV(x, y, z, UVMap[i][0], UVMap[i][1]);
         }
@@ -299,7 +294,7 @@ public class ScreenModelInfo {
     public void renderScreen(Block block) {
         Screen screen = panel.getScreen();
         if (screen == null) return;
-        panel.screenModelInfo.recomputeCoordinates(block, screen);
+        panel.screenModelInfo.update(screen, block);
 
         int facing = panel.getFacing();
         Tessellator tess = Tessellator.instance;

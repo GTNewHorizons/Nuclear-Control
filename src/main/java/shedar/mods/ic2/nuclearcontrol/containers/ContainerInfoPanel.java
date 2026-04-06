@@ -52,51 +52,68 @@ public class ContainerInfoPanel extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer p, int slotId) {
         Slot slot = (Slot) this.inventorySlots.get(slotId);
-        if (slot != null) {
-            ItemStack items = slot.getStack();
-            if (items != null) {
-                int initialCount = items.stackSize;
-                if (slotId < panel.getSizeInventory())// moving from panel to inventory
-                {
-                    mergeItemStack(items, panel.getSizeInventory(), inventorySlots.size(), false);
-                    if (items.stackSize == 0) {
-                        slot.putStack((ItemStack) null);
-                    } else {
-                        slot.onSlotChanged();
-                        if (initialCount != items.stackSize) return items;
-                    }
-                } else// moving from inventory to panel
-                {
-                    for (int i = 0; i < panel.getSizeInventory(); i++) {
-                        if (!panel.isItemValid(i, items)) {
-                            continue;
-                        }
-                        ItemStack targetStack = panel.getStackInSlot(i);
-                        if (targetStack == null) {
-                            Slot targetSlot = (Slot) this.inventorySlots.get(i);
-                            targetSlot.putStack(items);
-                            if (items.stackSize <= 0) {
-                                slot.putStack(null);
-                            } else {
-                                slot.onSlotChanged();
-                            }
-                            break;
-                        } else if (items.isStackable() && items.isItemEqual(targetStack)) {
-                            mergeItemStack(items, i, i + 1, false);
-                            if (items.stackSize == 0) {
-                                slot.putStack((ItemStack) null);
-                            } else {
-                                slot.onSlotChanged();
-                                if (initialCount != items.stackSize) return items;
-                            }
-                            break;
-                        }
+        if (slot == null || !slot.getHasStack()) return null;
 
-                    }
+        ItemStack items = slot.getStack();
+        ItemStack originalCopy = items.copy();
+
+        if (slotId < panel.getSizeInventory()) {
+            // panel → player
+            if (!mergeItemStack(items, panel.getSizeInventory(), inventorySlots.size(), false)) {
+                return null;
+            }
+        } else {
+            // player → panel
+            for (int i = 0; i < panel.getSizeInventory(); i++) {
+                if (!panel.isItemValid(i, items)) continue;
+
+                Slot targetSlot = (Slot) this.inventorySlots.get(i);
+                ItemStack target = targetSlot.getStack();
+
+                int limit = Math.min(
+                    targetSlot.getSlotStackLimit(),
+                    items.getMaxStackSize()
+                );
+
+                // Case 1: empty slot
+                if (target == null) {
+                    int move = Math.min(items.stackSize, limit);
+
+                    ItemStack copy = items.copy();
+                    copy.stackSize = move;
+
+                    targetSlot.putStack(copy);
+                    items.stackSize -= move;
+
+                    // Case 2: merge into existing stack
+                } else if (
+                    target.isItemEqual(items) &&
+                        ItemStack.areItemStackTagsEqual(target, items)
+                ) {
+                    int space = limit - target.stackSize;
+                    if (space <= 0) continue;
+
+                    int move = Math.min(items.stackSize, space);
+
+                    target.stackSize += move;
+                    items.stackSize -= move;
+
+                    targetSlot.onSlotChanged();
                 }
+
+                if (items.stackSize <= 0) break;
             }
         }
-        return null;
+
+        if (items.stackSize == 0) {
+            slot.putStack(null);
+        } else {
+            slot.onSlotChanged();
+        }
+
+        slot.onPickupFromSlot(p, items);
+
+        return originalCopy.stackSize != items.stackSize ? originalCopy : null;
     }
 
 }

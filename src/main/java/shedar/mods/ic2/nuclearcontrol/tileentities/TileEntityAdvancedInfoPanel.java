@@ -15,15 +15,22 @@ import net.minecraftforge.common.util.Constants;
 
 import ic2.core.IC2;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
+import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 //import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ScreenModelInfo;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.DataSorter;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
@@ -407,7 +414,24 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         return rv;
     }
 
-//    /**
+    @Override
+    protected List<PanelString> getNewStringData(IndexedItem<ItemCardBase> card) {
+        NBTCardLayout layout = cardCache.getLayout(card);
+        CardState state = layout.getState();
+        if (state != null && state != CardState.OK) {
+            return StringUtils.getStateMessage(state);
+        }
+
+        List<PanelString> data = new ArrayList<>(card.item.getStringData(getNewDisplaySettingsByCard(card), card, layout, getShowLabels()));
+        List<PanelString> allData = card.item.getStringData(new DisplaySettingHelper(true), card, layout, getShowLabels());
+        getDataSorter((byte)card.slot).sortListByPrefix(data, allData);
+
+        String title = layout.title.get();
+        if (!title.equals("")) data.add(0, new PanelString(title));
+        return data;
+    }
+
+    //    /**
 //     * get a sorted list of PanelStrings to display on the screen
 //     *
 //     * @param settings  displaySettings of the screen, used as a bitmask

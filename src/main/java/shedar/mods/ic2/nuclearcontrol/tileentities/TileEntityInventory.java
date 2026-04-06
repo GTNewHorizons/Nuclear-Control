@@ -46,22 +46,34 @@ public class TileEntityInventory {
     public void set(int slot, ItemStack item) {
         ItemStack oldItem = items[slot];
 
+        if (item == null) {
+            items[slot] = null;
+            nbt = null;
+            if (oldItem != null) {
+                count--;
+                for (IInventoryListener listener : listeners) {
+                    listener.onItemRemoved(slot, oldItem);
+                }
+            }
+            return;
+        }
+
         int stackLimit = stackSizeLimits[slot];
         if (stackLimit == 0) stackLimit = item.getMaxStackSize();
 
-        ItemStack storedItem;
-        if (item.stackSize > stackLimit) {
-            storedItem = item.splitStack(stackLimit);
-        } else {
-            storedItem = item.copy();
-            item.stackSize = 0;
+        // ✅ DO NOT mutate input
+        ItemStack storedItem = item.copy();
+        if (storedItem.stackSize > stackLimit) {
+            storedItem.stackSize = stackLimit;
         }
 
         items[slot] = storedItem;
 
         nbt = null;
-        boolean isNewItem = oldItem == null;
-        if (isNewItem) count++;
+
+        if (oldItem == null) {
+            count++;
+        }
 
         for (IInventoryListener listener : listeners) {
             listener.onItemAdded(slot, storedItem);
@@ -103,7 +115,7 @@ public class TileEntityInventory {
         }
 
         if (existing == null) {
-            set(slot, incoming);
+            // Slot was removed while client update was in flight — don't resurrect it.
             return;
         }
 

@@ -117,6 +117,10 @@ public class TileEntityInfoPanel extends TileEntity
         return screen == null ? super.getRenderBoundingBox() : screen.getBoundingBox();
     }
 
+    public List<PanelString> getDisplayedData() {
+        return cardCache.getCachedStrings();
+    }
+
     @Override
     public short getFacing() {
         return (short) Facing.oppositeSide[facing];
@@ -144,6 +148,7 @@ public class TileEntityInfoPanel extends TileEntity
     public void setPowered(boolean p) {
         if (powered == p) return;
         powered = p;
+        if (worldObj == null) return;
         IC2.network.get().updateTileEntityField(this, "powered");
     }
 
@@ -155,6 +160,7 @@ public class TileEntityInfoPanel extends TileEntity
     public void setColored(boolean c) {
         if (colored == c) return;
         colored = c;
+        if (worldObj == null) return;
         IC2.network.get().updateTileEntityField(this, "colored");
     }
 
@@ -169,6 +175,7 @@ public class TileEntityInfoPanel extends TileEntity
     public void setIsWeb(boolean c) {
         if (isWeb == c) return;
         isWeb = c;
+        if (worldObj == null) return;
         IC2.network.get().updateTileEntityField(this, "isWeb");
     }
 
@@ -340,10 +347,6 @@ public class TileEntityInfoPanel extends TileEntity
         ));
     }
 
-    public List<PanelString> getCardData(IndexedItem<ItemCardBase> card) {
-        return cardCache.getStrings(card);
-    }
-
     protected void initData() {
         if (isServerSide) {
             NuclearNetworkHelper.requestDisplaySettings(this);
@@ -370,10 +373,11 @@ public class TileEntityInfoPanel extends TileEntity
         if (!init) {
             initData();
         }
-        if (!powered) return;
+        if (!getPowered()) return;
         if (worldObj.getTotalWorldTime() % IC2NuclearControl.instance.screenRefreshPeriod != 0) return;
 
         boolean isServer = !worldObj.isRemote;
+        if (isServer) rangeModifiers = computeRangeModifiers();
 
         List<IndexedItem<ItemCardBase>> cards = getCards();
         for (IndexedItem<ItemCardBase> card : cards) {
@@ -554,8 +558,8 @@ public class TileEntityInfoPanel extends TileEntity
     @Override
     public ItemStack decrStackSize(int slotNum, int amount) {
         ItemStack removed = inventory.removeFromStack(slotNum, amount);
-        if (removed != null && inventory.get(slotNum) == null) {
-            onItemInventoryUpdate(slotNum, removed, true);
+        if (removed != null) {
+            onItemInventoryUpdate(slotNum, removed, inventory.get(slotNum) == null);
             if (this.isServerSide) NuclearNetworkHelper.sendItemSyncPacket(this, (byte)slotNum, null);
         }
         return removed;
@@ -573,9 +577,11 @@ public class TileEntityInfoPanel extends TileEntity
             if (old != null) {
                 onItemInventoryUpdate(slotNum, old, true);
             }
-            return;
+        } else {
+            inventory.set(slotNum, itemStack);
         }
-        inventory.set(slotNum, itemStack);
+
+        markDirty();
     }
 
     @Override
@@ -634,17 +640,31 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     protected void checkColorUpgrade(ItemStack item, boolean removed) {
-        setColored(!removed && isUpgrade(item, ItemUpgrade.DAMAGE_COLOR));
+        if (isUpgrade(item, ItemUpgrade.DAMAGE_COLOR)) {
+            setColored(!removed);
+        }
     }
 
     protected void checkWebUpgrade(ItemStack item, boolean removed) {
-        setIsWeb(!removed && isUpgrade(item, ItemUpgrade.DAMAGE_WEB));
+        if (isUpgrade(item, ItemUpgrade.DAMAGE_WEB)) {
+            setIsWeb(!removed);
+        }
     }
 
     protected void checkRangeUpgrade(ItemStack item, boolean removed) {
         if (isUpgrade(item, ItemUpgrade.DAMAGE_RANGE)) {
             rangeModifiers = removed ? 0 : Math.min(item.stackSize, MAX_RANGE_UPGRADE);
         }
+    }
+
+    protected int computeRangeModifiers() {
+        for (int i = 0; i < inventory.capacity; i++) {
+            ItemStack stack = inventory.get(i);
+            if (stack != null && isUpgrade(stack, ItemUpgrade.DAMAGE_RANGE)) {
+                return Math.min(stack.stackSize, MAX_RANGE_UPGRADE);
+            }
+        }
+        return 0;
     }
 
     protected boolean isUpgrade(ItemStack item, int damage) {

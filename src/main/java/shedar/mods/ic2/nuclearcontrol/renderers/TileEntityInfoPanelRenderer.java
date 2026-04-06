@@ -1,6 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -13,8 +12,6 @@ import net.minecraft.util.Facing;
 import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
@@ -25,12 +22,10 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
         if (!(tileEntity instanceof TileEntityInfoPanel panel)) return;
         if (!panel.getPowered()) return;
-
-        List<PanelString> joinedPanelStrings = panel.cardCache.getCachedStrings();
-        renderPanelTileEntity(panel, joinedPanelStrings, x, y, z);
+        renderPanelTileEntity(panel, x, y, z);
     }
 
-    private void renderPanelTileEntity(TileEntityInfoPanel panel, List<PanelString> panelStrings, double x, double y,
+    private void renderPanelTileEntity(TileEntityInfoPanel panel, double x, double y,
             double z) {
         GL11.glPushMatrix();
         GL11.glPolygonOffset(-10, -10);
@@ -116,7 +111,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
             TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
             deltas = advPanel.screenModelInfo.getDeltas();
-            thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);
+            thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4F + 0.015);
         }
 
         GL11.glTranslatef(dx + displayWidth / 2, thickness, dz + displayHeight / 2);
@@ -167,25 +162,31 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         GL11.glRotatef((float) panel.getTextRotation() * 90.0f, 0, 0, 1);
         FontRenderer fontRenderer = this.func_147498_b();
 
-        int maxWidth = 1;
-        StringBuilder widthSb = new StringBuilder();
-        for (PanelString panelString : panelStrings) {
-            widthSb.setLength(0);
-            if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) widthSb.append(panelString.textLeft);
-            if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
-                if (widthSb.length() > 0) widthSb.append(' ');
-                widthSb.append(panelString.textCenter);
+        Integer maxWidth = panel.cardCache.getTextWidth();
+        List<PanelString> displayData = panel.getDisplayedData();
+
+        if (maxWidth == null) {
+            maxWidth = 1;
+            StringBuilder widthSb = new StringBuilder();
+            for (PanelString panelString : displayData) {
+                widthSb.setLength(0);
+                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) widthSb.append(panelString.textLeft);
+                if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
+                    if (widthSb.length() > 0) widthSb.append(' ');
+                    widthSb.append(panelString.textCenter);
+                }
+                if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
+                    if (widthSb.length() > 0) widthSb.append(' ');
+                    widthSb.append(panelString.textRight);
+                }
+                maxWidth = Math.max(fontRenderer.getStringWidth(widthSb.toString()), maxWidth);
             }
-            if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
-                if (widthSb.length() > 0) widthSb.append(' ');
-                widthSb.append(panelString.textRight);
-            }
-            maxWidth = Math.max(fontRenderer.getStringWidth(widthSb.toString()), maxWidth);
+            maxWidth += 4;
+            panel.cardCache.setTextWidth(maxWidth);
         }
-        maxWidth += 4;
 
         int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-        int requiredHeight = lineHeight * panelStrings.size();
+        int requiredHeight = lineHeight * displayData.size();
         if (panel.getTextRotation() == 1 || panel.getTextRotation() == 3) {
             float tm = displayWidth;
             displayWidth = displayHeight;
@@ -209,15 +210,11 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             offsetX = (realWidth - maxWidth) / 2 + 2;
             offsetY = 0;
         }
-        Block block = panel.getWorldObj().getBlock(panel.xCoord, panel.yCoord, panel.zCoord);
-        if (block == null) {
-            block = Blocks.stone;
-        }
 
         GL11.glDisable(GL11.GL_LIGHTING);
 
         int row = 0;
-        for (PanelString panelString : panelStrings) {
+        for (PanelString panelString : displayData) {
             if (panelString.textLeft != null) {
                 fontRenderer.drawString(
                         panelString.textLeft,
@@ -248,34 +245,5 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         GL11.glPopMatrix();
-    }
-
-    private List<PanelString> getPanelStrings(TileEntityInfoPanel panel) {
-        List<PanelString> joinedData = new LinkedList<>();
-
-        for (IndexedItem<ItemCardBase> card : panel.getCards()) {
-            joinedData.addAll(panel.getCardData(card));
-//            ItemStack cardStack = card.itemStack;
-//            DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(cardStack);
-//
-//            CardWrapperImpl helper = new CardWrapperImpl(cardStack, -1);
-//            CardState state = helper.getState();
-//            List<PanelString> data;
-//            if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
-//                data = StringUtils.getStateMessage(state);
-//            } else {
-//                if (panel instanceof TileEntityAdvancedInfoPanel) {
-//                    data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, cardStack, helper);
-//                } else {
-//                    data = panel.getCardData(displaySettings, cardStack, helper);
-//                }
-//            }
-//            if (data == null) {
-//                continue;
-//            }
-//            joinedData.addAll(data);
-        }
-
-        return joinedData;
     }
 }

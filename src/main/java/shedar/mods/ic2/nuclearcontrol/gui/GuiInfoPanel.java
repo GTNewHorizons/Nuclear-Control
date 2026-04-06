@@ -142,7 +142,11 @@ public class GuiInfoPanel extends GuiContainer {
     @SuppressWarnings("unchecked")
     protected void initControls() {
         IndexedItem<ItemCardBase> cardBase = getActiveCard();
-        if (cardBase == null) return;
+        if (cardBase == null) {
+            textboxTitle = null;
+            buttonList.clear();
+            return;
+        }
         ItemStack card = cardBase.itemStack;
 
         if (card.equals(prevCard) && this.container.panel.getColored() == isColored)
@@ -195,7 +199,9 @@ public class GuiInfoPanel extends GuiContainer {
                                     panelSetting,
                                     container.panel,
                                     slot,
-                                    fontRendererObj));
+                                    fontRendererObj,
+                                settingsList.size() < 5
+                            ));
                 }
             }
             if (!modified) {

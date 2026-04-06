@@ -23,6 +23,8 @@ public class CardCache {
     /** Slots whose next dirty evaluation should refresh the display but NOT send an outgoing packet. */
     private final Set<Integer> externalSyncs = new HashSet<>();
     private List<PanelString> displayStrings = new LinkedList<>();
+
+    private Integer textWidth;
     private boolean isDirty = false;
 
     public List<PanelString> getStrings(IndexedItem<ItemCardBase> card) {
@@ -70,7 +72,7 @@ public class CardCache {
         layout.clearDirty();
         if (!isDirty && !isExternal) return false;
 
-        this.isDirty = true;
+        markDirty();
         List<PanelString> strings = getStringData.apply(card);
         PanelContent content = new PanelContent(strings);
         cachedCards.put(card.slot, new CardCacheEntry(content, layout));
@@ -79,11 +81,24 @@ public class CardCache {
 
     public void clear(int slot, boolean triggerDirty) {
         cachedCards.remove(slot);
-        this.isDirty = this.isDirty || triggerDirty;
+        if (triggerDirty) markDirty();
     }
 
     public void clear(int slot) {
         clear(slot, false);
+    }
+
+    public Integer getTextWidth() {
+        return textWidth;
+    }
+
+    public void setTextWidth(int width) {
+        this.textWidth = width;
+    }
+
+    private void markDirty() {
+        this.isDirty = true;
+        textWidth = null;
     }
 
     @Desugar

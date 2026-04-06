@@ -152,7 +152,7 @@ public class ScreenManager {
         updateScreenBound(screen, 0, -dy, 0, panel.getWorldObj(), isAdvanced);
         updateScreenBound(screen, 0, 0, dz, panel.getWorldObj(), isAdvanced);
         updateScreenBound(screen, 0, 0, -dz, panel.getWorldObj(), isAdvanced);
-        if (isAdvanced) ((TileEntityAdvancedInfoPanel) panel).screenModelInfo.update(screen);
+        if (isAdvanced) ((TileEntityAdvancedInfoPanel) panel).screenModelInfo.update(screen, panel.getBlockType());
         screen.init(false, panel.getWorldObj());
         panel.updateData();
         return screen;

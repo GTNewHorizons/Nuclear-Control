@@ -36,6 +36,7 @@ public class GuiToggleButton extends GuiButton {
         int maxWidth = GuiScrollableList.BUTTON_WIDTH - GuiScrollableList.TOGGLE_BUTTON_WIDTH
                 - GuiScrollableList.PADDING_RIGHT;
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+
         if (fontRenderer.getStringWidth(title) > maxWidth) {
             this.displayString = fontRenderer.trimStringToWidth(title, maxWidth - fontRenderer.getStringWidth("..."))
                     + "...";

@@ -27,15 +27,14 @@ public class GuiInfoPanelCheckBox extends GuiButton {
     private byte slot;
 
     public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, byte slot,
-            FontRenderer renderer) {
-        super(id, x, y, 0, 0, id < 10 ? LangHelper.translate("0" + id) : LangHelper.translate(String.valueOf(id)));
+            FontRenderer renderer, boolean showTitle) {
+        super(id, x, y, 0, 0, showTitle ? setting.title : id < 10 ? LangHelper.translate("0" + id) : LangHelper.translate(String.valueOf(id)));
         this.setting = setting;
         this.slot = slot;
         height = renderer.FONT_HEIGHT + 1;
         width = renderer.getStringWidth(setting.title) + 8;
         this.panel = panel;
         this.checked = panel.getNewDisplaySettingsForCardInSlot(slot).getSetting(setting.displayBit);
-
     }
 
     @Override
