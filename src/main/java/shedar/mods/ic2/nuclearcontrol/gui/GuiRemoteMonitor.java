@@ -74,12 +74,12 @@ public class GuiRemoteMonitor extends GuiContainer {
         data.setItem(indexedItem);
         CardState state = data.getState();
 
-        //ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));
-        if (state != CardState.OK) if (state.equals(CardState.CUSTOM_ERROR))
-            if (item instanceof ItemCardText || item instanceof ItemTimeCard)
+        // ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));
+        if (state != CardState.OK)
+            if (state.equals(CardState.CUSTOM_ERROR)) if (item instanceof ItemCardText || item instanceof ItemTimeCard)
                 joinedData = panelDataSource.getStringData(Integer.MAX_VALUE, indexedItem, data, true);
             else joinedData = this.getRemoteCustomMSG();
-        else joinedData = StringUtils.getStateMessage(state);
+            else joinedData = StringUtils.getStateMessage(state);
         else joinedData = panelDataSource.getStringData(Integer.MAX_VALUE, indexedItem, data, true);
         drawCardStuff(anyCardFound, joinedData);
     }

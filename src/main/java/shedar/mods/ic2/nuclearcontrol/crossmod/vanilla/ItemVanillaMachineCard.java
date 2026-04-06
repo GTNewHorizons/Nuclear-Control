@@ -19,13 +19,11 @@ import net.minecraft.world.World;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
@@ -127,8 +125,8 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         MachineData data = (MachineData) layout;
@@ -321,6 +319,7 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     }
 
     public static class MachineData extends NBTCardLayout {
+
         private DataAccessor<Boolean> brewing = boolAccessor("brewing");
         private DataAccessor<Integer> brewTime = intAccessor("brewTime");
         private DataAccessor<Boolean> burning = boolAccessor("burning");

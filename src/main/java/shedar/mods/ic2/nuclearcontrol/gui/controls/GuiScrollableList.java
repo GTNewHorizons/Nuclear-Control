@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -105,7 +104,8 @@ public class GuiScrollableList extends GuiScreen {
      * @param panel     the TileEntityAdvancedInfoPanel this is shown in
      * @param card      the specific card ItemStack
      */
-    public GuiScrollableList(GuiAdvancedInfoPanel parentGui, TileEntityAdvancedInfoPanel panel, IndexedItem<ItemCardBase> card) {
+    public GuiScrollableList(GuiAdvancedInfoPanel parentGui, TileEntityAdvancedInfoPanel panel,
+            IndexedItem<ItemCardBase> card) {
         this.parentGui = parentGui;
         this.panel = panel;
         this.card = card;

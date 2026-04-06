@@ -3,10 +3,12 @@ package shedar.mods.ic2.nuclearcontrol.utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
+
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 
 public class CardAccessors {
+
     public static CardState getState(IndexedItem<?> item) {
         return getState(item.itemStack);
     }

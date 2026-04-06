@@ -1,7 +1,5 @@
 package shedar.mods.ic2.nuclearcontrol.utils;
 
-import com.github.bsideup.jabel.Desugar;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,15 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
+
+import com.github.bsideup.jabel.Desugar;
+
 import shedar.mods.ic2.nuclearcontrol.api.PanelContent;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 
 public class CardCache {
+
     private final Map<Integer, CardCacheEntry> cachedCards = new HashMap<>();
     /** Slots whose next dirty evaluation should refresh the display but NOT send an outgoing packet. */
     private final Set<Integer> externalSyncs = new HashSet<>();
@@ -45,15 +46,17 @@ public class CardCache {
     }
 
     public NBTCardLayout getLayout(IndexedItem<ItemCardBase> card) {
-        CardCacheEntry entry = cachedCards.computeIfAbsent(card.slot, _i -> new CardCacheEntry(new PanelContent(Collections.emptyList()), card.item.getLayout()));
+        CardCacheEntry entry = cachedCards.computeIfAbsent(
+                card.slot,
+                _i -> new CardCacheEntry(new PanelContent(Collections.emptyList()), card.item.getLayout()));
         NBTCardLayout layout = (NBTCardLayout) entry.layout;
         layout.setItem(card);
         return layout;
     }
 
     /**
-     * Marks a slot as externally synced (received from server). The next {@link #update} call will
-     * recompute display strings but return {@code false} so no outgoing packet is sent.
+     * Marks a slot as externally synced (received from server). The next {@link #update} call will recompute display
+     * strings but return {@code false} so no outgoing packet is sent.
      */
     public void markExternalSync(int slot) {
         externalSyncs.add(slot);
@@ -61,12 +64,15 @@ public class CardCache {
     }
 
     /**
-     * Returns {@code true} if the card data changed and an outgoing packet should be sent.
-     * Returns {@code false} if unchanged, or if the change came from an external server sync.
+     * Returns {@code true} if the card data changed and an outgoing packet should be sent. Returns {@code false} if
+     * unchanged, or if the change came from an external server sync.
      */
-    public boolean update(IndexedItem<ItemCardBase> card, Function<IndexedItem<ItemCardBase>, List<PanelString>> getStringData) {
+    public boolean update(IndexedItem<ItemCardBase> card,
+            Function<IndexedItem<ItemCardBase>, List<PanelString>> getStringData) {
         boolean isExternal = externalSyncs.remove(card.slot);
-        CardCacheEntry entry = cachedCards.computeIfAbsent(card.slot, _i -> new CardCacheEntry(new PanelContent(Collections.emptyList()), card.item.getLayout()));
+        CardCacheEntry entry = cachedCards.computeIfAbsent(
+                card.slot,
+                _i -> new CardCacheEntry(new PanelContent(Collections.emptyList()), card.item.getLayout()));
         NBTLayout layout = entry.layout;
         boolean isDirty = layout.isDirty();
         layout.clearDirty();
@@ -102,10 +108,7 @@ public class CardCache {
     }
 
     @Desugar
-    private record CardCacheEntry(
-        PanelContent content,
-        NBTLayout layout
-    ) {
+    private record CardCacheEntry(PanelContent content, NBTLayout layout) {
 
     }
 }

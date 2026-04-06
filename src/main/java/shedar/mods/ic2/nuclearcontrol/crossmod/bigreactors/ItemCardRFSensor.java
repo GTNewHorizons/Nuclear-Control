@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.bigreactors;
 
+import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,9 +24,6 @@ import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-
-
-import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
 
 public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRangeTriggerable {
 
@@ -73,14 +72,16 @@ public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRa
             data.isPassive.set(BF.getReactorController().isPassivelyCooled());
             if (!BF.getReactorController().isPassivelyCooled()) {
                 if (BF.getReactorController().getCoolantContainer().getVaporType() != null) {
-                    data.vaporType.set(BF.getReactorController().getCoolantContainer().getVaporType().getLocalizedName());
+                    data.vaporType
+                            .set(BF.getReactorController().getCoolantContainer().getVaporType().getLocalizedName());
                     data.vaporAmount.set(BF.getReactorController().getCoolantContainer().getVaporAmount());
                 } else {
                     data.vaporType.set("Empty");
                     data.vaporAmount.set(0);
                 }
                 if (BF.getReactorController().getCoolantContainer().getCoolantType() != null) {
-                    data.coolantType.set(BF.getReactorController().getCoolantContainer().getCoolantType().getLocalizedName());
+                    data.coolantType
+                            .set(BF.getReactorController().getCoolantContainer().getCoolantType().getLocalizedName());
                     data.coolantAmount.set(BF.getReactorController().getCoolantContainer().getCoolantAmount());
                 } else {
                     data.coolantType.set("Empty");
@@ -93,8 +94,8 @@ public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRa
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
@@ -184,10 +185,8 @@ public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRa
             // Vapor Tank
             if (displaySettings.getSetting(DISPLAY_PERCENTAGE)) {
                 line = new PanelString();
-                line.textLeft = StringUtils.getFormattedKey(
-                        "msg.nc.InfoPanelRF.OutputTank",
-                        data.vaporType.get(),
-                        data.vaporAmount.get());
+                line.textLeft = StringUtils
+                        .getFormattedKey("msg.nc.InfoPanelRF.OutputTank", data.vaporType.get(), data.vaporAmount.get());
                 result.add(line);
             }
             // On or Off
@@ -230,6 +229,7 @@ public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRa
     }
 
     public static class BRCardData extends NBTCardLayout {
+
         public DataAccessor<Boolean> online = boolAccessor("Online");
         public DataAccessor<Double> storedEnergy = doubleAccessor("storedEnergy");
         public DataAccessor<Double> createdEnergy = doubleAccessor("createdEnergy");

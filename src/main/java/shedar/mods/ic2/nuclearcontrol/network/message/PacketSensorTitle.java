@@ -10,7 +10,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-//import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class PacketSensorTitle implements IMessage, IMessageHandler<PacketSensorTitle, IMessage> {
@@ -61,7 +60,7 @@ public class PacketSensorTitle implements IMessage, IMessageHandler<PacketSensor
         if (itemStack == null || !(itemStack.getItem() instanceof IPanelDataSource)) {
             return null;
         }
-        //new CardWrapperImpl(itemStack, message.slot).setTitle(message.title);
+        // new CardWrapperImpl(itemStack, message.slot).setTitle(message.title);
         return null;
     }
 }

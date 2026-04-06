@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
+import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +18,6 @@ import ic2.api.reactor.IReactorChamber;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
@@ -27,9 +28,6 @@ import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
-
-
-import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
 
 public class ItemCard55Reactor extends ItemCardBase implements IRemoteSensor, IRangeTriggerable {
 
@@ -109,8 +107,8 @@ public class ItemCard55Reactor extends ItemCardBase implements IRemoteSensor, IR
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         FFReactorData data = (FFReactorData) layout;
@@ -195,6 +193,7 @@ public class ItemCard55Reactor extends ItemCardBase implements IRemoteSensor, IR
     }
 
     public static class FFReactorData extends NBTCardLayout {
+
         public DataAccessor<Boolean> online = boolAccessor("Online");
         public DataAccessor<Integer> outputTank = intAccessor("outputTank");
         public DataAccessor<Integer> inputTank = intAccessor("inputTank");

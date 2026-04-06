@@ -26,11 +26,11 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.CompactButton;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelShowLabels;
+import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
@@ -149,8 +149,7 @@ public class GuiInfoPanel extends GuiContainer {
         }
         ItemStack card = cardBase.itemStack;
 
-        if (card.equals(prevCard) && this.container.panel.getColored() == isColored)
-            return;
+        if (card.equals(prevCard) && this.container.panel.getColored() == isColored) return;
 
         NBTCardLayout layout = container.panel.cardCache.getLayout(cardBase);
 
@@ -200,8 +199,7 @@ public class GuiInfoPanel extends GuiContainer {
                                     container.panel,
                                     slot,
                                     fontRendererObj,
-                                settingsList.size() < 5
-                            ));
+                                    settingsList.size() < 5));
                 }
             }
             if (!modified) {

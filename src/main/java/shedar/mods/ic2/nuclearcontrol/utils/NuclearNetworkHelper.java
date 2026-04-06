@@ -61,14 +61,31 @@ public class NuclearNetworkHelper {
     }
 
     public static void sendItemUpdatedPacket(TileEntity tileEntity, byte slot, ItemStack itemStack) {
-        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, slot, itemStack);
-        //sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(), packet);
+        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(
+                tileEntity.xCoord,
+                tileEntity.yCoord,
+                tileEntity.zCoord,
+                slot,
+                itemStack);
+        // sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(),
+        // packet);
         ChannelHandler.network.sendToServer(packet);
     }
 
     public static void sendItemSyncPacket(TileEntity tileEntity, byte slot, ItemStack itemStack) {
-        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, slot, itemStack);
-        sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(), packet);
+        PacketUpdateSlotNBT packet = new PacketUpdateSlotNBT(
+                tileEntity.xCoord,
+                tileEntity.yCoord,
+                tileEntity.zCoord,
+                slot,
+                itemStack);
+        sendPacketToAllAround(
+                tileEntity.xCoord,
+                tileEntity.yCoord,
+                tileEntity.zCoord,
+                64,
+                tileEntity.getWorldObj(),
+                packet);
     }
 
     // server

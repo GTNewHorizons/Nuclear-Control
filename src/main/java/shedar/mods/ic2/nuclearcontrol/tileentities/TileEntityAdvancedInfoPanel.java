@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,16 +17,13 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
-//import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ScreenModelInfo;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
-import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.DataSorter;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -244,25 +240,24 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     @Override
     public void onNetworkUpdate(String field) {
         super.onNetworkUpdate(field);
-        if (field.equals("card2")) {
-        } else if (field.equals("card3")) {
-        } else if (field.equals("powerMode") && prevPowerMode != powerMode) {
-            if (screen != null) {
-                screen.turnPower(getPowered(), worldObj);
-            } else {
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                worldObj.func_147451_t(xCoord, yCoord, zCoord);
-            }
-            prevPowerMode = powerMode;
-        } else if (field.equals("thickness") || field.equals("rotateHor")
-                || field.equals("rotateVert")
-                || field.equals("textRotation")
-                || field.equals("transparencyMode")) {
+        if (field.equals("card2")) {} else
+            if (field.equals("card3")) {} else if (field.equals("powerMode") && prevPowerMode != powerMode) {
+                if (screen != null) {
+                    screen.turnPower(getPowered(), worldObj);
+                } else {
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                    if (field.equals("transparencyMode")) {
-                        worldObj.func_147451_t(xCoord, yCoord, zCoord);
-                    }
+                    worldObj.func_147451_t(xCoord, yCoord, zCoord);
                 }
+                prevPowerMode = powerMode;
+            } else if (field.equals("thickness") || field.equals("rotateHor")
+                    || field.equals("rotateVert")
+                    || field.equals("textRotation")
+                    || field.equals("transparencyMode")) {
+                        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                        if (field.equals("transparencyMode")) {
+                            worldObj.func_147451_t(xCoord, yCoord, zCoord);
+                        }
+                    }
     }
 
     @Override
@@ -422,38 +417,40 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
             return StringUtils.getStateMessage(state);
         }
 
-        List<PanelString> data = new ArrayList<>(card.item.getStringData(getNewDisplaySettingsByCard(card), card, layout, getShowLabels()));
-        List<PanelString> allData = card.item.getStringData(new DisplaySettingHelper(true), card, layout, getShowLabels());
-        getDataSorter((byte)card.slot).sortListByPrefix(data, allData);
+        List<PanelString> data = new ArrayList<>(
+                card.item.getStringData(getNewDisplaySettingsByCard(card), card, layout, getShowLabels()));
+        List<PanelString> allData = card.item
+                .getStringData(new DisplaySettingHelper(true), card, layout, getShowLabels());
+        getDataSorter((byte) card.slot).sortListByPrefix(data, allData);
 
         String title = layout.title.get();
         if (!title.equals("")) data.add(0, new PanelString(title));
         return data;
     }
 
-    //    /**
-//     * get a sorted list of PanelStrings to display on the screen
-//     *
-//     * @param settings  displaySettings of the screen, used as a bitmask
-//     * @param cardStack ItemStack that contains the card
-//     * @param helper    Wrapper object, to access field values.
-//     * @return a list of PanelStrings to display
-//     */
-//    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
-//            CardWrapperImpl helper) {
-//        List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
-//        List<PanelString> all_data = new ArrayList<>(
-//                this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
-//        if (!Objects.equals(helper.getTitle(), "")) {
-//            PanelString title = data.remove(0);
-//            all_data.remove(0);
-//            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-//            data.add(0, title);
-//        } else {
-//            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-//        }
-//        return data;
-//    }
+    // /**
+    // * get a sorted list of PanelStrings to display on the screen
+    // *
+    // * @param settings displaySettings of the screen, used as a bitmask
+    // * @param cardStack ItemStack that contains the card
+    // * @param helper Wrapper object, to access field values.
+    // * @return a list of PanelStrings to display
+    // */
+    // public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+    // CardWrapperImpl helper) {
+    // List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
+    // List<PanelString> all_data = new ArrayList<>(
+    // this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
+    // if (!Objects.equals(helper.getTitle(), "")) {
+    // PanelString title = data.remove(0);
+    // all_data.remove(0);
+    // getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+    // data.add(0, title);
+    // } else {
+    // getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+    // }
+    // return data;
+    // }
 
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {

@@ -11,12 +11,10 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiCardText;
@@ -25,6 +23,7 @@ import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 
 public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings {
+
     private static final int MAX_LINES = 10;
     public static final UUID CARD_TYPE = UUID.fromString("90e53ad2-0aae-4937-9078-02a4561259d8");
 
@@ -48,7 +47,8 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         TextData cardData = (TextData) layout;
         List<PanelString> result = new LinkedList<PanelString>();
         for (int i = MAX_LINES - 1; i >= 0; i--) {
@@ -80,6 +80,7 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     public static class TextData extends NBTCardLayout {
+
         private final List<DataAccessor<String>> lineAccessors;
 
         public TextData(int lines) {

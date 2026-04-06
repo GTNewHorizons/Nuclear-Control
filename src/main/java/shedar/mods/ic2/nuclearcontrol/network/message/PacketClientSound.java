@@ -18,6 +18,7 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 public class PacketClientSound implements IMessage, IMessageHandler<PacketClientSound, IMessage> {
+
     private int x;
     private int y;
     private int z;
@@ -67,7 +68,7 @@ public class PacketClientSound implements IMessage, IMessageHandler<PacketClient
                     && panel == player.worldObj.getTileEntity(x, y, z)) {
                 ItemStack stack = panel.getStackInSlot(message.slot);
                 if (stack == null || !(stack.getItem() instanceof IPanelDataSource)) return null;
-                //new CardWrapperImpl(stack, -1).setTitle(message.soundName);
+                // new CardWrapperImpl(stack, -1).setTitle(message.soundName);
                 NuclearNetworkHelper.setSensorCardTitle(panel, message.slot, message.soundName);
             }
         } else if (openContainer instanceof ContainerEmpty) {

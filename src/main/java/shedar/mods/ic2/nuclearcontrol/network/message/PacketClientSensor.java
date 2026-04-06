@@ -15,7 +15,6 @@ import io.netty.buffer.ByteBuf;
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
-//import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
@@ -148,18 +147,18 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
                             stack.getItem().getClass().getName());
                     return null;
                 }
-//                CardWrapperImpl helper = new CardWrapperImpl(stack, message.slot);
-//                for (Map.Entry<String, Object> entry : message.fields.entrySet()) {
-//                    String name = entry.getKey();
-//                    Object value = entry.getValue();
-//                    if (value instanceof Long) helper.setLong(name, (Long) value);
-//                    else if (value instanceof Double) helper.setDouble(name, (Double) value);
-//                    else if (value instanceof Integer) helper.setInt(name, (Integer) value);
-//                    else if (value instanceof String) helper.setString(name, (String) value);
-//                    else if (value instanceof Boolean) helper.setBoolean(name, (Boolean) value);
-//
-//                }
-//                helper.commit(panel);
+                // CardWrapperImpl helper = new CardWrapperImpl(stack, message.slot);
+                // for (Map.Entry<String, Object> entry : message.fields.entrySet()) {
+                // String name = entry.getKey();
+                // Object value = entry.getValue();
+                // if (value instanceof Long) helper.setLong(name, (Long) value);
+                // else if (value instanceof Double) helper.setDouble(name, (Double) value);
+                // else if (value instanceof Integer) helper.setInt(name, (Integer) value);
+                // else if (value instanceof String) helper.setString(name, (String) value);
+                // else if (value instanceof Boolean) helper.setBoolean(name, (Boolean) value);
+                //
+                // }
+                // helper.commit(panel);
             }
         }
 

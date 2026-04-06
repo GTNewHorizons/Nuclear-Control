@@ -24,7 +24,6 @@ import ic2.api.energy.EnergyNet;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
@@ -202,8 +201,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         MSLData data = (MSLData) layout;
         int damage = card.itemStack.getItemDamage();
         switch (damage) {
@@ -217,7 +216,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         return null;
     }
 
-    public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, MSLData data, boolean showLabels) {
+    public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, MSLData data,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
@@ -259,7 +259,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         return result;
     }
 
-    public List<PanelString> getStringDataCounter(DisplaySettingHelper displaySettings, MSLData data, boolean showLabels) {
+    public List<PanelString> getStringDataCounter(DisplaySettingHelper displaySettings, MSLData data,
+            boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         if (data.average.exists()) {// average counter
@@ -273,8 +274,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         } else {// energy counter
             if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
-                String key = data.powerType.get() == EnergyStorageData.TARGET_TYPE_IC2
-                        ? "msg.nc.InfoPanelEnergyCounter"
+                String key = data.powerType.get() == EnergyStorageData.TARGET_TYPE_IC2 ? "msg.nc.InfoPanelEnergyCounter"
                         : "msg.nc.InfoPanelEnergyCounterMJ";
                 line.textLeft = StringUtils.getFormatted(key, data.energy.get(), showLabels);
                 result.add(line);
@@ -382,6 +382,7 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     public static class MSLData extends NBTCardLayout {
+
         public DataAccessor<Integer> amount = intAccessor("amount");
         public DataAccessor<Integer> average = intAccessor("average");
         public DataAccessor<Integer> capacity = intAccessor("capacity");

@@ -1,16 +1,18 @@
 package shedar.mods.ic2.nuclearcontrol.network.handler;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import shedar.mods.ic2.nuclearcontrol.inventory.ITEInventoryHolder;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInventory;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 public class SlotUpdateServerHandler implements IMessageHandler<PacketUpdateSlotNBT, IMessage> {
+
     @Override
     public IMessage onMessage(PacketUpdateSlotNBT msg, MessageContext ctx) {
         // Client → server: apply UI-driven NBT change, then broadcast to all clients

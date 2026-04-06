@@ -3,12 +3,11 @@ package shedar.mods.ic2.nuclearcontrol.api;
 import java.util.List;
 import java.util.UUID;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 
 /**
  * Custom card for Industrial Information Panel is class, inherited from Item, which implements IPanelDataSource
@@ -18,6 +17,7 @@ import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
  * @author Shedar, Guid118
  */
 public interface IPanelDataSource {
+
     NBTCardLayout getLayout();
 
     /**
@@ -64,7 +64,8 @@ public interface IPanelDataSource {
      * @return list of string to display.
      * @see PanelString
      */
-    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         return getStringData(displaySettings.getAsInteger(), card, layout, showLabels);
     }
 

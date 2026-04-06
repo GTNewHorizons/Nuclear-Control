@@ -2,9 +2,11 @@ package shedar.mods.ic2.nuclearcontrol.inventory.nbt;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 
 public class NBTAccessors {
+
     public static int getInt(ItemStack itemStack, String key) {
         NBTTagCompound compound = itemStack.getTagCompound();
         if (compound == null) return 0;

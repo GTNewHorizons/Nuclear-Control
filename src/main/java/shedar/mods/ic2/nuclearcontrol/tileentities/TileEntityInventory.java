@@ -2,14 +2,17 @@ package shedar.mods.ic2.nuclearcontrol.tileentities;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
 import shedar.mods.ic2.nuclearcontrol.inventory.IInventoryListener;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 
 public class TileEntityInventory {
+
     private final List<IInventoryListener> listeners = new ArrayList<>();
     private final ItemStack[] items;
     private final int[] stackSizeLimits;
@@ -87,7 +90,7 @@ public class TileEntityInventory {
     public IndexedItem<Item> getIndexed(int slot) {
         return new IndexedItem<>(slot, items[slot], items[slot].getItem());
     }
-    
+
     public List<IndexedItem<Item>> getItems() {
         return getItems(Item.class);
     }
@@ -159,14 +162,14 @@ public class TileEntityInventory {
         nbt = (NBTTagList) tagList.copy();
     }
 
-//    public void updateItemNBT(int slot, INBTUpdater updater) {
-//        if (slot < 0 || slot >= capacity) return;
-//        ItemStack itemStack = items[slot];
-//        if (itemStack == null) return;
-//        IndexedItem<Item> item = new IndexedItem<>(slot, itemStack, itemStack.getItem());
-//        updater.updateNBT(NBTAccessors.getOrCreateTagCompound(itemStack), item);
-//        for (IInventoryListener listener : listeners) listener.onItemNBTUpdated(slot, itemStack);
-//    }
+    // public void updateItemNBT(int slot, INBTUpdater updater) {
+    // if (slot < 0 || slot >= capacity) return;
+    // ItemStack itemStack = items[slot];
+    // if (itemStack == null) return;
+    // IndexedItem<Item> item = new IndexedItem<>(slot, itemStack, itemStack.getItem());
+    // updater.updateNBT(NBTAccessors.getOrCreateTagCompound(itemStack), item);
+    // for (IInventoryListener listener : listeners) listener.onItemNBTUpdated(slot, itemStack);
+    // }
 
     public NBTTagList getNBT() {
         return getNBT(false);

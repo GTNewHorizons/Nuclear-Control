@@ -2,10 +2,8 @@ package shedar.mods.ic2.nuclearcontrol.renderers;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 
@@ -25,8 +23,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         renderPanelTileEntity(panel, x, y, z);
     }
 
-    private void renderPanelTileEntity(TileEntityInfoPanel panel, double x, double y,
-            double z) {
+    private void renderPanelTileEntity(TileEntityInfoPanel panel, double x, double y, double z) {
         GL11.glPushMatrix();
         GL11.glPolygonOffset(-10, -10);
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -111,7 +108,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
         if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
             TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
             deltas = advPanel.screenModelInfo.getDeltas();
-            thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4F + 0.015);
+            thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4F
+                    + 0.015);
         }
 
         GL11.glTranslatef(dx + displayWidth / 2, thickness, dz + displayHeight / 2);
@@ -170,7 +168,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             StringBuilder widthSb = new StringBuilder();
             for (PanelString panelString : displayData) {
                 widthSb.setLength(0);
-                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) widthSb.append(panelString.textLeft);
+                if (panelString.textLeft != null && !panelString.textLeft.isEmpty())
+                    widthSb.append(panelString.textLeft);
                 if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
                     if (widthSb.length() > 0) widthSb.append(' ');
                     widthSb.append(panelString.textCenter);

@@ -15,10 +15,10 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTLayout;
 import shedar.mods.ic2.nuclearcontrol.utils.TextureResolver;
 
 public abstract class ItemCardBase extends Item implements IPanelDataSource {
+
     public ItemCardBase(String textureItemName) {
         super();
         setMaxStackSize(1);
@@ -50,10 +50,12 @@ public abstract class ItemCardBase extends Item implements IPanelDataSource {
     abstract public UUID getCardType();
 
     @Override
-    abstract public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
+    abstract public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels);
 
     @Override
-    public List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+    public List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout,
+            boolean showLabels) {
         return getStringData(new DisplaySettingHelper(displaySettings), card, layout, showLabels);
     }
 

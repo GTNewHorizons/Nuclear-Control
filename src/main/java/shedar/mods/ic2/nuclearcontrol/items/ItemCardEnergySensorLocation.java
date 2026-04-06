@@ -86,7 +86,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         ESLData data = (ESLData) layout;
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
@@ -143,6 +144,7 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     }
 
     public static class ESLData extends NBTCardLayout {
+
         public DataAccessor<Double> energy = doubleAccessor("energyL");
         public DataAccessor<Double> maxStorage = doubleAccessor("maxStorageL");
         public DataAccessor<Double> rangeTriggerAmount = doubleAccessor("range_trigger_amount");

@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.appeng;
 
+import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,13 +29,11 @@ import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
-
-import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
-
 public class ItemCardAppeng extends ItemCardBase implements IRemoteSensor, IRangeTriggerable {
+
     public ItemCardAppeng() {
         super("nuclearcontrol:cardAEMonitor");
-        //this.setTextureName("nuclearcontrol:cardAEMonitor");
+        // this.setTextureName("nuclearcontrol:cardAEMonitor");
         this.setUnlocalizedName("AppengCard");
     }
 
@@ -98,8 +98,8 @@ public class ItemCardAppeng extends ItemCardBase implements IRemoteSensor, IRang
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         AppengCardData data = (AppengCardData) layout;
@@ -167,6 +167,7 @@ public class ItemCardAppeng extends ItemCardBase implements IRemoteSensor, IRang
     }
 
     public static class AppengCardData extends NBTCardLayout {
+
         public DataAccessor<Integer> byteTotal = intAccessor("ByteTotal");
         public DataAccessor<Integer> usedBytes = intAccessor("UsedBytes");
         public DataAccessor<Integer> itemsTotal = intAccessor("ItemsTotal");

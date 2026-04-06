@@ -32,9 +32,7 @@ import shedar.mods.ic2.nuclearcontrol.crossmod.ic2.IC2Type;
 import shedar.mods.ic2.nuclearcontrol.crossmod.opencomputers.CrossOpenComputers;
 import shedar.mods.ic2.nuclearcontrol.crossmod.railcraft.CrossRailcraft;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCard55Reactor;
-//import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergyArrayLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
-//import shedar.mods.ic2.nuclearcontrol.items.ItemCardLiquidArrayLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardMultipleSensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardReactorSensorLocation;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardText;
@@ -141,14 +139,14 @@ public class IC2NuclearControl {
         itemTextCard = new ItemCardText().setUnlocalizedName("ItemTextCard");
         itemEnergySensorLocationCard = new ItemCardEnergySensorLocation()
                 .setUnlocalizedName("ItemEnergySensorLocationCard");
-//        itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation()
-//                .setUnlocalizedName("ItemEnergyArrayLocationCard");
+        // itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation()
+        // .setUnlocalizedName("ItemEnergyArrayLocationCard");
         itemMultipleSensorLocationCard = new ItemCardMultipleSensorLocation();
         itemMultipleSensorKit = new ItemKitMultipleSensor().setUnlocalizedName("ItemCounterSensorKit");
         itemEnergySensorKit = new ItemKitEnergySensor().setUnlocalizedName("ItemEnergySensorKit");
         itemRemoteSensorKit = new ItemKitReactorSensor().setUnlocalizedName("ItemRemoteSensorKit");
-//        itemLiquidArrayLocationCard = new ItemCardLiquidArrayLocation()
-//                .setUnlocalizedName("ItemLiquidArrayLocationCard");
+        // itemLiquidArrayLocationCard = new ItemCardLiquidArrayLocation()
+        // .setUnlocalizedName("ItemLiquidArrayLocationCard");
         item55ReactorCard = new ItemCard55Reactor().setUnlocalizedName("Item55ReactorCard");
         itemRemoteMonitor = new ItemRemoteMonitor().setUnlocalizedName("remoteMonitor");
     }
@@ -165,11 +163,11 @@ public class IC2NuclearControl {
         GameRegistry.registerItem(itemSensorLocationCard, "ItemSensorLocationCard");
         GameRegistry.registerItem(itemEnergySensorLocationCard, "ItemEnergySensorLocationCard");
         GameRegistry.registerItem(itemMultipleSensorLocationCard, "ItemMultipleSensorLocationCard");
-        //GameRegistry.registerItem(itemEnergyArrayLocationCard, "ItemEnergyArrayLocationCard");
+        // GameRegistry.registerItem(itemEnergyArrayLocationCard, "ItemEnergyArrayLocationCard");
         GameRegistry.registerItem(itemTimeCard, "ItemTimeCard");
         GameRegistry.registerItem(itemUpgrade, "ItemUpgrade");
         GameRegistry.registerItem(itemTextCard, "ItemTextCard");
-        //GameRegistry.registerItem(itemLiquidArrayLocationCard, "ItemLiquidArrayLocationCard");
+        // GameRegistry.registerItem(itemLiquidArrayLocationCard, "ItemLiquidArrayLocationCard");
         GameRegistry.registerItem(item55ReactorCard, "Item55ReactorCard");
         GameRegistry.registerItem(itemRemoteMonitor, "remoteMonitor");
     }

@@ -8,10 +8,6 @@ import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
-import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardText;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardText.TextData;
 
 public class GuiCardText extends GuiScreen implements ICardGui {

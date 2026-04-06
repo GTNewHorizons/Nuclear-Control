@@ -70,10 +70,7 @@ public class ContainerInfoPanel extends Container {
                 Slot targetSlot = (Slot) this.inventorySlots.get(i);
                 ItemStack target = targetSlot.getStack();
 
-                int limit = Math.min(
-                    targetSlot.getSlotStackLimit(),
-                    items.getMaxStackSize()
-                );
+                int limit = Math.min(targetSlot.getSlotStackLimit(), items.getMaxStackSize());
 
                 // Case 1: empty slot
                 if (target == null) {
@@ -86,10 +83,7 @@ public class ContainerInfoPanel extends Container {
                     items.stackSize -= move;
 
                     // Case 2: merge into existing stack
-                } else if (
-                    target.isItemEqual(items) &&
-                        ItemStack.areItemStackTagsEqual(target, items)
-                ) {
+                } else if (target.isItemEqual(items) && ItemStack.areItemStackTagsEqual(target, items)) {
                     int space = limit - target.stackSize;
                     if (space <= 0) continue;
 

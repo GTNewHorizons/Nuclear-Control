@@ -40,10 +40,10 @@ import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
+import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.InfoPanel;
 import shedar.mods.ic2.nuclearcontrol.inventory.IInventoryListener;
 import shedar.mods.ic2.nuclearcontrol.inventory.ITEInventoryHolder;
 import shedar.mods.ic2.nuclearcontrol.inventory.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.InfoPanel;
 import shedar.mods.ic2.nuclearcontrol.inventory.nbt.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
@@ -56,9 +56,9 @@ import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
-public class TileEntityInfoPanel extends TileEntity
-        implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, INetworkClientTileEntityEventListener,
-        IWrenchable, IRedstoneConsumer, ITextureHelper, IScreenPart, ISidedInventory, IRotation, IInventory, IInventoryListener, ITEInventoryHolder {
+public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, INetworkDataProvider,
+        INetworkUpdateListener, INetworkClientTileEntityEventListener, IWrenchable, IRedstoneConsumer, ITextureHelper,
+        IScreenPart, ISidedInventory, IRotation, IInventory, IInventoryListener, ITEInventoryHolder {
 
     private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
             0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f };
@@ -333,18 +333,18 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        return new ArrayList<>(Arrays.asList(
-            "powered",
-            "facing",
-            "rotation",
-            "card",
-            "showLabels",
-            "colorBackground",
-            "colorText",
-            "colored",
-            "screenData",
-            "isWeb"
-        ));
+        return new ArrayList<>(
+                Arrays.asList(
+                        "powered",
+                        "facing",
+                        "rotation",
+                        "card",
+                        "showLabels",
+                        "colorBackground",
+                        "colorText",
+                        "colored",
+                        "screenData",
+                        "isWeb"));
     }
 
     protected void initData() {
@@ -388,10 +388,10 @@ public class TileEntityInfoPanel extends TileEntity
             }
             if (cardCache.update(card, this::getNewStringData)) {
                 if (isServer) {
-                    NuclearNetworkHelper.sendItemSyncPacket(this, (byte)card.slot, card.itemStack);
+                    NuclearNetworkHelper.sendItemSyncPacket(this, (byte) card.slot, card.itemStack);
                     markDirty();
                 } else {
-                    NuclearNetworkHelper.sendItemUpdatedPacket(this, (byte)card.slot, card.itemStack);
+                    NuclearNetworkHelper.sendItemUpdatedPacket(this, (byte) card.slot, card.itemStack);
                 }
             }
         }
@@ -560,7 +560,7 @@ public class TileEntityInfoPanel extends TileEntity
         ItemStack removed = inventory.removeFromStack(slotNum, amount);
         if (removed != null) {
             onItemInventoryUpdate(slotNum, removed, inventory.get(slotNum) == null);
-            if (this.isServerSide) NuclearNetworkHelper.sendItemSyncPacket(this, (byte)slotNum, null);
+            if (this.isServerSide) NuclearNetworkHelper.sendItemSyncPacket(this, (byte) slotNum, null);
         }
         return removed;
     }
@@ -718,7 +718,8 @@ public class TileEntityInfoPanel extends TileEntity
         }
 
         NBTCardLayout layout = cardCache.getLayout(card);
-        List<PanelString> data = new ArrayList<>(card.item.getStringData(getNewDisplaySettingsByCard(card), card, layout, getShowLabels()));
+        List<PanelString> data = new ArrayList<>(
+                card.item.getStringData(getNewDisplaySettingsByCard(card), card, layout, getShowLabels()));
         String title = layout.title.get();
         if (!title.equals("")) data.add(0, new PanelString(title));
         return data;
@@ -864,7 +865,7 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     public DisplaySettingHelper getNewDisplaySettingsByCard(IndexedItem<?> card) {
-        byte slot = (byte)card.slot;
+        byte slot = (byte) card.slot;
         if (!displaySettings.containsKey(slot)) {
             return new DisplaySettingHelper();
         }
