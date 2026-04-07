@@ -32,6 +32,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class ItemCardEnergyArrayLocation extends ItemCardBase {
+
     public static final int DISPLAY_ENERGY = 1;
     public static final int DISPLAY_FREE = 2;
     public static final int DISPLAY_STORAGE = 3;
@@ -57,7 +58,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
         int x = compound.getInteger("x");
         int y = compound.getInteger("y");
         int z = compound.getInteger("z");
-        return new int[] {  x, y, z };
+        return new int[] { x, y, z };
     }
 
     public static void initArray(ItemStack card, Vector<ItemStack> cards) {
@@ -141,8 +142,8 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         EAData data = (EAData) layout;
 
         List<PanelString> result = new LinkedList<>();
@@ -300,6 +301,7 @@ public class ItemCardEnergyArrayLocation extends ItemCardBase {
     }
 
     private static class EAData extends NBTCardLayout {
+
         public final DataAccessor<Integer> count = intAccessor("cardCount");
         public final DataAccessor<NBTBase> cards = tagAccessor("cards", new NBTTagList());
         public final DataAccessor<Double> energyL = doubleAccessor("energyL");

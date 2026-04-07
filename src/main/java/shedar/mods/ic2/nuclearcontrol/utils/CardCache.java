@@ -12,12 +12,11 @@ import java.util.function.Function;
 import com.github.bsideup.jabel.Desugar;
 
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
-import shedar.mods.ic2.nuclearcontrol.api.PanelContent;
-import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
 import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NBTLayout;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
+import shedar.mods.ic2.nuclearcontrol.api.PanelContent;
+import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 
 public class CardCache {
 

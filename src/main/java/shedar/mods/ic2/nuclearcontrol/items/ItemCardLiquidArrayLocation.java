@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.Vector;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,6 +34,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class ItemCardLiquidArrayLocation extends ItemCardBase {
+
     public static final int DISPLAY_NAME = 1;
     public static final int DISPLAY_AMOUNT = 2;
     public static final int DISPLAY_FREE = 3;
@@ -61,7 +61,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
         int x = compound.getInteger("x");
         int y = compound.getInteger("y");
         int z = compound.getInteger("z");
-        return new int[] {  x, y, z };
+        return new int[] { x, y, z };
     }
 
     public static int getCardCount(ICardWrapper card) {
@@ -121,8 +121,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
                             if (storage.fluid.getFluidID() != 0 && storage.fluid.amount > 0) {
                                 liquidId = storage.fluid.getFluidID();
                             }
-                            if (liquidId == 0)
-                                tag.setString("name", LangHelper.translate("msg.nc.None"));
+                            if (liquidId == 0) tag.setString("name", LangHelper.translate("msg.nc.None"));
                             else tag.setString("name", FluidRegistry.getFluidName(storage.fluid));
                         }
                         tag.setInteger("capacity", storage.capacity);
@@ -155,8 +154,8 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> item, NBTCardLayout layout,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> item,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         double totalAmount = 0;
@@ -196,10 +195,8 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
                 } else {
                     if (showName) {
                         line = new PanelString();
-                        if (showLabels) line.textLeft = StringUtils.getFormattedKey(
-                                "msg.nc.InfoPanelLiquidNameN",
-                                i + 1,
-                                tag.getString("name"));
+                        if (showLabels) line.textLeft = StringUtils
+                                .getFormattedKey("msg.nc.InfoPanelLiquidNameN", i + 1, tag.getString("name"));
                         else line.textLeft = StringUtils.getFormatted("", amount, false);
                         result.add(line);
                     }
@@ -319,6 +316,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     private static class LAData extends NBTCardLayout {
+
         public final DataAccessor<Integer> count = intAccessor("cardCount");
         public final DataAccessor<NBTBase> cards = tagAccessor("cards", new NBTTagList());
         public final DataAccessor<Double> energyL = doubleAccessor("energyL");

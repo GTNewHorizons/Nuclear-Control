@@ -1,16 +1,16 @@
 package shedar.mods.ic2.nuclearcontrol.api;
 
+import net.minecraft.tileentity.TileEntity;
+
 /**
  * Enum of card states. Used as return value of
- * {@link IPanelDataSource#update(net.minecraft.tileentity.TileEntity, ICardWrapper, int)} . If card state is OK or
- * CUSTOM_ERROR, then {@link IPanelDataSource#getStringData(int, ICardWrapper, boolean)} will be called. Otherwise
+ * {@link IPanelDataSource#update(TileEntity, IndexedItem, NBTCardLayout, int)} . If card state is OK or
+ * CUSTOM_ERROR, then {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, NBTCardLayout, boolean)} will be called. Otherwise
  * standard message will be displayed.
  * 
  * @author Shedar
  */
 public enum CardState {
-
-    NONE(0),
 
     /**
      * All required data found, ready to display it

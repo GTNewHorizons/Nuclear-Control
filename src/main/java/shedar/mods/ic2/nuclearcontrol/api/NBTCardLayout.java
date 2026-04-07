@@ -2,8 +2,6 @@ package shedar.mods.ic2.nuclearcontrol.api;
 
 import net.minecraft.util.ChunkCoordinates;
 
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
-
 public class NBTCardLayout extends NBTLayout {
 
     private final DataAccessor<Integer> chunkX = intAccessor("x");

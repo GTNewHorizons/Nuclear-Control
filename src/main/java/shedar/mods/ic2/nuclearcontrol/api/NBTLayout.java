@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class NBTLayout {
+
     private final Map<String, Object> cachedData = new HashMap<>();
     private boolean isDirty = true;
     protected IndexedItem<?> item;

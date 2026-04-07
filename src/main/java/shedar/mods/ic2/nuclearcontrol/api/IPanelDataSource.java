@@ -22,6 +22,7 @@ public interface IPanelDataSource {
      * 
      * @param panel    Information Panel, which contains card.
      * @param card     Wrapper object, to update fields and get access to ItemStack
+     * @param layout   Card layout, used to access card's fields.
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
@@ -32,6 +33,7 @@ public interface IPanelDataSource {
      *
      * @param world    World, to get a Tile Entity's Location
      * @param card     Wrapper object, to update fields and get access to ItemStack
+     * @param layout   Card layout, used to access card's fields.
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
@@ -43,10 +45,11 @@ public interface IPanelDataSource {
      * 
      * @param displaySettings bit mask of display settings, configure by player for this type of cards.
      * @param card            Wrapper object, to access field values.
+     * @param layout          Card layout, used to access card's fields.
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
-     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, boolean)}
+     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, NBTCardLayout, boolean)}
      *             instead. Will be removed in 3.0.0
      */
     List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
@@ -57,6 +60,7 @@ public interface IPanelDataSource {
      *
      * @param displaySettings display settings, configure by player for this type of cards.
      * @param card            Wrapper object, to access field values.
+     * @param layout          Card layout, used to access card's fields.
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString

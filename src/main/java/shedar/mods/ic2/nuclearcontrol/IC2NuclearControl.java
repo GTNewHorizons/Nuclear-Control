@@ -141,12 +141,14 @@ public class IC2NuclearControl {
         itemTextCard = new ItemCardText().setUnlocalizedName("ItemTextCard");
         itemEnergySensorLocationCard = new ItemCardEnergySensorLocation()
                 .setUnlocalizedName("ItemEnergySensorLocationCard");
-         itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation().setUnlocalizedName("ItemEnergyArrayLocationCard");
+        itemEnergyArrayLocationCard = new ItemCardEnergyArrayLocation()
+                .setUnlocalizedName("ItemEnergyArrayLocationCard");
         itemMultipleSensorLocationCard = new ItemCardMultipleSensorLocation();
         itemMultipleSensorKit = new ItemKitMultipleSensor().setUnlocalizedName("ItemCounterSensorKit");
         itemEnergySensorKit = new ItemKitEnergySensor().setUnlocalizedName("ItemEnergySensorKit");
         itemRemoteSensorKit = new ItemKitReactorSensor().setUnlocalizedName("ItemRemoteSensorKit");
-         itemLiquidArrayLocationCard = new ItemCardLiquidArrayLocation().setUnlocalizedName("ItemLiquidArrayLocationCard");
+        itemLiquidArrayLocationCard = new ItemCardLiquidArrayLocation()
+                .setUnlocalizedName("ItemLiquidArrayLocationCard");
         item55ReactorCard = new ItemCard55Reactor().setUnlocalizedName("Item55ReactorCard");
         itemRemoteMonitor = new ItemRemoteMonitor().setUnlocalizedName("remoteMonitor");
     }

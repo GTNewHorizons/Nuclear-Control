@@ -25,14 +25,13 @@ import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.CompactButton;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelShowLabels;
-import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 

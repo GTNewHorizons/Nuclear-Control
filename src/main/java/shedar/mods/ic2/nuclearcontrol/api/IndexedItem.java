@@ -2,7 +2,6 @@ package shedar.mods.ic2.nuclearcontrol.api;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

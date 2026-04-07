@@ -19,11 +19,11 @@ import net.minecraft.world.World;
 
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
-import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
