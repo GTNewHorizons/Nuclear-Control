@@ -49,7 +49,8 @@ public interface IPanelDataSource {
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
-     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, NBTCardLayout, boolean)}
+     * @deprecated please implement
+     *             {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, NBTCardLayout, boolean)}
      *             instead. Will be removed in 3.0.0
      */
     List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
