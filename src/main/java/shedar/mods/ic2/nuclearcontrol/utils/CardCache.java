@@ -82,7 +82,7 @@ public class CardCache {
         List<PanelString> strings = getStringData.apply(card);
         PanelContent content = new PanelContent(strings);
         cachedCards.put(card.slot, new CardCacheEntry(content, layout));
-        return !isExternal; // local change → send packet; external sync → display only
+        return !isExternal && !card.item.isClientOnly(); // local change → send packet; external sync → display only
     }
 
     public void clear(int slot, boolean triggerDirty) {

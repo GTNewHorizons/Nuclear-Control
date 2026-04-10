@@ -84,4 +84,13 @@ public interface IPanelDataSource {
      * Control cards for backward compatibility.
      */
     UUID getCardType();
+
+    /***
+     * Method should return true if card is only updated on the client side.
+     * 
+     * @return true if card is only updated on the client side.
+     */
+    default boolean isClientOnly() {
+        return false;
+    }
 }

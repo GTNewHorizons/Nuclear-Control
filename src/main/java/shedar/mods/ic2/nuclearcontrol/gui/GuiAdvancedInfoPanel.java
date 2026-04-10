@@ -157,11 +157,17 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     @Override
     protected void initControls() {
         IndexedItem<IPanelDataSource> activeCard = getActiveCard();
-        if (activeCard == null) return;
+        if (activeCard == null) {
+            textboxTitle = null;
+            buttonList.clear();
+            prevCard = null;
+            modified = false;
+            return;
+        }
         ItemStack card = activeCard.itemStack;
 
-        if (((card == null && prevCard == null && initialized) || (card != null && card.equals(prevCard)))
-                && !willReturn)
+        if (((card == null && prevCard == null && initialized)
+                || (card != null && ItemStack.areItemStacksEqual(card, prevCard))) && !willReturn)
             return;
         willReturn = false;
         initialized = true;

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import net.minecraft.world.World;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
@@ -18,6 +17,7 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
+// Special card that is only rendered by the client and does not send packets from the server
 public class ItemTimeCard extends ItemCardBase {
 
     public static final UUID CARD_TYPE = new UUID(0, 1);
@@ -29,11 +29,15 @@ public class ItemTimeCard extends ItemCardBase {
 
     @Override
     public NBTCardLayout getLayout() {
-        return new NBTCardLayout();
+        return new TimeCardData();
     }
 
     @Override
     public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        // don't update on server side
+        if (!world.isRemote) return CardState.OK;
+        TimeCardData data = (TimeCardData) layout;
+        data.time.set((world.getWorldTime() + 6000) % 24000);
         return CardState.OK;
     }
 
@@ -45,12 +49,14 @@ public class ItemTimeCard extends ItemCardBase {
     @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
             NBTCardLayout layout, boolean showLabels) {
-        List<PanelString> result = new ArrayList<PanelString>(1);
+        TimeCardData data = (TimeCardData) layout;
+        List<PanelString> result = new ArrayList<>(1);
         PanelString item = new PanelString();
         result.add(item);
-        World world = FMLClientHandler.instance().getClient().theWorld;
-        if (world == null) return Collections.emptyList();
-        int time = (int) ((world.getWorldTime() + 6000) % 24000);
+        Long timeLong = data.time.get();
+        if (timeLong == null) return Collections.emptyList();
+
+        int time = timeLong.intValue();
         int hours = time / 1000;
         int minutes = (time % 1000) * 6 / 100;
         String suffix = "";
@@ -78,4 +84,13 @@ public class ItemTimeCard extends ItemCardBase {
         return CARD_TYPE;
     }
 
+    @Override
+    public boolean isClientOnly() {
+        return true;
+    }
+
+    private static class TimeCardData extends NBTCardLayout {
+
+        private final DataAccessor<Long> time = longAccessor("time");
+    }
 }

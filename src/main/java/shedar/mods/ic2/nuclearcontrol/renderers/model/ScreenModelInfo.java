@@ -1,26 +1,19 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 
-@SideOnly(Side.CLIENT)
 public class ScreenModelInfo {
 
     private static final String TEXTURE_FILE = "nuclearcontrol:infoPanel/panelAdvancedSide";
-    private static final IIcon advSideTex = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(TEXTURE_FILE);
-    private static final double Uma = advSideTex.getMaxU();
-    private static final double Umi = advSideTex.getMinU();
-    private static final double Vma = advSideTex.getMaxV();
-    private static final double Vmi = advSideTex.getMinV();
+    private static IIcon advSideTex;
 
     private final double[] coordinates = new double[24];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
@@ -34,6 +27,10 @@ public class ScreenModelInfo {
 
     public ScreenModelInfo(TileEntityAdvancedInfoPanel panel) {
         this.panel = panel;
+    }
+
+    public static void registerIcon(IIconRegister iconRegister) {
+        advSideTex = iconRegister.registerIcon(TEXTURE_FILE);
     }
 
     private void assignWithRotation(int rotation, int offset, int sign, int tl, int tr, int br, int bl, double dtl,
@@ -314,6 +311,11 @@ public class ScreenModelInfo {
                     block.getMixedBrightnessForBlock(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord));
             tess.setColorOpaque_F(0.5F, 0.5F, 0.5F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+            double Uma = advSideTex.getMaxU();
+            double Umi = advSideTex.getMinU();
+            double Vma = advSideTex.getMaxV();
+            double Vmi = advSideTex.getMinV();
 
             // bottom
             if (facing != 0) {

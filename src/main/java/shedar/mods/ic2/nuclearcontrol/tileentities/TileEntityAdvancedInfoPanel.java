@@ -66,9 +66,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
     public final ScreenModelInfo screenModelInfo = new ScreenModelInfo(this);
 
-    public ItemStack card2;
-    public ItemStack card3;
-
     protected final Map<Byte, Map<UUID, DataSorter>> dataSorters = new HashMap<>();
     // </editor-fold>
 
@@ -225,8 +222,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     @Override
     public List<String> getNetworkedFields() {
         List<String> list = super.getNetworkedFields();
-        list.add("card2");
-        list.add("card3");
         list.add("powerMode");
         list.add("transparencyMode");
         list.add("thickness");

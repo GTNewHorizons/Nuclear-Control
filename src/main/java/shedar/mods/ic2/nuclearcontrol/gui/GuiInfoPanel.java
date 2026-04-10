@@ -144,11 +144,13 @@ public class GuiInfoPanel extends GuiContainer {
         if (cardBase == null) {
             textboxTitle = null;
             buttonList.clear();
+            prevCard = null;
+            modified = false;
             return;
         }
         ItemStack card = cardBase.itemStack;
 
-        if (card.equals(prevCard) && this.container.panel.getColored() == isColored) return;
+        if (ItemStack.areItemStacksEqual(card, prevCard) && this.container.panel.getColored() == isColored) return;
 
         NBTCardLayout layout = container.panel.cardCache.getLayout(cardBase);
 

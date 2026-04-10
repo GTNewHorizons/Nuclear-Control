@@ -46,6 +46,14 @@ public class NBTLayout {
         return new DataAccessor<>(this, key, NBTTagCompound::getInteger, NBTTagCompound::setInteger, defaultValue);
     }
 
+    protected DataAccessor<Long> longAccessor(String key) {
+        return longAccessor(key, 0);
+    }
+
+    protected DataAccessor<Long> longAccessor(String key, long defaultValue) {
+        return new DataAccessor<>(this, key, NBTTagCompound::getLong, NBTTagCompound::setLong, defaultValue);
+    }
+
     protected DataAccessor<String> stringAccessor(String key, String defaultValue) {
         return new DataAccessor<>(this, key, NBTTagCompound::getString, NBTTagCompound::setString, defaultValue);
     }

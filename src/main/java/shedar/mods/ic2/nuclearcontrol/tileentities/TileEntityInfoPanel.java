@@ -352,9 +352,11 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
 
     protected void initData() {
         init = true;
-        if (!isServerSide) return;
+        if (!isServerSide) {
+            NuclearNetworkHelper.requestDisplaySettings(this);
+            return;
+        }
 
-        NuclearNetworkHelper.requestDisplaySettings(this);
         if (!nbtFields.contains("powered")) RedstoneHelper.checkPowered(worldObj, this);
 
         IC2.network.get().updateTileEntityField(this, "facing");
@@ -384,7 +386,7 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         List<IndexedItem<IPanelDataSource>> cards = getCards();
         for (IndexedItem<IPanelDataSource> card : cards) {
             NBTCardLayout layout = cardCache.getLayout(card);
-            if (isServer) {
+            if (isServer || card.item.isClientOnly()) {
                 boolean isValid = checkCardValidity(card, layout);
                 if (isValid) layout.setState(card.item.update(this, card, layout, range));
             }
