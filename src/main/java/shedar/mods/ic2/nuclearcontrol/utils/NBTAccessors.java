@@ -13,14 +13,10 @@ public class NBTAccessors {
         return compound.getInteger(key);
     }
 
-    public static int getInt(IndexedItem<?> item, String key) {
-        return getInt(item.itemStack, key);
-    }
-
-    public static void setInt(String key, int value, ItemStack itemStack) {
-        NBTTagCompound compound = getOrCreateTagCompound(itemStack);
-        compound.setInteger(key, value);
-        itemStack.setTagCompound(compound);
+    public static double getDouble(ItemStack itemStack, String key) {
+        NBTTagCompound compound = itemStack.getTagCompound();
+        if (compound == null) return 0;
+        return compound.getDouble(key);
     }
 
     public static NBTTagCompound getOrCreateTagCompound(ItemStack itemStack) {

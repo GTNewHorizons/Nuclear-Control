@@ -422,40 +422,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         return data;
     }
 
-    // /**
-    // * get a sorted list of PanelStrings to display on the screen
-    // *
-    // * @param settings displaySettings of the screen, used as a bitmask
-    // * @param cardStack ItemStack that contains the card
-    // * @param helper Wrapper object, to access field values.
-    // * @return a list of PanelStrings to display
-    // */
-    // public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
-    // CardWrapperImpl helper) {
-    // List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
-    // List<PanelString> all_data = new ArrayList<>(
-    // this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
-    // if (!Objects.equals(helper.getTitle(), "")) {
-    // PanelString title = data.remove(0);
-    // all_data.remove(0);
-    // getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-    // data.add(0, title);
-    // } else {
-    // getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
-    // }
-    // return data;
-    // }
-
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
         return new ItemStack(IC2NuclearControl.blockNuclearControlMain, 1, BlockDamages.DAMAGE_ADVANCED_PANEL);
-    }
-
-    public Map<Byte, Map<UUID, DataSorter>> getDataSorters() {
-        if (dataSorters == null) {
-            return new HashMap<>();
-        }
-        return dataSorters;
     }
 
     public DataSorter getDataSorter(byte slot) {

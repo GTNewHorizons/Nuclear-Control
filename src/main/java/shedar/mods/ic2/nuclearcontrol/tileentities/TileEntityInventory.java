@@ -64,7 +64,7 @@ public class TileEntityInventory {
         int stackLimit = stackSizeLimits[slot];
         if (stackLimit == 0) stackLimit = item.getMaxStackSize();
 
-        // ✅ DO NOT mutate input
+        // DO NOT mutate input
         ItemStack storedItem = item.copy();
         if (storedItem.stackSize > stackLimit) {
             storedItem.stackSize = stackLimit;
@@ -161,15 +161,6 @@ public class TileEntityInventory {
         }
         nbt = (NBTTagList) tagList.copy();
     }
-
-    // public void updateItemNBT(int slot, INBTUpdater updater) {
-    // if (slot < 0 || slot >= capacity) return;
-    // ItemStack itemStack = items[slot];
-    // if (itemStack == null) return;
-    // IndexedItem<Item> item = new IndexedItem<>(slot, itemStack, itemStack.getItem());
-    // updater.updateNBT(NBTAccessors.getOrCreateTagCompound(itemStack), item);
-    // for (IInventoryListener listener : listeners) listener.onItemNBTUpdated(slot, itemStack);
-    // }
 
     public NBTTagList getNBT() {
         return getNBT(false);

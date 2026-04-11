@@ -5,10 +5,12 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.Constants;
 
@@ -24,10 +26,16 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.ISlotItemFilter;
 import shedar.mods.ic2.nuclearcontrol.ITextureHelper;
+import shedar.mods.ic2.nuclearcontrol.api.CardState;
+import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
+import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.RangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
+import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 
 public class TileEntityRangeTrigger extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, IWrenchable, ITextureHelper,
@@ -352,71 +360,74 @@ public class TileEntityRangeTrigger extends TileEntity
     @Override
     public void markDirty() {
         super.markDirty();
-        // if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-        // int upgradeCountRange = 0;
-        // ItemStack itemStack = inventory[SLOT_UPGRADE];
-        // if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade
-        // && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE) {
-        // upgradeCountRange = itemStack.stackSize;
-        // }
-        // ItemStack card = inventory[SLOT_CARD];
-        // int fire = STATE_UNKNOWN;
-        // if (card != null) {
-        // Item item = card.getItem();
-        // if (item instanceof IPanelDataSource && item instanceof IRangeTriggerable) {
-        // boolean needUpdate = true;
-        // if (upgradeCountRange > 7) upgradeCountRange = 7;
-        // int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
-        // if (item instanceof IRemoteSensor) {
-        // ChunkCoordinates target = CardAccessors.getCoordinates(card);
-        // if (target == null) {
-        // needUpdate = false;
-        // CardAccessors.setState(CardState.INVALID_CARD, card);
-        // } else {
-        // int dx = target.posX - xCoord;
-        // int dy = target.posY - yCoord;
-        // int dz = target.posZ - zCoord;
-        // if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
-        // needUpdate = false;
-        // CardAccessors.setState(CardState.OUT_OF_RANGE, card);
-        // fire = STATE_UNKNOWN;
-        // }
-        // }
-        // }
-        // if (needUpdate) {
-        // CardState state = ((IPanelDataSource) item).update(this, cardHelper, range);
-        // cardHelper.setState(state);
-        // if (state == CardState.OK) {
-        // double min = Math.min(levelStart, levelEnd);
-        // double max = Math.max(levelStart, levelEnd);
-        // double cur = cardHelper.getDouble("range_trigger_amount");
-        //
-        // if (cur > max) {
-        // fire = STATE_ACTIVE;
-        // } else if (cur < min) {
-        // fire = STATE_ACTIVE;
-        // } else if (onFire == STATE_UNKNOWN) {
-        // fire = STATE_PASSIVE;
-        // } else {
-        // fire = STATE_PASSIVE;
-        // }
-        // } else {
-        // fire = STATE_UNKNOWN;
-        // }
-        //
-        // }
-        // }
-        // }
-        // if (fire != getOnFire()) {
-        // setOnFire(fire);
-        // worldObj.notifyBlocksOfNeighborChange(
-        // xCoord,
-        // yCoord,
-        // zCoord,
-        // worldObj.getBlock(xCoord, yCoord, zCoord));
-        // }
-        //
-        // }
+        if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            int upgradeCountRange = 0;
+            ItemStack itemStack = inventory[SLOT_UPGRADE];
+            if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade
+                    && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE) {
+                upgradeCountRange = itemStack.stackSize;
+            }
+            ItemStack card = inventory[SLOT_CARD];
+            int fire = STATE_UNKNOWN;
+            if (card != null) {
+                Item item = card.getItem();
+                if (item instanceof IPanelDataSource dataSource && item instanceof IRangeTriggerable) {
+                    boolean needUpdate = true;
+                    if (upgradeCountRange > 7) upgradeCountRange = 7;
+                    int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
+                    NBTCardLayout layout = dataSource.getLayout();
+                    IndexedItem<Item> indexedItem = new IndexedItem<>(SLOT_CARD, card, item);
+                    layout.setItem(indexedItem);
+                    if (item instanceof IRemoteSensor) {
+                        ChunkCoordinates target = layout.getTarget();
+                        if (target == null) {
+                            needUpdate = false;
+                            layout.setState(CardState.INVALID_CARD);
+                        } else {
+                            int dx = target.posX - xCoord;
+                            int dy = target.posY - yCoord;
+                            int dz = target.posZ - zCoord;
+                            if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
+                                needUpdate = false;
+                                layout.setState(CardState.OUT_OF_RANGE);
+                                fire = STATE_UNKNOWN;
+                            }
+                        }
+                    }
+                    if (needUpdate) {
+                        CardState state = dataSource.update(this, indexedItem, layout, range);
+                        layout.setState(state);
+                        if (state == CardState.OK) {
+                            double min = Math.min(levelStart, levelEnd);
+                            double max = Math.max(levelStart, levelEnd);
+                            double cur = NBTAccessors.getDouble(card, "range_trigger_amount");
+
+                            if (cur > max) {
+                                fire = STATE_ACTIVE;
+                            } else if (cur < min) {
+                                fire = STATE_ACTIVE;
+                            } else if (onFire == STATE_UNKNOWN) {
+                                fire = STATE_PASSIVE;
+                            } else {
+                                fire = STATE_PASSIVE;
+                            }
+                        } else {
+                            fire = STATE_UNKNOWN;
+                        }
+
+                    }
+                }
+            }
+            if (fire != getOnFire()) {
+                setOnFire(fire);
+                worldObj.notifyBlocksOfNeighborChange(
+                        xCoord,
+                        yCoord,
+                        zCoord,
+                        worldObj.getBlock(xCoord, yCoord, zCoord));
+            }
+
+        }
     };
 
     @Override
