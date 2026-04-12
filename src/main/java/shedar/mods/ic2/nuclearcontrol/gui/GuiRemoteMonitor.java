@@ -21,6 +21,8 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerRemoteMonitor;
 import shedar.mods.ic2.nuclearcontrol.items.ItemCardText;
 import shedar.mods.ic2.nuclearcontrol.items.ItemTimeCard;
+import shedar.mods.ic2.nuclearcontrol.network.ChannelHandler;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketRemoteMonitor;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.NCLog;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -59,22 +61,23 @@ public class GuiRemoteMonitor extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         List<PanelString> joinedData = new LinkedList<PanelString>();
         boolean anyCardFound = true;
-        InventoryItem itemInv = new InventoryItem(e.getHeldItem());
+        InventoryItem nbtItem = new InventoryItem(e.getHeldItem());
 
-        ItemStack itemStack = inv.getStackInSlot(0);
-        if (itemStack == null) return;
+        ItemStack uiItem = inv.getStackInSlot(0);
+        if (uiItem == null) return;
 
-        ItemStack invItemStack = itemInv.getStackInSlot(0);
-        if (invItemStack == null) return;
-        Item item = itemStack.getItem();
+        ItemStack nbtItemStack = nbtItem.getStackInSlot(0);
+        if (nbtItemStack == null) return;
+        Item item = uiItem.getItem();
         if (!(item instanceof IPanelDataSource panelDataSource)) return;
 
-        IndexedItem<?> indexedItem = new IndexedItem<>(0, itemStack, item);
+        IndexedItem<?> indexedItem = new IndexedItem<>(0, nbtItemStack, nbtItemStack.getItem());
         NBTCardLayout data = panelDataSource.getLayout();
         data.setItem(indexedItem);
-        CardState state = data.getState();
 
-        // ChannelHandler.network.sendToServer(new PacketServerUpdate(inv.getStackInSlot(0)));
+        // send ui item to server (this is based on the original logic)
+        ChannelHandler.network.sendToServer(new PacketRemoteMonitor(uiItem));
+        CardState state = data.getState();
         if (state != CardState.OK)
             if (state.equals(CardState.CUSTOM_ERROR)) if (item instanceof ItemCardText || item instanceof ItemTimeCard)
                 joinedData = panelDataSource.getStringData(Integer.MAX_VALUE, indexedItem, data, true);

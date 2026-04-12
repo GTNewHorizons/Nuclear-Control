@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
@@ -62,4 +63,9 @@ public abstract class ItemCardBase extends Item implements IPanelDataSource {
     @Override
     abstract public List<PanelSetting> getSettingsList();
 
+    protected boolean isTargetInvalid(ChunkCoordinates coords, World world) {
+        if (coords == null) return true;
+        return !world.getChunkProvider().chunkExists(coords.posX >> 4, coords.posZ >> 4)
+                || world.getTileEntity(coords.posX, coords.posY, coords.posZ) == null;
+    }
 }

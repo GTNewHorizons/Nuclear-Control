@@ -27,7 +27,6 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorterSync;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsAll;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsUpdate;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketEncounter;
-import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensorTitle;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
@@ -67,8 +66,6 @@ public class NuclearNetworkHelper {
                 tileEntity.zCoord,
                 slot,
                 itemStack);
-        // sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 64, tileEntity.getWorldObj(),
-        // packet);
         ChannelHandler.network.sendToServer(packet);
     }
 
@@ -131,19 +128,6 @@ public class NuclearNetworkHelper {
                         slot,
                         card.getItem().getClass().getName(),
                         fields));
-    }
-
-    // server
-    public static void setSensorCardTitle(TileEntityInfoPanel panel, byte slot, String title) {
-        if (title == null || panel == null) return;
-
-        sendPacketToAllAround(
-                panel.xCoord,
-                panel.yCoord,
-                panel.zCoord,
-                64,
-                panel.getWorldObj(),
-                new PacketSensorTitle(panel.xCoord, panel.yCoord, panel.zCoord, slot, title));
     }
 
     public static void chatMessage(EntityPlayer player, String message) {

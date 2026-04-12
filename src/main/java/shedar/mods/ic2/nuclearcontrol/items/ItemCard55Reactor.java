@@ -58,7 +58,7 @@ public class ItemCard55Reactor extends ItemCardBase implements IRemoteSensor, IR
         FFReactorData data = (FFReactorData) layout;
         ChunkCoordinates target = data.getTarget();
         if (target == null) return CardState.NO_TARGET;
-        // int targetType = card.getInt("targetType");
+
         TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (isReactorPart(check) || world.getBlock(target.posX, target.posY, target.posZ)
                 == Block.getBlockFromItem(IC2Items.getItem("reactorvessel").getItem())) {

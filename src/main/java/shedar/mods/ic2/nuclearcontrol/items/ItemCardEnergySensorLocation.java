@@ -51,7 +51,8 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         ESLData data = (ESLData) layout;
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         int targetType = data.targetType.get();
         EnergyStorageData storage = EnergyStorageHelper
                 .getStorageAt(world, target.posX, target.posY, target.posZ, targetType);

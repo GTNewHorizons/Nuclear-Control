@@ -113,7 +113,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public CardState updateLiquid(World world, MSLData data) {
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         FluidTankInfo storage = LiquidStorageHelper.getStorageAt(world, target.posX, target.posY, target.posZ);
         if (storage != null) {
             int capacity = storage.capacity;
@@ -140,7 +141,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public CardState updateCounter(World world, MSLData data) {
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         TileEntity tileEntity = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (tileEntity instanceof TileEntityEnergyCounter counter) {
             data.energy.set(counter.counter);
@@ -159,7 +161,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
 
     public CardState updateGenerator(World world, MSLData data) {
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (entity instanceof TileEntityBaseGenerator) {
             // int production = ((TileEntityBaseGenerator)entity).production;

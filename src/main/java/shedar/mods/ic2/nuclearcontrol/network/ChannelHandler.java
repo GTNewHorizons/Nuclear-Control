@@ -3,6 +3,8 @@ package shedar.mods.ic2.nuclearcontrol.network;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import shedar.mods.ic2.nuclearcontrol.network.handler.RemoteClientHandler;
+import shedar.mods.ic2.nuclearcontrol.network.handler.RemoteServerHandler;
 import shedar.mods.ic2.nuclearcontrol.network.handler.SlotUpdateClientHandler;
 import shedar.mods.ic2.nuclearcontrol.network.handler.SlotUpdateServerHandler;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketAcounter;
@@ -11,7 +13,6 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketChat;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientColor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientDisplaySettings;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRangeTrigger;
-import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRemoteMonitor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientRequest;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSensor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketClientSound;
@@ -20,7 +21,7 @@ import shedar.mods.ic2.nuclearcontrol.network.message.PacketDataSorterSync;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsAll;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketDispSettingsUpdate;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketEncounter;
-import shedar.mods.ic2.nuclearcontrol.network.message.PacketSensorTitle;
+import shedar.mods.ic2.nuclearcontrol.network.message.PacketRemoteMonitor;
 import shedar.mods.ic2.nuclearcontrol.network.message.PacketUpdateSlotNBT;
 
 public class ChannelHandler {
@@ -29,7 +30,6 @@ public class ChannelHandler {
 
     public static void init() {
         network.registerMessage(PacketAlarm.class, PacketAlarm.class, 1, Side.CLIENT);
-        network.registerMessage(PacketSensorTitle.class, PacketSensorTitle.class, 3, Side.CLIENT);
         network.registerMessage(PacketChat.class, PacketChat.class, 4, Side.CLIENT);
         network.registerMessage(PacketEncounter.class, PacketEncounter.class, 5, Side.CLIENT);
         network.registerMessage(PacketAcounter.class, PacketAcounter.class, 6, Side.CLIENT);
@@ -41,11 +41,8 @@ public class ChannelHandler {
         network.registerMessage(PacketClientSensor.class, PacketClientSensor.class, 12, Side.SERVER);
         network.registerMessage(PacketClientColor.class, PacketClientColor.class, 13, Side.SERVER);
         network.registerMessage(PacketClientDisplaySettings.class, PacketClientDisplaySettings.class, 14, Side.SERVER);
-        network.registerMessage(
-                PacketClientRemoteMonitor.Handler.class,
-                PacketClientRemoteMonitor.class,
-                16,
-                Side.CLIENT);
+        network.registerMessage(RemoteClientHandler.class, PacketRemoteMonitor.class, 15, Side.CLIENT);
+        network.registerMessage(RemoteServerHandler.class, PacketRemoteMonitor.class, 16, Side.SERVER);
         network.registerMessage(PacketDataSorter.class, PacketDataSorter.class, 17, Side.CLIENT);
         network.registerMessage(PacketDataSorter.class, PacketDataSorter.class, 18, Side.SERVER);
         network.registerMessage(PacketDataSorterSync.class, PacketDataSorterSync.class, 19, Side.CLIENT);

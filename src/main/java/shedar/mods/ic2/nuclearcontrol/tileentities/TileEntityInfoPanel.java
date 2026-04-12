@@ -714,7 +714,7 @@ public class TileEntityInfoPanel extends TileEntity implements ISlotItemFilter, 
         int range = getMaxRange();
 
         ChunkCoordinates target = layout.getTarget();
-        if (target == null) {
+        if (target == null || !worldObj.getChunkProvider().chunkExists(target.posX >> 4, target.posZ >> 4)) {
             layout.setState(CardState.INVALID_CARD);
             return false;
         } else {

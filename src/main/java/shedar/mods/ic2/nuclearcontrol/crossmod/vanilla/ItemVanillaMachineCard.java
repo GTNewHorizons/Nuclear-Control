@@ -51,9 +51,9 @@ public class ItemVanillaMachineCard extends ItemCardBase {
     public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         MachineData data = (MachineData) layout;
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
 
+        TileEntity tile = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (tile instanceof TileEntityBrewingStand) {
             TileEntityBrewingStand brewingStand = (TileEntityBrewingStand) tile;
             data.entity.set(BREW_STAND);

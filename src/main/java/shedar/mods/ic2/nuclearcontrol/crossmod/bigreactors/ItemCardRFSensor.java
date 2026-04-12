@@ -52,7 +52,7 @@ public class ItemCardRFSensor extends ItemCardBase implements IRemoteSensor, IRa
     public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         BRCardData data = (BRCardData) layout;
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
         // int targetType = card.getInt("targetType");
         TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (check instanceof TileEntityBlockFetcher) {

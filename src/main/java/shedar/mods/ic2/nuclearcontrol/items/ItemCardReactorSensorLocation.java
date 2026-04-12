@@ -53,7 +53,8 @@ public class ItemCardReactorSensorLocation extends ItemCardBase implements IRemo
     public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         RSLData data = (RSLData) layout;
         ChunkCoordinates target = data.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         IReactor reactor = NuclearHelper.getReactorAt(world, target.posX, target.posY, target.posZ);
         if (reactor != null) {
             data.heat.set(reactor.getHeat());
