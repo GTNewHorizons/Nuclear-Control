@@ -30,10 +30,12 @@ import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.RangeTrigger;
 import shedar.mods.ic2.nuclearcontrol.items.ItemUpgrade;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
+import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 
 public class TileEntityRangeTrigger extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, IWrenchable, ITextureHelper,
@@ -354,6 +356,7 @@ public class TileEntityRangeTrigger extends TileEntity
     @Override
     public void closeInventory() {}
 
+    // TODO
     @Override
     public void markDirty() {
         super.markDirty();
@@ -368,34 +371,36 @@ public class TileEntityRangeTrigger extends TileEntity
             int fire = STATE_UNKNOWN;
             if (card != null) {
                 Item item = card.getItem();
-                if (item instanceof IPanelDataSource && item instanceof IRangeTriggerable) {
+                if (item instanceof IPanelDataSource dataSource && item instanceof IRangeTriggerable) {
                     boolean needUpdate = true;
                     if (upgradeCountRange > 7) upgradeCountRange = 7;
                     int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
-                    CardWrapperImpl cardHelper = new CardWrapperImpl(card, SLOT_CARD);
+                    NBTCardLayout layout = dataSource.getLayout();
+                    IndexedItem<Item> indexedItem = new IndexedItem<>(SLOT_CARD, card, item);
+                    layout.setItem(indexedItem);
                     if (item instanceof IRemoteSensor) {
-                        ChunkCoordinates target = cardHelper.getTarget();
+                        ChunkCoordinates target = layout.getTarget();
                         if (target == null) {
                             needUpdate = false;
-                            cardHelper.setState(CardState.INVALID_CARD);
+                            layout.setState(CardState.INVALID_CARD);
                         } else {
                             int dx = target.posX - xCoord;
                             int dy = target.posY - yCoord;
                             int dz = target.posZ - zCoord;
                             if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
                                 needUpdate = false;
-                                cardHelper.setState(CardState.OUT_OF_RANGE);
+                                layout.setState(CardState.OUT_OF_RANGE);
                                 fire = STATE_UNKNOWN;
                             }
                         }
                     }
                     if (needUpdate) {
-                        CardState state = ((IPanelDataSource) item).update(this, cardHelper, range);
-                        cardHelper.setState(state);
+                        CardState state = dataSource.update(this, indexedItem, layout, range);
+                        layout.setState(state);
                         if (state == CardState.OK) {
                             double min = Math.min(levelStart, levelEnd);
                             double max = Math.max(levelStart, levelEnd);
-                            double cur = cardHelper.getDouble("range_trigger_amount");
+                            double cur = NBTAccessors.getDouble(card, "range_trigger_amount");
 
                             if (cur > max) {
                                 fire = STATE_ACTIVE;

@@ -24,17 +24,18 @@ import ic2.api.energy.EnergyNet;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAverageCounter;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityEnergyCounter;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -70,6 +71,11 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
+    public MSLData getLayout() {
+        return new MSLData();
+    }
+
+    @Override
     public void registerIcons(IIconRegister iconRegister) {
         iconCounter = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_CARD_COUNTER));
         iconLiquid = iconRegister.registerIcon(TextureResolver.getItemTexture(TEXTURE_CARD_LIQUID));
@@ -91,36 +97,24 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        int damage = card.getItemStack().getItemDamage();
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        int damage = card.itemStack.getItemDamage();
+        MSLData data = (MSLData) layout;
         switch (damage) {
             case ItemKitMultipleSensor.TYPE_COUNTER:
-                return updateCounter(panel.getWorldObj(), card, range);
+                return updateCounter(world, data);
             case ItemKitMultipleSensor.TYPE_LIQUID:
-                return updateLiquid(panel.getWorldObj(), card, range);
+                return updateLiquid(world, data);
             case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return updateGenerator(panel.getWorldObj(), card, range);
+                return updateGenerator(world, data);
         }
         return CardState.INVALID_CARD;
     }
 
-    @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        int damage = card.getItemStack().getItemDamage();
-        switch (damage) {
-            case ItemKitMultipleSensor.TYPE_COUNTER:
-                return updateCounter(world, card, range);
-            case ItemKitMultipleSensor.TYPE_LIQUID:
-                return updateLiquid(world, card, range);
-            case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return updateGenerator(world, card, range);
-        }
-        return CardState.INVALID_CARD;
-    }
+    public CardState updateLiquid(World world, MSLData data) {
+        ChunkCoordinates target = data.getTarget();
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
 
-    public CardState updateLiquid(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
         FluidTankInfo storage = LiquidStorageHelper.getStorageAt(world, target.posX, target.posY, target.posZ);
         if (storage != null) {
             int capacity = storage.capacity;
@@ -134,47 +128,47 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
                     liquidTag = storage.fluid.tag;
                 }
             }
-            card.setInt("capacity", capacity);
-            card.setInt("amount", amount);
-            card.setInt("liquidId", liquidId);
-            card.setTag("liquidTag", liquidTag);
-            card.setDouble("range_trigger_amount", (double) amount);
+            data.capacity.set(capacity);
+            data.amount.set(amount);
+            data.liquidId.set(liquidId);
+            data.liquidTag.set(liquidTag);
+            data.rangeTriggerAmount.set((double) amount);
             return CardState.OK;
         } else {
             return CardState.NO_TARGET;
         }
     }
 
-    public CardState updateCounter(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+    public CardState updateCounter(World world, MSLData data) {
+        ChunkCoordinates target = data.getTarget();
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         TileEntity tileEntity = world.getTileEntity(target.posX, target.posY, target.posZ);
-        if (tileEntity != null && tileEntity instanceof TileEntityEnergyCounter) {
-            TileEntityEnergyCounter counter = (TileEntityEnergyCounter) tileEntity;
-            card.setDouble("energy", counter.counter);
-            card.setDouble("range_trigger_amount", counter.counter);
-            card.setInt("powerType", (int) counter.powerType);
+        if (tileEntity instanceof TileEntityEnergyCounter counter) {
+            data.energy.set(counter.counter);
+            data.rangeTriggerAmount.set(counter.counter);
+            data.powerType.set((int) counter.powerType);
             return CardState.OK;
-        } else if (tileEntity != null && tileEntity instanceof TileEntityAverageCounter) {
-            TileEntityAverageCounter avgCounter = (TileEntityAverageCounter) tileEntity;
-            card.setInt("average", avgCounter.getClientAverage());
-            card.setDouble("range_trigger_amount", (double) avgCounter.getClientAverage());
-            card.setInt("powerType", (int) avgCounter.powerType);
+        } else if (tileEntity instanceof TileEntityAverageCounter avgCounter) {
+            data.average.set(avgCounter.getClientAverage());
+            data.rangeTriggerAmount.set((double) avgCounter.getClientAverage());
+            data.powerType.set((int) avgCounter.powerType);
             return CardState.OK;
         } else {
             return CardState.NO_TARGET;
         }
     }
 
-    public CardState updateGenerator(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
+    public CardState updateGenerator(World world, MSLData data) {
+        ChunkCoordinates target = data.getTarget();
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
         TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
         if (entity instanceof TileEntityBaseGenerator) {
             // int production = ((TileEntityBaseGenerator)entity).production;
             int production = (int) EnergyNet.instance.getNodeStats(entity).getEnergyOut();
-            card.setInt("production", production);
-            card.setDouble("range_trigger_amount", (double) production);
+            data.production.set(production);
+            data.rangeTriggerAmount.set((double) production);
             return CardState.OK;
         } else {
             return CardState.NO_TARGET;
@@ -182,8 +176,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public List<PanelSetting> getSettingsList(ICardWrapper card) {
-        int damage = card.getItemStack().getItemDamage();
+    public List<PanelSetting> getSettingsList(IndexedItem<?> card) {
+        int damage = card.itemStack.getItemDamage();
         switch (damage) {
             case ItemKitMultipleSensor.TYPE_COUNTER:
                 return getSettingsListCounter();
@@ -196,8 +190,8 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public UUID getCardType(ICardWrapper card) {
-        int damage = card.getItemStack().getItemDamage();
+    public UUID getCardType(IndexedItem<?> card) {
+        int damage = card.itemStack.getItemDamage();
         switch (damage) {
             case ItemKitMultipleSensor.TYPE_COUNTER:
                 return CARD_TYPE_COUNTER;
@@ -210,30 +204,31 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
-        int damage = card.getItemStack().getItemDamage();
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
+        MSLData data = (MSLData) layout;
+        int damage = card.itemStack.getItemDamage();
         switch (damage) {
             case ItemKitMultipleSensor.TYPE_COUNTER:
-                return getStringDataCounter(displaySettings, card, showLabels);
+                return getStringDataCounter(displaySettings, data, showLabels);
             case ItemKitMultipleSensor.TYPE_LIQUID:
-                return getStringDataLiquid(displaySettings, card, showLabels);
+                return getStringDataLiquid(displaySettings, data, showLabels);
             case ItemKitMultipleSensor.TYPE_GENERATOR:
-                return getStringDataGenerator(displaySettings, card, showLabels);
+                return getStringDataGenerator(data, showLabels);
         }
         return null;
     }
 
-    public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, ICardWrapper card,
+    public List<PanelString> getStringDataLiquid(DisplaySettingHelper displaySettings, MSLData data,
             boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
-        int capacity = card.getInt("capacity");
-        int amount = card.getInt("amount");
+        int capacity = data.capacity.get();
+        int amount = data.amount.get();
 
         if (displaySettings.getSetting(DISPLAY_LIQUID_NAME)) {
-            int liquidId = card.getInt("liquidId");
+            int liquidId = data.liquidId.get();
             String name;
             if (liquidId == 0) name = LangHelper.translate("msg.nc.None");
             else name = FluidRegistry.getFluidName(liquidId); // TODO deprecated
@@ -267,37 +262,34 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         return result;
     }
 
-    public List<PanelString> getStringDataCounter(DisplaySettingHelper displaySettings, ICardWrapper card,
+    public List<PanelString> getStringDataCounter(DisplaySettingHelper displaySettings, MSLData data,
             boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        if (card.hasField("average")) {// average counter
+        if (data.average.exists()) {// average counter
             if (displaySettings.getSetting(DISPLAY_ENERGY)) {
                 line = new PanelString();
-                String key = card.getInt("powerType") == EnergyStorageData.TARGET_TYPE_IC2 ? "msg.nc.InfoPanelOutput"
+                String key = data.powerType.get() == EnergyStorageData.TARGET_TYPE_IC2 ? "msg.nc.InfoPanelOutput"
                         : "msg.nc.InfoPanelOutputMJ";
-                line.textLeft = StringUtils.getFormatted(key, card.getInt("average"), showLabels);
+                line.textLeft = StringUtils.getFormatted(key, data.average.get(), showLabels);
                 result.add(line);
             }
         } else {// energy counter
             if (displaySettings.getSetting(DISPLAY_ENERGY)) {
-                double energy = card.getDouble("energy");
                 line = new PanelString();
-                String key = card.getInt("powerType") == EnergyStorageData.TARGET_TYPE_IC2
-                        ? "msg.nc.InfoPanelEnergyCounter"
+                String key = data.powerType.get() == EnergyStorageData.TARGET_TYPE_IC2 ? "msg.nc.InfoPanelEnergyCounter"
                         : "msg.nc.InfoPanelEnergyCounterMJ";
-                line.textLeft = StringUtils.getFormatted(key, energy, showLabels);
+                line.textLeft = StringUtils.getFormatted(key, data.energy.get(), showLabels);
                 result.add(line);
             }
         }
         return result;
     }
 
-    public List<PanelString> getStringDataGenerator(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringDataGenerator(MSLData data, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line = new PanelString();
-        line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", card.getInt("production"), showLabels);
+        line.textLeft = StringUtils.getFormatted("msg.nc.InfoPanelOutput", data.production.get(), showLabels);
         result.add(line);
         return result;
     }
@@ -363,10 +355,9 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-        CardWrapperImpl helper = new CardWrapperImpl(itemStack, -1);
-        ChunkCoordinates target = helper.getTarget();
+        ChunkCoordinates target = CardAccessors.getCoordinates(itemStack);
         if (target != null) {
-            String title = helper.getTitle();
+            String title = CardAccessors.getTitle(itemStack);
             if (title != null && !title.isEmpty()) {
                 info.add(title);
             }
@@ -393,4 +384,16 @@ public class ItemCardMultipleSensorLocation extends ItemCardBase
         list.add(new ItemStack(item, 1, ItemKitMultipleSensor.TYPE_GENERATOR));
     }
 
+    public static class MSLData extends NBTCardLayout {
+
+        public DataAccessor<Integer> amount = intAccessor("amount");
+        public DataAccessor<Integer> average = intAccessor("average");
+        public DataAccessor<Integer> capacity = intAccessor("capacity");
+        public DataAccessor<Double> energy = doubleAccessor("energy");
+        public DataAccessor<Integer> liquidId = intAccessor("liquidId");
+        public DataAccessor<NBTTagCompound> liquidTag = compoundAccessor("liquidTag");
+        public DataAccessor<Integer> powerType = intAccessor("powerType");
+        public DataAccessor<Integer> production = intAccessor("production");
+        public DataAccessor<Double> rangeTriggerAmount = doubleAccessor("range_trigger_amount");
+    }
 }

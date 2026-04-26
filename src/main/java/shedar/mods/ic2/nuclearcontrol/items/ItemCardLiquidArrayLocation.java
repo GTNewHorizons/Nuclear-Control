@@ -8,6 +8,9 @@ import java.util.Vector;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -19,12 +22,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LiquidStorageHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.NBTAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class ItemCardLiquidArrayLocation extends ItemCardBase {
@@ -46,45 +52,61 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
         super("cardLiquidArray");
     }
 
-    private int[] getCoordinates(ICardWrapper card, int cardNumber) {
-        int cardCount = card.getInt("cardCount");
-        if (cardNumber >= cardCount) return null;
-        int[] coordinates = new int[] { card.getInt(String.format("_%dx", cardNumber)),
-                card.getInt(String.format("_%dy", cardNumber)), card.getInt(String.format("_%dz", cardNumber)) };
-        return coordinates;
+    @Override
+    public NBTCardLayout getLayout() {
+        return new LAData();
+    }
+
+    private int[] getCoordinates(NBTTagCompound compound) {
+        int x = compound.getInteger("x");
+        int y = compound.getInteger("y");
+        int z = compound.getInteger("z");
+        return new int[] { x, y, z };
     }
 
     public static int getCardCount(ICardWrapper card) {
         return card.getInt("cardCount");
     }
 
-    public static void initArray(CardWrapperImpl card, Vector<ItemStack> cards) {
-        int cardCount = getCardCount(card);
+    public static void initArray(ItemStack card, Vector<ItemStack> cards) {
+        LAData data = new LAData();
+        data.setItem(new IndexedItem<>(0, card, card.getItem()));
+
+        NBTTagList tagList = new NBTTagList();
+        data.cards.set(tagList);
+
+        int cardCount = 0;
         for (ItemStack subCard : cards) {
-            CardWrapperImpl wrapper = new CardWrapperImpl(subCard, -1);
-            ChunkCoordinates target = wrapper.getTarget();
+            ChunkCoordinates target = CardAccessors.getCoordinates(subCard);
             if (target == null) continue;
-            card.setInt(String.format("_%dx", cardCount), target.posX);
-            card.setInt(String.format("_%dy", cardCount), target.posY);
-            card.setInt(String.format("_%dz", cardCount), target.posZ);
-            card.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setInteger("x", target.posX);
+            compound.setInteger("y", target.posY);
+            compound.setInteger("z", target.posZ);
+            compound.setInteger("targetType", CardAccessors.getTargetType(subCard));
+            tagList.appendTag(compound);
             cardCount++;
         }
-        card.setInt("cardCount", cardCount);
+
+        data.count.set(cardCount);
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        int cardCount = getCardCount(card);
+    public CardState update(TileEntity panel, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        LAData data = (LAData) layout;
+        int cardCount = data.count.get();
         double totalAmount = 0.0;
+
         if (cardCount == 0) {
             return CardState.INVALID_CARD;
         } else {
             boolean foundAny = false;
             boolean outOfRange = false;
             int liquidId = 0;
+            NBTTagList tagList = (NBTTagList) data.cards.get();
             for (int i = 0; i < cardCount; i++) {
-                int[] coordinates = getCoordinates(card, i);
+                NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                int[] coordinates = getCoordinates(tag);
                 int dx = coordinates[0] - panel.xCoord;
                 int dy = coordinates[1] - panel.yCoord;
                 int dz = coordinates[2] - panel.zCoord;
@@ -94,26 +116,25 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
                     if (storage != null) {
                         if (storage.fluid != null) {
                             totalAmount += storage.fluid.amount;
-                            card.setInt(String.format("_%damount", i), storage.fluid.amount);
+                            tag.setInteger("amount", (int) storage.fluid.amount);
 
                             if (storage.fluid.getFluidID() != 0 && storage.fluid.amount > 0) {
                                 liquidId = storage.fluid.getFluidID();
                             }
-                            if (liquidId == 0)
-                                card.setString(String.format("_%dname", i), LangHelper.translate("msg.nc.None"));
-                            else card.setString(String.format("_%dname", i), FluidRegistry.getFluidName(storage.fluid));
+                            if (liquidId == 0) tag.setString("name", LangHelper.translate("msg.nc.None"));
+                            else tag.setString("name", FluidRegistry.getFluidName(storage.fluid));
                         }
-                        card.setInt(String.format("_%dcapacity", i), storage.capacity);
+                        tag.setInteger("capacity", storage.capacity);
                         foundAny = true;
                     } else {
-                        card.setInt(String.format("_%damount", i), STATUS_NOT_FOUND);
+                        tag.setInteger("amount", STATUS_NOT_FOUND);
                     }
                 } else {
-                    card.setInt(String.format("_%damount", i), STATUS_OUT_OF_RANGE);
+                    tag.setInteger("amount", STATUS_OUT_OF_RANGE);
                     outOfRange = true;
                 }
             }
-            card.setDouble("energyL", totalAmount);
+            data.energyL.set(totalAmount);
             if (!foundAny) {
                 if (outOfRange) return CardState.OUT_OF_RANGE;
                 else return CardState.NO_TARGET;
@@ -123,7 +144,7 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
+    public CardState update(World world, IndexedItem<?> item, NBTCardLayout layout, int range) {
         return CardState.CUSTOM_ERROR;
     }
 
@@ -133,8 +154,8 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> item,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
         double totalAmount = 0;
@@ -146,10 +167,15 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
         boolean showFree = displaySettings.getSetting(DISPLAY_FREE);
         boolean showCapacity = displaySettings.getSetting(DISPLAY_CAPACITY);
         boolean showPercentage = displaySettings.getSetting(DISPLAY_PERCENTAGE);
-        int cardCount = getCardCount(card);
+
+        LAData card = (LAData) layout;
+        int cardCount = card.count.get();
+        NBTTagList tagList = (NBTTagList) card.cards.get();
+
         for (int i = 0; i < cardCount; i++) {
-            int amount = card.getInt(String.format("_%damount", i));
-            int capacity = card.getInt(String.format("_%dcapacity", i));
+            NBTTagCompound tag = tagList.getCompoundTagAt(i);
+            int amount = tag.getInteger("amount");
+            int capacity = tag.getInteger("capacity");
             boolean isOutOfRange = amount == STATUS_OUT_OF_RANGE;
             boolean isNotFound = amount == STATUS_NOT_FOUND;
             if (showSummary && !isOutOfRange && !isNotFound) {
@@ -169,10 +195,8 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
                 } else {
                     if (showName) {
                         line = new PanelString();
-                        if (showLabels) line.textLeft = StringUtils.getFormattedKey(
-                                "msg.nc.InfoPanelLiquidNameN",
-                                i + 1,
-                                card.getString(String.format("_%dname", i)));
+                        if (showLabels) line.textLeft = StringUtils
+                                .getFormattedKey("msg.nc.InfoPanelLiquidNameN", i + 1, tag.getString("name"));
                         else line.textLeft = StringUtils.getFormatted("", amount, false);
                         result.add(line);
                     }
@@ -276,15 +300,25 @@ public class ItemCardLiquidArrayLocation extends ItemCardBase {
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-        CardWrapperImpl card = new CardWrapperImpl(itemStack, -1);
-        int cardCount = getCardCount(card);
+        int cardCount = getCardCount(itemStack);
         if (cardCount > 0) {
-            String title = card.getTitle();
+            String title = CardAccessors.getTitle(itemStack);
             if (title != null && !title.isEmpty()) {
                 info.add(title);
             }
             String hint = String.format(LangHelper.translate("msg.nc.LiquidCardQuantity"), cardCount);
             info.add(hint);
         }
+    }
+
+    public static int getCardCount(ItemStack item) {
+        return NBTAccessors.getInt(item, "cardCount");
+    }
+
+    private static class LAData extends NBTCardLayout {
+
+        public final DataAccessor<Integer> count = intAccessor("cardCount");
+        public final DataAccessor<NBTBase> cards = tagAccessor("cards", new NBTTagList());
+        public final DataAccessor<Double> energyL = doubleAccessor("energyL");
     }
 }

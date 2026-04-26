@@ -75,7 +75,7 @@ public class GuiScreenColor extends GuiScreen {
     @Override
     protected void keyTyped(char par1, int par2) {
         if (par2 == 1) {
-            parentGui.isColored = !panel.colored;
+            parentGui.isColored = !panel.getColored();
             FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
         } else super.keyTyped(par1, par2);
     }

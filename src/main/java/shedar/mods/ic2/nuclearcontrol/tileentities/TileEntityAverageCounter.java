@@ -47,8 +47,6 @@ public class TileEntityAverageCounter extends TileEntity
     private byte prevPowerType;
     public byte powerType;
 
-    // private double prevTotal;
-
     private short prevFacing;
     public short facing;
 
