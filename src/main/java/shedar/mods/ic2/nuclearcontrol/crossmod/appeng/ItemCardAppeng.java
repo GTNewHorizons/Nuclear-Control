@@ -1,5 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.crossmod.appeng;
 
+import static shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation.CARD_TYPE;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,17 +17,22 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
+import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.items.ItemCardEnergySensorLocation;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardBase;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
-public class ItemCardAppeng extends ItemCardEnergySensorLocation {
+public class ItemCardAppeng extends ItemCardBase implements IRemoteSensor, IRangeTriggerable {
 
     public ItemCardAppeng() {
+        super("cardReactor");
         this.setTextureName("nuclearcontrol:cardAEMonitor");
         this.setUnlocalizedName("AppengCard");
     }
@@ -43,18 +50,26 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
+    public AppengCardData getLayout() {
+        return new AppengCardData();
+    }
+
+    @Override
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        ChunkCoordinates target = CardAccessors.getCoordinates(card);
         if (target == null) return CardState.NO_TARGET;
-        int targetType = card.getInt("targetType");
+        AppengCardData data = (AppengCardData) layout;
+
+        int targetType = data.targetType.get();
+
         if (targetType == 1) {
             TileEntity check = world.getTileEntity(target.posX, target.posY, target.posZ);
             if (check instanceof TileEntityNetworkLink) {
                 TileEntityNetworkLink tileNetworkLink = (TileEntityNetworkLink) check;
-                card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
-                card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
-                card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
-                card.setInt("UsedItems", tileNetworkLink.getUSEDITEMTYPE());
+                data.byteTotal.set(tileNetworkLink.getTOTALBYTES());
+                data.usedBytes.set(tileNetworkLink.getUSEDBYTES());
+                data.itemsTotal.set(tileNetworkLink.getITEMTYPETOTAL());
+                data.usedItems.set(tileNetworkLink.getUSEDITEMTYPE());
                 return CardState.OK;
             } else {
                 return CardState.NO_TARGET;
@@ -72,8 +87,8 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
                     crafter = CrossAppeng.cardAppeng;
                     size = 0;
                 }
-                card.setInt("ITEMSTACK", Item.getIdFromItem(crafter));
-                card.setInt("STACKSIZE", size);
+                data.itemStack.set(Item.getIdFromItem(crafter));
+                data.stackSize.set(size);
                 return CardState.OK;
             }
         } else {
@@ -83,57 +98,18 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        int targetType = card.getInt("targetType");
-        if (targetType == 1) {
-            TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileEntityNetworkLink) {
-                TileEntityNetworkLink tileNetworkLink = (TileEntityNetworkLink) check;
-                card.setInt("ByteTotal", tileNetworkLink.getTOTALBYTES());
-                card.setInt("UsedBytes", tileNetworkLink.getUSEDBYTES());
-                card.setInt("ItemsTotal", tileNetworkLink.getITEMTYPETOTAL());
-                card.setInt("UsedItems", tileNetworkLink.getUSEDITEMTYPE());
-                return CardState.OK;
-            } else {
-                return CardState.NO_TARGET;
-            }
-        } else if (targetType == 2) {
-            TileEntity check = panel.getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-            if (check instanceof TileCraftingMonitorTile) {
-                TileCraftingMonitorTile monitorTile = (TileCraftingMonitorTile) check;
-                Item crafter;
-                int size;
-                if (monitorTile.getJobProgress() instanceof IAEItemStack ais) {
-                    crafter = ais.getItem();
-                    size = (int) ais.getStackSize();
-                } else {
-                    crafter = CrossAppeng.cardAppeng;
-                    size = 0;
-                }
-                card.setInt("ITEMSTACK", Item.getIdFromItem(crafter));
-                card.setInt("STACKSIZE", size);
-                return CardState.OK;
-            }
-        } else {
-            return CardState.NO_TARGET;
-        }
-        return CardState.NO_TARGET;
-    }
-
-    @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
-        int TYPE = card.getInt("targetType");
+        AppengCardData data = (AppengCardData) layout;
+        int TYPE = data.targetType.get();
 
         if (TYPE == 1) {
-            int byteTotal = card.getInt("ByteTotal");
-            int usedBytes = card.getInt("UsedBytes");
-            int items = card.getInt("ItemsTotal");
-            int itemsUsed = card.getInt("UsedItems");
+            int byteTotal = data.byteTotal.get();
+            int usedBytes = data.usedBytes.get();
+            int items = data.itemsTotal.get();
+            int itemsUsed = data.usedItems.get();
 
             // Total Bytes
             if (displaySettings.getSetting(DISPLAY_BYTES)) {
@@ -153,8 +129,8 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
                 result.add(line);
             }
         } else if (TYPE == 2) {
-            int stackSize = card.getInt("STACKSIZE");
-            Item item = Item.getItemById(card.getInt("ITEMSTACK"));
+            int stackSize = data.stackSize.get();
+            Item item = Item.getItemById(data.itemStack.get());
             String localName = "item.null.name";
             try {
                 localName = StatCollector.translateToLocal(item.getUnlocalizedName() + ".name");
@@ -188,5 +164,16 @@ public class ItemCardAppeng extends ItemCardEnergySensorLocation {
         result.add(new NewPanelSetting(LangHelper.translate("3"), DISPLAY_CRAFTER, CARD_TYPE));
         result.add(new NewPanelSetting(LangHelper.translate("4"), DISPLAY_CRAFTSTACK, CARD_TYPE));
         return result;
+    }
+
+    public static class AppengCardData extends NBTCardLayout {
+
+        public DataAccessor<Integer> byteTotal = intAccessor("ByteTotal");
+        public DataAccessor<Integer> usedBytes = intAccessor("UsedBytes");
+        public DataAccessor<Integer> itemsTotal = intAccessor("ItemsTotal");
+        public DataAccessor<Integer> usedItems = intAccessor("UsedItems");
+        public DataAccessor<Integer> itemStack = intAccessor("ITEMSTACK");
+        public DataAccessor<Integer> stackSize = intAccessor("STACKSIZE");
+        public DataAccessor<Integer> targetType = intAccessor("targetType");
     }
 }

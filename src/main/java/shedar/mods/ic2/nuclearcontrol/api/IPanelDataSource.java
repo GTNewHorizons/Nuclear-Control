@@ -15,25 +15,29 @@ import net.minecraft.world.World;
  */
 public interface IPanelDataSource {
 
+    NBTCardLayout getLayout();
+
     /**
      * Method to update card's data. Method called on server side.
      * 
      * @param panel    Information Panel, which contains card.
      * @param card     Wrapper object, to update fields and get access to ItemStack
+     * @param layout   Card layout, used to access card's fields.
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
-    CardState update(TileEntity panel, ICardWrapper card, int maxRange);
+    CardState update(TileEntity panel, IndexedItem<?> card, NBTCardLayout layout, int maxRange);
 
     /**
      * Method to update card's data in Remote Monitor. Method called on server side.
      *
      * @param world    World, to get a Tile Entity's Location
      * @param card     Wrapper object, to update fields and get access to ItemStack
+     * @param layout   Card layout, used to access card's fields.
      * @param maxRange max allowed range to the target object, based on Range Upgrades count.
      * @return State of the card after update. Check {@link CardState} for details.
      */
-    CardState update(World world, ICardWrapper card, int maxRange);
+    CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int maxRange);
 
     /**
      * Method returns text representation of card's data. Each line is presented by {@link PanelString} object. Method
@@ -41,13 +45,15 @@ public interface IPanelDataSource {
      * 
      * @param displaySettings bit mask of display settings, configure by player for this type of cards.
      * @param card            Wrapper object, to access field values.
+     * @param layout          Card layout, used to access card's fields.
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
-     * @deprecated please implement {@link IPanelDataSource#getStringData(DisplaySettingHelper, ICardWrapper, boolean)}
+     * @deprecated please implement
+     *             {@link IPanelDataSource#getStringData(DisplaySettingHelper, IndexedItem, NBTCardLayout, boolean)}
      *             instead. Will be removed in 3.0.0
      */
-    List<PanelString> getStringData(int displaySettings, ICardWrapper card, boolean showLabels);
+    List<PanelString> getStringData(int displaySettings, IndexedItem<?> card, NBTCardLayout layout, boolean showLabels);
 
     /**
      * Method returns text representation of card's data. Each line is presented by {@link PanelString} object. Method
@@ -55,13 +61,14 @@ public interface IPanelDataSource {
      *
      * @param displaySettings display settings, configure by player for this type of cards.
      * @param card            Wrapper object, to access field values.
+     * @param layout          Card layout, used to access card's fields.
      * @param showLabels      Information Panel option. This parameter is true if labels should be shown.
      * @return list of string to display.
      * @see PanelString
      */
-    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
-        return getStringData(displaySettings.getAsInteger(), card, showLabels);
+    default List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
+        return getStringData(displaySettings.getAsInteger(), card, layout, showLabels);
     }
 
     /**
@@ -77,4 +84,13 @@ public interface IPanelDataSource {
      * Control cards for backward compatibility.
      */
     UUID getCardType();
+
+    /***
+     * Method should return true if card is only updated on the client side.
+     * 
+     * @return true if card is only updated on the client side.
+     */
+    default boolean isClientOnly() {
+        return false;
+    }
 }

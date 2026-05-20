@@ -23,16 +23,16 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.CompactButton;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelCheckBox;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiInfoPanelShowLabels;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 
 @SideOnly(Side.CLIENT)
@@ -140,10 +140,19 @@ public class GuiInfoPanel extends GuiContainer {
 
     @SuppressWarnings("unchecked")
     protected void initControls() {
-        ItemStack card = container.panel.getCards().get(0);
-        if (((card == null && prevCard == null) || (card != null && card.equals(prevCard)))
-                && this.container.panel.getColored() == isColored)
+        IndexedItem<IPanelDataSource> cardBase = getActiveCard();
+        if (cardBase == null) {
+            textboxTitle = null;
+            buttonList.clear();
+            prevCard = null;
+            modified = false;
             return;
+        }
+        ItemStack card = cardBase.itemStack;
+
+        if (ItemStack.areItemStacksEqual(card, prevCard) && this.container.panel.getColored() == isColored) return;
+
+        NBTCardLayout layout = container.panel.cardCache.getLayout(cardBase);
 
         buttonList.clear();
         prevCard = card;
@@ -154,7 +163,7 @@ public class GuiInfoPanel extends GuiContainer {
             buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
             delta = 15;
         }
-        if (card != null && card.getItem() instanceof IPanelDataSource) {
+        if (card.getItem() instanceof IPanelDataSource) {
             byte slot = container.panel.getIndexOfCard(card);
             IPanelDataSource source = (IPanelDataSource) card.getItem();
             if (source instanceof IAdvancedCardSettings) {
@@ -162,7 +171,7 @@ public class GuiInfoPanel extends GuiContainer {
             }
             List<PanelSetting> settingsList = null;
             if (card.getItem() instanceof IPanelMultiCard) {
-                settingsList = ((IPanelMultiCard) source).getSettingsList(new CardWrapperImpl(card, (byte) 0));
+                settingsList = ((IPanelMultiCard) source).getSettingsList(cardBase);
             } else {
                 settingsList = source.getSettingsList();
             }
@@ -190,13 +199,13 @@ public class GuiInfoPanel extends GuiContainer {
                                     panelSetting,
                                     container.panel,
                                     slot,
-                                    fontRendererObj));
+                                    fontRendererObj,
+                                    settingsList.size() < 5));
                 }
             }
             if (!modified) {
                 textboxTitle = new GuiTextField(fontRendererObj, 7, 16, 162, 18);
-                textboxTitle.setFocused(true);
-                textboxTitle.setText(new CardWrapperImpl(card, 0).getTitle());
+                textboxTitle.setText(layout.title.get());
             }
         } else {
             modified = false;
@@ -243,24 +252,20 @@ public class GuiInfoPanel extends GuiContainer {
         initControls();
     }
 
-    protected ItemStack getActiveCard() {
-        return container.panel.getCards().get(0);
+    protected IndexedItem<IPanelDataSource> getActiveCard() {
+        List<IndexedItem<IPanelDataSource>> cards = container.panel.getCards();
+        if (cards.isEmpty()) return null;
+        return cards.get(0);
     }
 
     protected void updateTitle() {
         if (textboxTitle == null) return;
-        ItemStack card = getActiveCard();
-        if (container.panel.getWorldObj().isRemote) {
-            NuclearNetworkHelper.setNewAlarmSound(
-                    container.panel.xCoord,
-                    container.panel.yCoord,
-                    container.panel.zCoord,
-                    container.panel.getIndexOfCard(card),
-                    textboxTitle.getText());
-        }
-        if (card != null && card.getItem() instanceof IPanelDataSource) {
-            new CardWrapperImpl(card, 0).setTitle(textboxTitle.getText());
-        }
+        IndexedItem<IPanelDataSource> card = getActiveCard();
+        if (card == null) return;
+        NBTCardLayout layout = container.panel.cardCache.getLayout(card);
+        layout.title.set(textboxTitle.getText());
+        NuclearNetworkHelper.sendItemUpdatedPacket(container.panel, (byte) card.slot, card.itemStack);
+        layout.clearDirty(); // prevent updateEntity() from sending a duplicate
     }
 
     @Override
@@ -276,18 +281,18 @@ public class GuiInfoPanel extends GuiContainer {
             GuiScreen colorGui = new GuiScreenColor(this, container.panel);
             mc.displayGuiScreen(colorGui);
         } else if (button.id == 111) {
-            ItemStack card = getActiveCard();
+            IndexedItem<IPanelDataSource> card = getActiveCard();
             if (card == null) return;
-            if (card != null && card.getItem() instanceof IAdvancedCardSettings) {
-                ICardWrapper helper = new CardWrapperImpl(card, 0);
-                Object guiObject = ((IAdvancedCardSettings) card.getItem()).getSettingsScreen(helper);
+            NBTCardLayout layout = container.panel.cardCache.getLayout(card);
+            if (card.item instanceof IAdvancedCardSettings settings) {
+                Object guiObject = settings.getSettingsScreen(layout);
                 if (!(guiObject instanceof GuiScreen)) {
                     IC2NuclearControl.logger
                             .warn("Invalid card, getSettingsScreen method should return GuiScreen object");
                     return;
                 }
                 GuiScreen gui = (GuiScreen) guiObject;
-                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, 0);
+                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card.itemStack, container.panel, this, 0);
                 ((ICardGui) gui).setCardSettingsHelper(wrapper);
                 mc.displayGuiScreen(gui);
             }

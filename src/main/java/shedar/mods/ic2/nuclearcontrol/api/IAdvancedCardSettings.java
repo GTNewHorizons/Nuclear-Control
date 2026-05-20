@@ -13,8 +13,8 @@ public interface IAdvancedCardSettings {
      * to display. Gui should also implement {@link ICardGui} interface. Otherwise it wouldn't be able to save new
      * settings. GuiContainers are not supported.
      * 
-     * @param wrapper
+     * @param card
      * @return instance of card's Gui.
      */
-    ICardGui getSettingsScreen(ICardWrapper wrapper);
+    ICardGui getSettingsScreen(NBTCardLayout layout);
 }

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.items.ItemCardText.TextData;
 
 public class GuiCardText extends GuiScreen implements ICardGui {
 
@@ -16,7 +16,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
     private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(TEXTURE_FILE);
 
     private ICardSettingsWrapper wrapper;
-    private ICardWrapper helper;
+    private TextData textData;
     private GuiTextArea textArea;
 
     protected int xSize = 226;
@@ -26,8 +26,8 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 
     private static final int lineCount = 10;
 
-    public GuiCardText(ICardWrapper helper) {
-        this.helper = helper;
+    public GuiCardText(TextData textData) {
+        this.textData = textData;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
         textArea = new GuiTextArea(fontRendererObj, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
         textArea.setFocused(true);
         String[] data = textArea.getText();
-        for (int i = 0; i < lineCount; i++) data[i] = helper.getString("line_" + i);
+        for (int i = 0; i < lineCount; i++) data[i] = textData.getLine(i);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
         if (textArea != null && wrapper != null) {
             String[] lines = textArea.getText();
 
-            if (lines != null) for (int i = 0; i < lines.length; i++) wrapper.setString("line_" + i, lines[i]);
+            if (lines != null) for (int i = 0; i < lines.length; i++) textData.setLine(i, lines[i]);
 
         }
         wrapper.commit();

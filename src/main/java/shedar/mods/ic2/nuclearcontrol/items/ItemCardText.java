@@ -1,28 +1,30 @@
 package shedar.mods.ic2.nuclearcontrol.items;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import shedar.mods.ic2.nuclearcontrol.api.CardHelper;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiCardText;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 
 public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings {
 
+    private static final int MAX_LINES = 10;
     public static final UUID CARD_TYPE = UUID.fromString("90e53ad2-0aae-4937-9078-02a4561259d8");
 
     public ItemCardText() {
@@ -30,12 +32,12 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        return CardState.OK;
+    public TextData getLayout() {
+        return new TextData(MAX_LINES);
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
         return CardState.OK;
     }
 
@@ -45,16 +47,13 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
+        TextData cardData = (TextData) layout;
         List<PanelString> result = new LinkedList<PanelString>();
-        boolean started = false;
-        for (int i = 9; i >= 0; i--) {
-            String text = card.getString("line_" + i);
-            if (text.equals("") && !started) {
-                continue;
-            }
-            started = true;
+        for (int i = MAX_LINES - 1; i >= 0; i--) {
+            String text = cardData.getLine(i);
+            if (text == null) continue;
             PanelString line = new PanelString();
             line.textLeft = text;
             result.add(0, line);
@@ -66,9 +65,8 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-        ICardWrapper helper = CardHelper.getWrapper(itemStack);
-        String title = helper.getTitle();
-        if (!"".equals(title)) info.add(title);
+        String title = CardAccessors.getTitle(itemStack);
+        if (title != null && !title.equals("")) info.add(title);
     }
 
     @Override
@@ -77,7 +75,27 @@ public class ItemCardText extends ItemCardBase implements IAdvancedCardSettings 
     }
 
     @Override
-    public ICardGui getSettingsScreen(ICardWrapper wrapper) {
-        return new GuiCardText(wrapper);
+    public ICardGui getSettingsScreen(NBTCardLayout layout) {
+        return new GuiCardText((TextData) layout);
+    }
+
+    public static class TextData extends NBTCardLayout {
+
+        private final List<DataAccessor<String>> lineAccessors;
+
+        public TextData(int lines) {
+            lineAccessors = new ArrayList<>(lines);
+            for (int i = 0; i < lines; i++) {
+                lineAccessors.add(stringAccessor("line_" + i));
+            }
+        }
+
+        public String getLine(int index) {
+            return lineAccessors.get(index).get();
+        }
+
+        public void setLine(int index, String value) {
+            lineAccessors.get(index).set(value);
+        }
     }
 }

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface IPanelMultiCard {
 
-    List<PanelSetting> getSettingsList(ICardWrapper card);
+    List<PanelSetting> getSettingsList(IndexedItem<?> card);
 
-    UUID getCardType(ICardWrapper card);
+    UUID getCardType(IndexedItem<?> card);
 }

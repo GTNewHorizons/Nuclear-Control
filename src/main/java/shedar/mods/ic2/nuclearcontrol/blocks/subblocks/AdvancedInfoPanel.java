@@ -9,6 +9,7 @@ import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.containers.ContainerAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
+import shedar.mods.ic2.nuclearcontrol.renderers.model.ScreenModelInfo;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
 
@@ -88,6 +89,7 @@ public class AdvancedInfoPanel extends InfoPanel {
     @Override
     public void registerIcons(IIconRegister iconRegister) {
         super.registerIcons(iconRegister);
+        ScreenModelInfo.registerIcon(iconRegister);
     }
 
     @Override

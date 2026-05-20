@@ -15,7 +15,6 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.IRotation;
 import shedar.mods.ic2.nuclearcontrol.blocks.BlockNuclearControlMain;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
-import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 
@@ -96,8 +95,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
             }
             if (tileEntity instanceof TileEntityAdvancedInfoPanel) {
                 TileEntityAdvancedInfoPanel advancedCore = (TileEntityAdvancedInfoPanel) tileEntity;
-                if (advancedCore.getScreen() != null)
-                    new ModelInfoPanel().renderScreen(block, advancedCore, x, y, z, renderer);
+                if (advancedCore.getScreen() != null) advancedCore.screenModelInfo.renderScreen(block);
                 else renderer.renderStandardBlock(block, x, y, z);
 
             } else if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender) {

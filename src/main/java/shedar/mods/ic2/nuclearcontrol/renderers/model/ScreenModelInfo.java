@@ -1,34 +1,37 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Facing;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 
-@SideOnly(Side.CLIENT)
-public class ModelInfoPanel {
+public class ScreenModelInfo {
 
     private static final String TEXTURE_FILE = "nuclearcontrol:infoPanel/panelAdvancedSide";
-    private static final IIcon advSideTex = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(TEXTURE_FILE);
-    private static final double Uma = advSideTex.getMaxU();
-    private static final double Umi = advSideTex.getMinU();
-    private static final double Vma = advSideTex.getMaxV();
-    private static final double Vmi = advSideTex.getMinV();
+    private static IIcon advSideTex;
 
     private final double[] coordinates = new double[24];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
             { 5, 4, 0, 1 }, { 2, 3, 7, 6 } };
     private static final byte[][] normalMap = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
             { 1, 0, 0 } };
+
+    private double[] deltas = new double[4];
+    private TileEntityAdvancedInfoPanel panel;
+    public final float epsilon = 0.015f;
+
+    public ScreenModelInfo(TileEntityAdvancedInfoPanel panel) {
+        this.panel = panel;
+    }
+
+    public static void registerIcon(IIconRegister iconRegister) {
+        advSideTex = iconRegister.registerIcon(TEXTURE_FILE);
+    }
 
     private void assignWithRotation(int rotation, int offset, int sign, int tl, int tr, int br, int bl, double dtl,
             double dtr, double dbr, double dbl) {
@@ -63,15 +66,22 @@ public class ModelInfoPanel {
         }
     }
 
-    public double[] getDeltas(TileEntityAdvancedInfoPanel panel, Screen screen) {
+    public void update(Screen screen, Block block) {
+        calculateDeltas();
+        recomputeCoordinates(screen, block);
+    }
+
+    public double[] getDeltas() {
+        return deltas;
+    }
+
+    private void calculateDeltas() {
         boolean isTopBottom = panel.rotateVert != 0;
         boolean isLeftRight = panel.rotateHor != 0;
         double dTopLeft = 0;
         double dTopRight = 0;
         double dBottomLeft = 0;
         double dBottomRight = 0;
-        int height = screen.getHeight(panel);
-        int width = screen.getWidth(panel);
         double maxDelta = 0;
         if (isTopBottom) {
             if (panel.rotateVert > 0) // |\
@@ -112,13 +122,11 @@ public class ModelInfoPanel {
             dBottomLeft = scale * dBottomLeft;
             dBottomRight = scale * dBottomRight;
         }
-        double[] res = { dTopLeft, dTopRight, dBottomLeft, dBottomRight };
-        return res;
+
+        this.deltas = new double[] { dTopLeft, dTopRight, dBottomLeft, dBottomRight };
     }
 
-    private void addSlopes(TileEntityAdvancedInfoPanel panel, Screen screen, double[] deltas) {
-        // if (panel.rotateVert == 0 && panel.rotateHor == 0)
-        // return;
+    private void addSlopes(TileEntityAdvancedInfoPanel panel) {
         double dTopLeft = deltas[0];
         double dTopRight = deltas[1];
         double dBottomLeft = deltas[2];
@@ -147,8 +155,7 @@ public class ModelInfoPanel {
         }
     }
 
-    private void initCoordinates(Block block, Screen screen) {
-
+    private void recomputeCoordinates(Screen screen, Block block) {
         // 5 -------6
         // /| /|
         // 4 -------7 |
@@ -196,6 +203,8 @@ public class ModelInfoPanel {
         coordinates[21] = screen.maxX + blockMaxX;
         coordinates[22] = screen.maxY + blockMaxY;
         coordinates[23] = screen.minZ + blockMinZ;
+
+        addSlopes(panel);
     }
 
     private void addPoint(int point, double u, double v) {
@@ -211,57 +220,57 @@ public class ModelInfoPanel {
         addPoint(points[3], u2, v1);
     }
 
-    private double[] normalize(double[] vec) {
-        double len = Math.sqrt((vec[0] * vec[0]) + (vec[1] * vec[1]) + (vec[2] * vec[2]));
-        return new double[] { vec[0] / len, vec[1] / len, vec[2] / len };
-    }
-
-    private double[] scale(double[] vec, double scale) {
-        return new double[] { vec[0] * scale, vec[1] * scale, vec[2] * scale };
-    }
-
-    private double[] vectorBetweenPoints(double[] vec1, double[] vec2) {
-        return new double[] { vec1[0] - vec2[0], vec1[1] - vec2[1], vec1[2] - vec2[2] };
-    }
-
     private void drawScreenWithBorder(byte[] points, byte[] n, double u1, double u2, double v1, double v2,
             double border, int facing) {
         final Tessellator tess = Tessellator.instance;
         tess.setNormal(n[0], n[1], n[2]);
         double[][] UVMap = { { u1, v1 }, { u1, v2 }, { u2, v2 }, { u2, v1 } };
-        byte[] edges = { points[3], points[0], points[1], points[2], points[3], points[0] };
 
-        for (int i = 1; i < 5; i++) {
-            double[] edge1 = scale(
-                    normalize(
-                            vectorBetweenPoints(
-                                    new double[] { coordinates[edges[i] * 3], coordinates[edges[i] * 3 + 1],
-                                            coordinates[edges[i] * 3 + 2] },
-                                    new double[] { coordinates[edges[i + 1] * 3], coordinates[edges[i + 1] * 3 + 1],
-                                            coordinates[edges[i + 1] * 3 + 2] })),
-                    border);
-            double[] edge2 = scale(
-                    normalize(
-                            vectorBetweenPoints(
-                                    new double[] { coordinates[edges[i] * 3], coordinates[edges[i] * 3 + 1],
-                                            coordinates[edges[i] * 3 + 2] },
-                                    new double[] { coordinates[edges[i - 1] * 3], coordinates[edges[i - 1] * 3 + 1],
-                                            coordinates[edges[i - 1] * 3 + 2] })),
-                    border);
+        double cx = 0.0, cy = 0.0, cz = 0.0;
 
-            tess.addVertexWithUV(
-                    coordinates[edges[i] * 3] - edge1[0] - edge2[0] + 0.001 * Facing.offsetsXForSide[facing],
-                    coordinates[edges[i] * 3 + 1] - edge1[1] - edge2[1] + 0.001 * Facing.offsetsYForSide[facing],
-                    coordinates[edges[i] * 3 + 2] - edge1[2] - edge2[2] + 0.001 * Facing.offsetsZForSide[facing],
-                    UVMap[i - 1][0],
-                    UVMap[i - 1][1]);
+        for (int i = 0; i < 4; i++) {
+            int idx = points[i] * 3;
+
+            cx += coordinates[idx];
+            cy += coordinates[idx + 1];
+            cz += coordinates[idx + 2];
         }
 
+        cx *= 0.25;
+        cy *= 0.25;
+        cz *= 0.25;
+
+        for (int i = 0; i < 4; i++) {
+            int idx = points[i] * 3;
+
+            double x = coordinates[idx];
+            double y = coordinates[idx + 1];
+            double z = coordinates[idx + 2];
+
+            double dx = cx - x;
+            double dy = cy - y;
+            double dz = cz - z;
+
+            double len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (len > 0) {
+                dx /= len;
+                dy /= len;
+                dz /= len;
+            }
+
+            x += dx * border;
+            y += dy * border;
+            z += dz * border;
+
+            x += n[0] * epsilon;
+            y += n[1] * epsilon;
+            z += n[2] * epsilon;
+
+            tess.addVertexWithUV(x, y, z, UVMap[i][0], UVMap[i][1]);
+        }
     }
 
-    private void drawFacing(int facing, int rotation, Screen screen, TileEntityAdvancedInfoPanel panel, Block block,
-            Tessellator tess) {
-
+    private void drawFacing(int facing, TileEntityAdvancedInfoPanel panel, Block block) {
         IIcon texture = block.getIcon(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord, 0);
 
         double u1 = texture.getMinU();
@@ -277,16 +286,12 @@ public class ModelInfoPanel {
         v2 = texture.getMaxV();
 
         drawScreenWithBorder(pointMap[facing], normalMap[facing], u1, u2, v1, v2, 0.05, facing);
-
     }
 
-    public void renderScreen(Block block, TileEntityAdvancedInfoPanel panel, double x, double y, double z,
-            RenderBlocks renderer) {
+    public void renderScreen(Block block) {
         Screen screen = panel.getScreen();
         if (screen == null) return;
-        initCoordinates(block, screen);
-        double[] deltas = getDeltas(panel, screen);
-        addSlopes(panel, screen, deltas);
+        panel.screenModelInfo.update(screen, block);
 
         int facing = panel.getFacing();
         Tessellator tess = Tessellator.instance;
@@ -296,7 +301,7 @@ public class ModelInfoPanel {
         tess.setColorOpaque_F(0.5F, 0.5F, 0.5F);
 
         if (panel.getTransparencyMode() == 0) { // Check if face should be transparent
-            drawFacing(facing, panel.getRotation(), screen, panel, block, tess);
+            drawFacing(facing, panel, block);
         }
 
         // SIDES
@@ -306,6 +311,11 @@ public class ModelInfoPanel {
                     block.getMixedBrightnessForBlock(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord));
             tess.setColorOpaque_F(0.5F, 0.5F, 0.5F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+            double Uma = advSideTex.getMaxU();
+            double Umi = advSideTex.getMinU();
+            double Vma = advSideTex.getMaxV();
+            double Vmi = advSideTex.getMinV();
 
             // bottom
             if (facing != 0) {

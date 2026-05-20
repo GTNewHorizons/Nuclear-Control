@@ -21,15 +21,16 @@ import shedar.mods.ic2.nuclearcontrol.IC2NuclearControl;
 import shedar.mods.ic2.nuclearcontrol.api.IAdvancedCardSettings;
 import shedar.mods.ic2.nuclearcontrol.api.ICardGui;
 import shedar.mods.ic2.nuclearcontrol.api.ICardSettingsWrapper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.IPanelMultiCard;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.GuiScrollableList;
 import shedar.mods.ic2.nuclearcontrol.gui.controls.IconButton;
 import shedar.mods.ic2.nuclearcontrol.panel.CardSettingsWrapperImpl;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 
 @SideOnly(Side.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiInfoPanel {
@@ -155,9 +156,18 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     @SuppressWarnings("unchecked")
     @Override
     protected void initControls() {
-        ItemStack card = getActiveCard();
-        if (((card == null && prevCard == null && initialized) || (card != null && card.equals(prevCard)))
-                && !willReturn)
+        IndexedItem<IPanelDataSource> activeCard = getActiveCard();
+        if (activeCard == null) {
+            textboxTitle = null;
+            buttonList.clear();
+            prevCard = null;
+            modified = false;
+            return;
+        }
+        ItemStack card = activeCard.itemStack;
+
+        if (((card == null && prevCard == null && initialized)
+                || (card != null && ItemStack.areItemStacksEqual(card, prevCard))) && !willReturn)
             return;
         willReturn = false;
         initialized = true;
@@ -245,7 +255,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             }
             List<PanelSetting> settingsList;
             if (card.getItem() instanceof IPanelMultiCard) {
-                settingsList = ((IPanelMultiCard) source).getSettingsList(new CardWrapperImpl(card, activeTab));
+                settingsList = ((IPanelMultiCard) source).getSettingsList(activeCard);
             } else {
                 settingsList = source.getSettingsList();
             }
@@ -265,8 +275,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
             }
             if (!modified) {
                 textboxTitle = new GuiTextField(fontRendererObj, 7, 16, 162, 18);
-                textboxTitle.setFocused(true);
-                textboxTitle.setText(new CardWrapperImpl(card, activeTab).getTitle());
+                textboxTitle.setText(CardAccessors.getTitle(card));
             }
         } else {
             modified = false;
@@ -289,8 +298,10 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
     }
 
     @Override
-    protected ItemStack getActiveCard() {
-        return container.panel.getCards().get(activeTab);
+    protected IndexedItem<IPanelDataSource> getActiveCard() {
+        List<IndexedItem<IPanelDataSource>> cards = container.panel.getCards();
+        if (cards.isEmpty()) return null;
+        return activeTab < cards.size() ? cards.get(activeTab) : cards.get(0);
     }
 
     @Override
@@ -327,21 +338,22 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 
             }
             case ID_SETTINGS -> {
-                ItemStack card = getActiveCard();
-                if (card == null) return;
-                if (card.getItem() instanceof IAdvancedCardSettings) {
-                    ICardWrapper helper = new CardWrapperImpl(card, activeTab);
-                    Object guiObject = ((IAdvancedCardSettings) card.getItem()).getSettingsScreen(helper);
-                    if (!(guiObject instanceof GuiScreen gui)) {
-                        IC2NuclearControl.logger
-                                .warn("Invalid card, getSettingsScreen method should return GuiScreen object");
-                        return;
-                    }
-                    ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, activeTab);
-                    ((ICardGui) gui).setCardSettingsHelper(wrapper);
-                    willReturn = true;
-                    mc.displayGuiScreen(gui);
+                IndexedItem<IPanelDataSource> activeCard = getActiveCard();
+                if (activeCard == null) return;
+                ItemStack card = activeCard.itemStack;
+                NBTCardLayout layout = container.panel.cardCache.getLayout(activeCard);
+                if (!(card.getItem() instanceof IAdvancedCardSettings settings)) return;
+
+                Object guiObject = settings.getSettingsScreen(layout);
+                if (!(guiObject instanceof GuiScreen gui)) {
+                    IC2NuclearControl.logger
+                            .warn("Invalid card, getSettingsScreen method should return GuiScreen object");
+                    return;
                 }
+                ICardSettingsWrapper wrapper = new CardSettingsWrapperImpl(card, container.panel, this, activeTab);
+                ((ICardGui) gui).setCardSettingsHelper(wrapper);
+                willReturn = true;
+                mc.displayGuiScreen(gui);
 
             }
             case ID_LABELS -> {
@@ -378,12 +390,14 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
                 IC2.network.get().initiateClientTileEntityEvent(container.panel, ID_ROTATERIGHT);
             }
             case ID_LINES -> {
-                ItemStack card = getActiveCard();
+                IndexedItem<IPanelDataSource> activeCard = getActiveCard();
+                if (activeCard == null) return;
+                ItemStack card = activeCard.itemStack;
                 if (((IPanelDataSource) card.getItem()).getSettingsList() != null) {
                     GuiScrollableList listGui = new GuiScrollableList(
                             this,
                             (TileEntityAdvancedInfoPanel) container.panel,
-                            card);
+                            activeCard);
                     willReturn = true;
                     mc.displayGuiScreen(listGui);
                 }

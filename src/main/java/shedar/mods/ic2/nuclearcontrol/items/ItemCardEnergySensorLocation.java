@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
@@ -15,14 +14,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import shedar.mods.ic2.nuclearcontrol.api.CardState;
 import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.ICardWrapper;
 import shedar.mods.ic2.nuclearcontrol.api.IRangeTriggerable;
 import shedar.mods.ic2.nuclearcontrol.api.IRemoteSensor;
+import shedar.mods.ic2.nuclearcontrol.api.IndexedItem;
+import shedar.mods.ic2.nuclearcontrol.api.NBTCardLayout;
 import shedar.mods.ic2.nuclearcontrol.api.NewPanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelSetting;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.crossmod.EnergyStorageData;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
+import shedar.mods.ic2.nuclearcontrol.utils.CardAccessors;
 import shedar.mods.ic2.nuclearcontrol.utils.EnergyStorageHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.LangHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
@@ -43,33 +43,23 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     }
 
     @Override
-    public CardState update(TileEntity panel, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        int targetType = card.getInt("targetType");
-        EnergyStorageData storage = EnergyStorageHelper
-                .getStorageAt(panel.getWorldObj(), target.posX, target.posY, target.posZ, targetType);
-        if (storage != null) {
-            card.setDouble("energyL", storage.stored);
-            card.setDouble("maxStorageL", storage.capacity);
-            card.setDouble("range_trigger_amount", storage.stored);
-            return CardState.OK;
-        } else {
-            return CardState.NO_TARGET;
-        }
+    public ESLData getLayout() {
+        return new ESLData();
     }
 
     @Override
-    public CardState update(World world, ICardWrapper card, int range) {
-        ChunkCoordinates target = card.getTarget();
-        if (target == null) return CardState.NO_TARGET;
-        int targetType = card.getInt("targetType");
+    public CardState update(World world, IndexedItem<?> card, NBTCardLayout layout, int range) {
+        ESLData data = (ESLData) layout;
+        ChunkCoordinates target = data.getTarget();
+        if (isTargetInvalid(target, world)) return CardState.NO_TARGET;
+
+        int targetType = data.targetType.get();
         EnergyStorageData storage = EnergyStorageHelper
                 .getStorageAt(world, target.posX, target.posY, target.posZ, targetType);
         if (storage != null) {
-            card.setDouble("energyL", storage.stored);
-            card.setDouble("maxStorageL", storage.capacity);
-            card.setDouble("range_trigger_amount", storage.stored);
+            data.energy.set(storage.stored);
+            data.maxStorage.set(storage.capacity);
+            data.rangeTriggerAmount.set(storage.stored);
             return CardState.OK;
         } else {
             return CardState.NO_TARGET;
@@ -85,10 +75,9 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-        CardWrapperImpl helper = new CardWrapperImpl(itemStack, -1);
-        ChunkCoordinates target = helper.getTarget();
+        ChunkCoordinates target = CardAccessors.getCoordinates(itemStack);
         if (target != null) {
-            String title = helper.getTitle();
+            String title = CardAccessors.getTitle(itemStack);
             if (title != null && !title.isEmpty()) {
                 info.add(title);
             }
@@ -98,13 +87,14 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
     }
 
     @Override
-    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
-            boolean showLabels) {
+    public List<PanelString> getStringData(DisplaySettingHelper displaySettings, IndexedItem<?> card,
+            NBTCardLayout layout, boolean showLabels) {
+        ESLData data = (ESLData) layout;
         List<PanelString> result = new LinkedList<PanelString>();
         PanelString line;
 
-        double energy = card.getDouble("energyL");
-        double storage = card.getDouble("maxStorageL");
+        double energy = data.energy.get();
+        double storage = data.maxStorage.get();
 
         if (displaySettings.getSetting(DISPLAY_ENERGY)) {
             line = new PanelString();
@@ -154,4 +144,11 @@ public class ItemCardEnergySensorLocation extends ItemCardBase implements IRemot
         return result;
     }
 
+    public static class ESLData extends NBTCardLayout {
+
+        public DataAccessor<Double> energy = doubleAccessor("energyL");
+        public DataAccessor<Double> maxStorage = doubleAccessor("maxStorageL");
+        public DataAccessor<Double> rangeTriggerAmount = doubleAccessor("range_trigger_amount");
+        public DataAccessor<Integer> targetType = intAccessor("targetType");
+    }
 }

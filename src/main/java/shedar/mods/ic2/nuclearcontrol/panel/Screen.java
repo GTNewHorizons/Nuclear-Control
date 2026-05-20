@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.panel;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -20,11 +21,16 @@ public class Screen {
     private int coreY;
     private int coreZ;
     private boolean powered = false;
+    private AxisAlignedBB boundingBox;
 
     public TileEntityInfoPanel getCore(IBlockAccess world) {
         TileEntity tileEntity = world.getTileEntity(coreX, coreY, coreZ);
         if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel)) return null;
         return (TileEntityInfoPanel) tileEntity;
+    }
+
+    public AxisAlignedBB getBoundingBox() {
+        return boundingBox;
     }
 
     public void setCore(TileEntityInfoPanel core) {
@@ -54,6 +60,7 @@ public class Screen {
     }
 
     public void init(boolean force, World world) {
+        boundingBox = AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX + 1, maxY + 1, maxZ + 1);
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
