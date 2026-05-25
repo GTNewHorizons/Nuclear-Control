@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
+import net.minecraft.client.gui.ScaledResolution;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -287,7 +289,8 @@ public class GuiScrollableList extends GuiScreen {
      * @param height height
      */
     private void setScissor(int x, int y, int width, int height) {
-        int scaleFactor = mc.gameSettings.guiScale;
+        ScaledResolution scaler = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+        int scaleFactor = scaler.getScaleFactor();
         GL11.glScissor(
                 x * scaleFactor,
                 (mc.displayHeight - (y + height) * scaleFactor),
