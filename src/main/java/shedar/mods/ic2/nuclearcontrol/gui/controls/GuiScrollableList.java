@@ -5,11 +5,10 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-
-import net.minecraft.client.gui.ScaledResolution;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
