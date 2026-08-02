@@ -27,6 +27,9 @@ import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
+    private static final ModelInfoPanel MODEL = new ModelInfoPanel();
+    private final double[] deltasBuffer = new double[4];
+
     private static String implodeArray(String[] inputArray, String glueString) {
         String output = "";
         if (inputArray.length > 0) {
@@ -177,8 +180,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             double[] deltas = null;
             if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
                 TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
-                ModelInfoPanel model = new ModelInfoPanel();
-                deltas = model.getDeltas(advPanel, screen);
+                deltas = MODEL.getDeltas(advPanel, screen, deltasBuffer);
                 thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);
             }
 

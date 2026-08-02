@@ -25,6 +25,7 @@ public class ModelInfoPanel {
     private static final double Vmi = advSideTex.getMinV();
 
     private final double[] coordinates = new double[24];
+    private final double[] deltaBuffer = new double[4];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
             { 5, 4, 0, 1 }, { 2, 3, 7, 6 } };
     private static final byte[][] normalMap = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
@@ -64,6 +65,10 @@ public class ModelInfoPanel {
     }
 
     public double[] getDeltas(TileEntityAdvancedInfoPanel panel, Screen screen) {
+        return getDeltas(panel, screen, deltaBuffer);
+    }
+
+    public double[] getDeltas(TileEntityAdvancedInfoPanel panel, Screen screen, double[] res) {
         boolean isTopBottom = panel.rotateVert != 0;
         boolean isLeftRight = panel.rotateHor != 0;
         double dTopLeft = 0;
@@ -112,7 +117,10 @@ public class ModelInfoPanel {
             dBottomLeft = scale * dBottomLeft;
             dBottomRight = scale * dBottomRight;
         }
-        double[] res = { dTopLeft, dTopRight, dBottomLeft, dBottomRight };
+        res[0] = dTopLeft;
+        res[1] = dTopRight;
+        res[2] = dBottomLeft;
+        res[3] = dBottomRight;
         return res;
     }
 
