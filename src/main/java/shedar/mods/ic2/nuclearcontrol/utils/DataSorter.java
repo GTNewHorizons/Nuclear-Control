@@ -15,6 +15,9 @@ public class DataSorter {
 
     private List<Integer> customOrder;
 
+    private Map<String, Integer> prefixOrderCache;
+    private List<PanelString> prefixCacheSource;
+
     /**
      * Default constructor, use only if you don't know the size of the list yet.
      */
@@ -34,6 +37,7 @@ public class DataSorter {
      */
     public void saveCustomOrder(List<Integer> newOrder) {
         this.customOrder = new ArrayList<>(newOrder);
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -45,6 +49,7 @@ public class DataSorter {
         for (int i = 0; i < size; i++) {
             customOrder.add(i);
         }
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -57,6 +62,7 @@ public class DataSorter {
         for (int i = 0; i < size; i++) {
             customOrder.add(i);
         }
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -101,30 +107,44 @@ public class DataSorter {
             this.resetOrder(originalList.size());
         }
 
-        // Build prefix → order map
-        Map<String, Integer> prefixOrderMap = new HashMap<>();
-        for (int i = 0; i < customOrder.size(); i++) {
-            int index = customOrder.get(i);
-            if (index >= 0 && index < originalList.size()) {
-                PanelString item = originalList.get(index);
-                String prefix = getPrefix(item.toString());
-                prefixOrderMap.put(prefix, i);
+        if (prefixOrderCache == null || prefixCacheSource != originalList) {
+            // Build prefix → order map
+            prefixOrderCache = new HashMap<>();
+            for (int i = 0; i < customOrder.size(); i++) {
+                int index = customOrder.get(i);
+                if (index >= 0 && index < originalList.size()) {
+                    PanelString item = originalList.get(index);
+                    prefixOrderCache.put(getPrefix(item.textLeft, item.textCenter, item.textRight), i);
+                }
             }
+            prefixCacheSource = originalList;
         }
 
         // Sort based on prefix order
         data.sort((a, b) -> {
-            int aIndex = prefixOrderMap.getOrDefault(getPrefix(a.toString()), Integer.MAX_VALUE);
-            int bIndex = prefixOrderMap.getOrDefault(getPrefix(b.toString()), Integer.MAX_VALUE);
+            int aIndex = prefixOrderCache.getOrDefault(getPrefix(a.textLeft, a.textCenter, a.textRight),
+                    Integer.MAX_VALUE);
+            int bIndex = prefixOrderCache.getOrDefault(getPrefix(b.textLeft, b.textCenter, b.textRight),
+                    Integer.MAX_VALUE);
             return Integer.compare(aIndex, bIndex);
         });
 
     }
 
     // Helper to extract prefix
-    private String getPrefix(String s) {
-        int colonIndex = s.indexOf(':');
-        return colonIndex == -1 ? s : s.substring(0, colonIndex);
+    private String getPrefix(String left, String center, String right) {
+        int colonIndex = -1;
+        String text = left;
+        if (text == null || text.isEmpty()) {
+            text = center;
+        }
+        if (text == null || text.isEmpty()) {
+            text = right;
+        }
+        if (text != null) {
+            colonIndex = text.indexOf(':');
+        }
+        return colonIndex == -1 ? text : text.substring(0, colonIndex);
     }
 
     /**
@@ -147,6 +167,7 @@ public class DataSorter {
         }
 
         this.customOrder = sortOrder;
+        this.prefixOrderCache = null;
     }
 
     public int[] getArray() {
