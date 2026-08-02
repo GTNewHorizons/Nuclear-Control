@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -22,6 +23,62 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
     private static final ModelInfoPanel MODEL = new ModelInfoPanel();
     private final double[] deltasBuffer = new double[4];
+    private final WeakHashMap<TileEntityInfoPanel, PanelMeasurements> measurements = new WeakHashMap<>();
+
+    private static class PanelMeasurements {
+
+        final List<PanelString> source;
+        final FontRenderer font;
+        final int maxWidth;
+        final int[] centerWidths;
+        final int[] rightWidths;
+
+        PanelMeasurements(List<PanelString> source, FontRenderer font, int maxWidth, int[] centerWidths,
+                int[] rightWidths) {
+            this.source = source;
+            this.font = font;
+            this.maxWidth = maxWidth;
+            this.centerWidths = centerWidths;
+            this.rightWidths = rightWidths;
+        }
+    }
+
+    private PanelMeasurements getMeasurements(TileEntityInfoPanel panel, List<PanelString> joinedData,
+            FontRenderer fontRenderer) {
+        PanelMeasurements meas = measurements.get(panel);
+        if (meas == null || meas.source != joinedData || meas.font != fontRenderer) {
+            int maxWidth = 1;
+            int spaceWidth = fontRenderer.getStringWidth(" ");
+            int[] centerWidths = new int[joinedData.size()];
+            int[] rightWidths = new int[joinedData.size()];
+            int i = 0;
+            for (PanelString panelString : joinedData) {
+                int lineWidth = 0;
+                int parts = 0;
+                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
+                    lineWidth += fontRenderer.getStringWidth(panelString.textLeft);
+                    parts++;
+                }
+                if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
+                    centerWidths[i] = fontRenderer.getStringWidth(panelString.textCenter);
+                    lineWidth += centerWidths[i];
+                    parts++;
+                }
+                if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
+                    rightWidths[i] = fontRenderer.getStringWidth(panelString.textRight);
+                    lineWidth += rightWidths[i];
+                    parts++;
+                }
+                if (parts > 1) lineWidth += (parts - 1) * spaceWidth;
+                maxWidth = Math.max(lineWidth, maxWidth);
+                i++;
+            }
+            maxWidth += 4;
+            meas = new PanelMeasurements(joinedData, fontRenderer, maxWidth, centerWidths, rightWidths);
+            measurements.put(panel, meas);
+        }
+        return meas;
+    }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
@@ -185,33 +242,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             GL11.glRotatef((float) panel.getTextRotation() * 90.0f, 0, 0, 1);
             FontRenderer fontRenderer = this.func_147498_b();
 
-            int maxWidth = 1;
-            int spaceWidth = fontRenderer.getStringWidth(" ");
-            int[] centerWidths = new int[joinedData.size()];
-            int[] rightWidths = new int[joinedData.size()];
-            int i = 0;
-            for (PanelString panelString : joinedData) {
-                int lineWidth = 0;
-                int parts = 0;
-                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
-                    lineWidth += fontRenderer.getStringWidth(panelString.textLeft);
-                    parts++;
-                }
-                if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
-                    centerWidths[i] = fontRenderer.getStringWidth(panelString.textCenter);
-                    lineWidth += centerWidths[i];
-                    parts++;
-                }
-                if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
-                    rightWidths[i] = fontRenderer.getStringWidth(panelString.textRight);
-                    lineWidth += rightWidths[i];
-                    parts++;
-                }
-                if (parts > 1) lineWidth += (parts - 1) * spaceWidth;
-                maxWidth = Math.max(lineWidth, maxWidth);
-                i++;
-            }
-            maxWidth += 4;
+            PanelMeasurements meas = getMeasurements(panel, joinedData, fontRenderer);
+            int maxWidth = meas.maxWidth;
 
             int lineHeight = fontRenderer.FONT_HEIGHT + 2;
             int requiredHeight = lineHeight * joinedData.size();
@@ -257,14 +289,14 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 if (panelString.textCenter != null) {
                     fontRenderer.drawString(
                             panelString.textCenter,
-                            -centerWidths[row] / 2,
+                            -meas.centerWidths[row] / 2,
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
                 }
                 if (panelString.textRight != null) {
                     fontRenderer.drawString(
                             panelString.textRight,
-                            realWidth / 2 - rightWidths[row],
+                            realWidth / 2 - meas.rightWidths[row],
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
                 }
