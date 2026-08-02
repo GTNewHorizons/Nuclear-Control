@@ -67,6 +67,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     protected final Map<Byte, Map<UUID, DataSorter>> dataSorters = new HashMap<>();
 
     private final Map<Byte, List<PanelString>> allCardData = new HashMap<>();
+
+    private final Map<Byte, List<PanelString>> sortedCardData = new HashMap<>();
     // </editor-fold>
 
     // <editor-fold desc="Constructor">
@@ -445,6 +447,23 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
             CardWrapperImpl helper) {
         byte slot = getIndexOfCard(cardStack);
+        List<PanelString> sorted = sortedCardData.get(slot);
+        if (sorted == null) {
+            sorted = computeSortedCardData(settings, cardStack, helper);
+            sortedCardData.put(slot, sorted);
+        }
+        return sorted;
+    }
+
+    @Override
+    protected List<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
+            CardWrapperImpl helper) {
+        return getSortedCardData(settings, card, helper);
+    }
+
+    private List<PanelString> computeSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+            CardWrapperImpl helper) {
+        byte slot = getIndexOfCard(cardStack);
         List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
         List<PanelString> all_data = allCardData.get(slot);
         if (all_data == null) {
@@ -468,6 +487,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     public void resetCardData() {
         super.resetCardData();
         allCardData.clear();
+        sortedCardData.clear();
     }
 
     // </editor-fold>

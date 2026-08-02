@@ -45,6 +45,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
 import shedar.mods.ic2.nuclearcontrol.utils.ColorUtil;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanel extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, INetworkClientTileEntityEventListener,
@@ -101,6 +102,8 @@ public class TileEntityInfoPanel extends TileEntity
     public boolean colored;
 
     private final Map<Integer, List<PanelString>> cardData;
+
+    private List<PanelString> joinedData;
 
     @Override
     public short getFacing() {
@@ -364,6 +367,43 @@ public class TileEntityInfoPanel extends TileEntity
 
     public void resetCardData() {
         cardData.clear();
+        joinedData = null;
+    }
+
+    /**
+     * get the combined data of all cards in the panel, or null when no card produces data
+     *
+     * @return the combined list of PanelStrings to display
+     */
+    public List<PanelString> getJoinedData() {
+        if (joinedData == null) {
+            joinedData = new ArrayList<>();
+            for (int slot = 0; slot < getCardSlotsCount(); slot++) {
+                ItemStack card = getStackInSlot(slot);
+                if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
+                    continue;
+                }
+                CardWrapperImpl helper = new CardWrapperImpl(card, -1);
+                DisplaySettingHelper displaySettings = getNewDisplaySettingsByCard(card, helper);
+                CardState state = helper.getState();
+                List<PanelString> data;
+                if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
+                    data = StringUtils.getStateMessage(state);
+                } else {
+                    data = getCardDataForDisplay(displaySettings, card, helper);
+                }
+                if (data == null) {
+                    continue;
+                }
+                joinedData.addAll(data);
+            }
+        }
+        return joinedData.isEmpty() ? null : joinedData;
+    }
+
+    protected List<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
+            CardWrapperImpl helper) {
+        return getCardData(settings, card, helper);
     }
 
     /**

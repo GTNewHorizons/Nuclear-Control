@@ -1,29 +1,22 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
-import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
@@ -52,33 +45,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             if (!panel.getPowered()) {
                 return;
             }
-            boolean anyCardFound = false;
-            List<PanelString> joinedData = new ArrayList<PanelString>();
-            for (int slot = 0; slot < panel.getCardSlotsCount(); slot++) {
-                ItemStack card = panel.getStackInSlot(slot);
-                if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
-                    continue;
-                }
-                CardWrapperImpl helper = new CardWrapperImpl(card, -1);
-                DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(card, helper);
-                CardState state = helper.getState();
-                List<PanelString> data;
-                if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
-                    data = StringUtils.getStateMessage(state);
-                } else {
-                    if (panel instanceof TileEntityAdvancedInfoPanel) {
-                        data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, card, helper);
-                    } else {
-                        data = panel.getCardData(displaySettings, card, helper);
-                    }
-                }
-                if (data == null) {
-                    continue;
-                }
-                joinedData.addAll(data);
-                anyCardFound = true;
-            }
-            if (!anyCardFound) {
+            List<PanelString> joinedData = panel.getJoinedData();
+            if (joinedData == null) {
                 return;
             }
 
