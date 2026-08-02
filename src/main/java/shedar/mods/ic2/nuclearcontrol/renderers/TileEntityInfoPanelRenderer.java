@@ -3,10 +3,8 @@ package shedar.mods.ic2.nuclearcontrol.renderers;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 
@@ -269,10 +267,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             } else {
                 offsetX = (realWidth - maxWidth) / 2 + 2;
                 offsetY = 0;
-            }
-            Block block = panel.getWorldObj().getBlock(panel.xCoord, panel.yCoord, panel.zCoord);
-            if (block == null) {
-                block = Blocks.stone;
             }
 
             GL11.glDisable(GL11.GL_LIGHTING);
