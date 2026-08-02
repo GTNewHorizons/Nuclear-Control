@@ -377,7 +377,6 @@ public class TileEntityInfoPanel extends TileEntity
     public List<PanelString> getCardData(DisplaySettingHelper settings, ItemStack cardStack, ICardWrapper helper) {
         IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
         int slot = getIndexOfCard(cardStack);
-        resetCardData();
         List<PanelString> data = cardData.get(slot);
         if (data == null) {
             if (card != null) data = card.getStringData(settings, helper, getShowLabels());
