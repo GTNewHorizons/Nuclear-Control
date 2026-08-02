@@ -66,7 +66,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
     protected final Map<Byte, Map<UUID, DataSorter>> dataSorters = new HashMap<>();
 
-    private final Map<Integer, List<PanelString>> allCardData = new HashMap<>();
+    private final Map<Byte, List<PanelString>> allCardData = new HashMap<>();
     // </editor-fold>
 
     // <editor-fold desc="Constructor">
@@ -444,7 +444,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
      */
     public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
             CardWrapperImpl helper) {
-        int slot = getIndexOfCard(cardStack);
+        byte slot = getIndexOfCard(cardStack);
         List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
         List<PanelString> all_data = allCardData.get(slot);
         if (all_data == null) {
