@@ -30,19 +30,18 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
     private static final ModelInfoPanel MODEL = new ModelInfoPanel();
     private final double[] deltasBuffer = new double[4];
 
-    private static String implodeArray(String[] inputArray, String glueString) {
-        String output = "";
-        if (inputArray.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < inputArray.length; i++) {
-                if (inputArray[i] == null || inputArray[i].isEmpty()) continue;
-                sb.append(glueString);
-                sb.append(inputArray[i]);
-            }
-            output = sb.toString();
-            if (output.length() > 1) output = output.substring(1);
-        }
-        return output;
+    private static String joinText(String left, String center, String right) {
+        StringBuilder sb = new StringBuilder();
+        appendPart(sb, left);
+        appendPart(sb, center);
+        appendPart(sb, right);
+        return sb.toString();
+    }
+
+    private static void appendPart(StringBuilder sb, String part) {
+        if (part == null || part.isEmpty()) return;
+        if (sb.length() > 0) sb.append(' ');
+        sb.append(part);
     }
 
     @Override
@@ -234,9 +233,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
             int maxWidth = 1;
             for (PanelString panelString : joinedData) {
-                String currentString = implodeArray(
-                        new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight },
-                        " ");
+                String currentString = joinText(panelString.textLeft, panelString.textCenter, panelString.textRight);
                 maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
             }
             maxWidth += 4;
