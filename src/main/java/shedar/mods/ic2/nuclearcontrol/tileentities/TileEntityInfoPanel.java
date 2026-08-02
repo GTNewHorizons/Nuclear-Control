@@ -375,18 +375,25 @@ public class TileEntityInfoPanel extends TileEntity
      * @return a list of PanelStrings to display
      */
     public List<PanelString> getCardData(DisplaySettingHelper settings, ItemStack cardStack, ICardWrapper helper) {
-        IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
         int slot = getIndexOfCard(cardStack);
         List<PanelString> data = cardData.get(slot);
         if (data == null) {
-            if (card != null) data = card.getStringData(settings, helper, getShowLabels());
-            String title = helper.getTitle();
-            if (data != null && title != null && !title.isEmpty()) {
-                PanelString titleString = new PanelString();
-                titleString.textCenter = title;
-                data.add(0, titleString);
-            }
+            data = computeCardData(settings, cardStack, helper);
             cardData.put(slot, data);
+        }
+        return data;
+    }
+
+    protected List<PanelString> computeCardData(DisplaySettingHelper settings, ItemStack cardStack,
+            ICardWrapper helper) {
+        IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
+        List<PanelString> data = null;
+        if (card != null) data = card.getStringData(settings, helper, getShowLabels());
+        String title = helper.getTitle();
+        if (data != null && title != null && !title.isEmpty()) {
+            PanelString titleString = new PanelString();
+            titleString.textCenter = title;
+            data.add(0, titleString);
         }
         return data;
     }

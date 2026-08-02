@@ -65,6 +65,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     public ItemStack card3;
 
     protected final Map<Byte, Map<UUID, DataSorter>> dataSorters = new HashMap<>();
+
+    private final Map<Integer, List<PanelString>> allCardData = new HashMap<>();
     // </editor-fold>
 
     // <editor-fold desc="Constructor">
@@ -442,18 +444,30 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
      */
     public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
             CardWrapperImpl helper) {
+        int slot = getIndexOfCard(cardStack);
         List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
-        List<PanelString> all_data = new ArrayList<>(
-                this.getCardData(new DisplaySettingHelper(true), cardStack, helper));
+        List<PanelString> all_data = allCardData.get(slot);
+        if (all_data == null) {
+            all_data = computeCardData(new DisplaySettingHelper(true), cardStack, helper);
+            if (!Objects.equals(helper.getTitle(), "")) {
+                all_data.remove(0);
+            }
+            allCardData.put(slot, all_data);
+        }
         if (!Objects.equals(helper.getTitle(), "")) {
             PanelString title = data.remove(0);
-            all_data.remove(0);
-            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+            getDataSorter(slot).sortListByPrefix(data, all_data);
             data.add(0, title);
         } else {
-            getDataSorter(getIndexOfCard(cardStack)).sortListByPrefix(data, all_data);
+            getDataSorter(slot).sortListByPrefix(data, all_data);
         }
         return data;
+    }
+
+    @Override
+    public void resetCardData() {
+        super.resetCardData();
+        allCardData.clear();
     }
 
     // </editor-fold>
