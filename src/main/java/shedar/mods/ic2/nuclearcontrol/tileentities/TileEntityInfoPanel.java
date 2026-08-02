@@ -908,16 +908,20 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     public DisplaySettingHelper getNewDisplaySettingsByCard(ItemStack card) {
-        byte slot = getIndexOfCard(card);
         if (card == null) {
             return new DisplaySettingHelper();
         }
+        return getNewDisplaySettingsByCard(card, new CardWrapperImpl(card, 0));
+    }
+
+    public DisplaySettingHelper getNewDisplaySettingsByCard(ItemStack card, CardWrapperImpl helper) {
+        byte slot = getIndexOfCard(card);
         if (!displaySettings.containsKey(slot)) {
             return new DisplaySettingHelper();
         }
         UUID cardType = null;
         if (card.getItem() instanceof IPanelMultiCard) {
-            cardType = ((IPanelMultiCard) card.getItem()).getCardType(new CardWrapperImpl(card, 0));
+            cardType = ((IPanelMultiCard) card.getItem()).getCardType(helper);
         } else if (card.getItem() instanceof IPanelDataSource) {
             cardType = ((IPanelDataSource) card.getItem()).getCardType();
         }
