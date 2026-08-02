@@ -122,10 +122,10 @@ public class DataSorter {
 
         // Sort based on prefix order
         data.sort((a, b) -> {
-            int aIndex = prefixOrderCache.getOrDefault(getPrefix(a.textLeft, a.textCenter, a.textRight),
-                    Integer.MAX_VALUE);
-            int bIndex = prefixOrderCache.getOrDefault(getPrefix(b.textLeft, b.textCenter, b.textRight),
-                    Integer.MAX_VALUE);
+            int aIndex = prefixOrderCache
+                    .getOrDefault(getPrefix(a.textLeft, a.textCenter, a.textRight), Integer.MAX_VALUE);
+            int bIndex = prefixOrderCache
+                    .getOrDefault(getPrefix(b.textLeft, b.textCenter, b.textRight), Integer.MAX_VALUE);
             return Integer.compare(aIndex, bIndex);
         });
 
