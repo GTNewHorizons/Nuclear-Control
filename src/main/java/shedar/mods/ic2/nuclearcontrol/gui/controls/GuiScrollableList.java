@@ -368,6 +368,7 @@ public class GuiScrollableList extends GuiScreen {
             draggedButton = null;
             updateVisibleButtons();
             newDataSorter.computeSortOrder(originalButtonList, buttonListFull);
+            panel.resetCardData();
             dataSorterChanged = true;
             // check if the scrollbar is being used
         } else if (scrollbarOffset != -1) {

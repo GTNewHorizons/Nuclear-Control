@@ -236,6 +236,7 @@ public class TileEntityInfoPanel extends TileEntity
         if (cardType != null) {
             if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<>());
             displaySettings.get(slot).put(cardType, settings);
+            resetCardData();
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 NuclearNetworkHelper.sendDisplaySettingsUpdate(this, slot, cardType, settings);
             }

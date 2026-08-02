@@ -537,6 +537,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         if (sendToServer) {
             NuclearNetworkHelper.sendDataSorterSync(this);
         }
+        resetCardData();
     }
     // </editor-fold>
 }
