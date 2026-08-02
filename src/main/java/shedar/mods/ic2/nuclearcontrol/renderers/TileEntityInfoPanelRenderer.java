@@ -1,6 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -54,7 +54,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             }
             List<ItemStack> cards = panel.getCards();
             boolean anyCardFound = false;
-            List<PanelString> joinedData = new LinkedList<PanelString>();
+            List<PanelString> joinedData = new ArrayList<PanelString>();
             for (ItemStack card : cards) {
                 if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
                     continue;
