@@ -52,10 +52,10 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             if (!panel.getPowered()) {
                 return;
             }
-            List<ItemStack> cards = panel.getCards();
             boolean anyCardFound = false;
             List<PanelString> joinedData = new ArrayList<PanelString>();
-            for (ItemStack card : cards) {
+            for (int slot = 0; slot < panel.getCardSlotsCount(); slot++) {
+                ItemStack card = panel.getStackInSlot(slot);
                 if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
                     continue;
                 }
