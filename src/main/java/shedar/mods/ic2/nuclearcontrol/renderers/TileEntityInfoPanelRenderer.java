@@ -30,20 +30,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
     private static final ModelInfoPanel MODEL = new ModelInfoPanel();
     private final double[] deltasBuffer = new double[4];
 
-    private static String joinText(String left, String center, String right) {
-        StringBuilder sb = new StringBuilder();
-        appendPart(sb, left);
-        appendPart(sb, center);
-        appendPart(sb, right);
-        return sb.toString();
-    }
-
-    private static void appendPart(StringBuilder sb, String part) {
-        if (part == null || part.isEmpty()) return;
-        if (sb.length() > 0) sb.append(' ');
-        sb.append(part);
-    }
-
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
         boolean isPanel = tileEntity instanceof TileEntityInfoPanel;
@@ -232,9 +218,30 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             FontRenderer fontRenderer = this.func_147498_b();
 
             int maxWidth = 1;
+            int spaceWidth = fontRenderer.getStringWidth(" ");
+            int[] centerWidths = new int[joinedData.size()];
+            int[] rightWidths = new int[joinedData.size()];
+            int i = 0;
             for (PanelString panelString : joinedData) {
-                String currentString = joinText(panelString.textLeft, panelString.textCenter, panelString.textRight);
-                maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
+                int lineWidth = 0;
+                int parts = 0;
+                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
+                    lineWidth += fontRenderer.getStringWidth(panelString.textLeft);
+                    parts++;
+                }
+                if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
+                    centerWidths[i] = fontRenderer.getStringWidth(panelString.textCenter);
+                    lineWidth += centerWidths[i];
+                    parts++;
+                }
+                if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
+                    rightWidths[i] = fontRenderer.getStringWidth(panelString.textRight);
+                    lineWidth += rightWidths[i];
+                    parts++;
+                }
+                if (parts > 1) lineWidth += (parts - 1) * spaceWidth;
+                maxWidth = Math.max(lineWidth, maxWidth);
+                i++;
             }
             maxWidth += 4;
 
@@ -282,14 +289,14 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 if (panelString.textCenter != null) {
                     fontRenderer.drawString(
                             panelString.textCenter,
-                            -fontRenderer.getStringWidth(panelString.textCenter) / 2,
+                            -centerWidths[row] / 2,
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
                 }
                 if (panelString.textRight != null) {
                     fontRenderer.drawString(
                             panelString.textRight,
-                            realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+                            realWidth / 2 - rightWidths[row],
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
                 }
