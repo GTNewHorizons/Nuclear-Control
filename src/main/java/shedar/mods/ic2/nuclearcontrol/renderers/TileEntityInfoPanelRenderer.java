@@ -15,6 +15,7 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
@@ -80,6 +81,19 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
+        if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender) {
+            TileEntityAdvancedInfoPanelExtender extender = (TileEntityAdvancedInfoPanelExtender) tileEntity;
+            Screen scr = extender.getScreen();
+            if (scr != null) {
+                TileEntity core = scr.getCore(tileEntity.getWorldObj());
+                if (core instanceof TileEntityAdvancedInfoPanel) {
+                    MainBlockRenderer.updateScreenBoxFallback(
+                            (TileEntityAdvancedInfoPanel) core,
+                            extender,
+                            tileEntity.getWorldObj());
+                }
+            }
+        }
         boolean isPanel = tileEntity instanceof TileEntityInfoPanel;
         if (!isPanel && tileEntity instanceof IScreenPart) {
             Screen scr = ((IScreenPart) tileEntity).getScreen();
