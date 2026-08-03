@@ -1,5 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
+import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
@@ -33,27 +34,25 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
      * Advanced screens only draw their box from the core's chunk. When the core leaves the view frustum the box
      * disappears even though the extenders are still visible. An extender whose chunk is visible then draws the box
      * instead. The box geometry is identical to the core's, so overlapping copies resolve cleanly in the depth buffer.
+     *
+     * <p>
+     * Values are weakly held so an unloaded world cannot keep a fallback alive. The box is baked into chunk display
+     * lists, so the chunk holding the previous source is always rebuilt when the source is replaced or removed.
      */
-    private static final WeakHashMap<TileEntityAdvancedInfoPanel, TileEntityAdvancedInfoPanelExtender> SCREEN_BOX_SOURCES = new WeakHashMap<>();
+    private static final WeakHashMap<TileEntityAdvancedInfoPanel, WeakReference<TileEntityAdvancedInfoPanelExtender>> SCREEN_BOX_SOURCES = new WeakHashMap<>();
 
-    private static boolean isChunkInFrustum(int x, int y, int z) {
-        Frustrum frustrum = new Frustrum();
-        frustrum.setPosition(
-                RenderManager.instance.renderPosX,
-                RenderManager.instance.renderPosY,
-                RenderManager.instance.renderPosZ);
-        int cx = x >> 4;
-        int cy = y >> 4;
-        int cz = z >> 4;
-        return frustrum.isBoxInFrustum(cx * 16, cy * 16, cz * 16, cx * 16 + 16, cy * 16 + 16, cz * 16 + 16);
+    private static final Frustrum FRUSTRUM = new Frustrum();
+
+    private static TileEntityAdvancedInfoPanelExtender getBoxSource(TileEntityAdvancedInfoPanel core) {
+        WeakReference<TileEntityAdvancedInfoPanelExtender> ref = SCREEN_BOX_SOURCES.get(core);
+        TileEntityAdvancedInfoPanelExtender source = ref == null ? null : ref.get();
+        if (ref != null && source == null) {
+            SCREEN_BOX_SOURCES.remove(core);
+        }
+        return source;
     }
 
-    public static void updateScreenBoxFallback(TileEntityAdvancedInfoPanel core,
-            TileEntityAdvancedInfoPanelExtender extender, World world) {
-        if (isChunkInFrustum(core.xCoord, core.yCoord, core.zCoord)) return;
-        TileEntityAdvancedInfoPanelExtender source = SCREEN_BOX_SOURCES.get(core);
-        if (source != null && isChunkInFrustum(source.xCoord, source.yCoord, source.zCoord)) return;
-        SCREEN_BOX_SOURCES.put(core, extender);
+    private static void markBoxSourceRange(TileEntityAdvancedInfoPanelExtender extender, World world) {
         world.markBlockRangeForRenderUpdate(
                 extender.xCoord - 1,
                 extender.yCoord - 1,
@@ -61,6 +60,35 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
                 extender.xCoord + 1,
                 extender.yCoord + 1,
                 extender.zCoord + 1);
+    }
+
+    private static boolean isChunkInFrustum(int x, int y, int z) {
+        FRUSTRUM.setPosition(
+                RenderManager.instance.renderPosX,
+                RenderManager.instance.renderPosY,
+                RenderManager.instance.renderPosZ);
+        int cx = x >> 4;
+        int cy = y >> 4;
+        int cz = z >> 4;
+        return FRUSTRUM.isBoxInFrustum(cx * 16, cy * 16, cz * 16, cx * 16 + 16, cy * 16 + 16, cz * 16 + 16);
+    }
+
+    public static void updateScreenBoxFallback(TileEntityAdvancedInfoPanel core,
+            TileEntityAdvancedInfoPanelExtender extender, World world) {
+        TileEntityAdvancedInfoPanelExtender source = getBoxSource(core);
+        if (isChunkInFrustum(core.xCoord, core.yCoord, core.zCoord)) {
+            if (source != null) {
+                SCREEN_BOX_SOURCES.remove(core);
+                markBoxSourceRange(source, world);
+            }
+            return;
+        }
+        if (source != null && isChunkInFrustum(source.xCoord, source.yCoord, source.zCoord)) return;
+        if (source != null && source != extender) {
+            markBoxSourceRange(source, world);
+        }
+        SCREEN_BOX_SOURCES.put(core, new WeakReference<TileEntityAdvancedInfoPanelExtender>(extender));
+        markBoxSourceRange(extender, world);
     }
 
     public MainBlockRenderer(int modelId) {
@@ -147,7 +175,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
                     Screen screen = advancedExtender.getScreen();
                     TileEntity core = screen == null ? null : screen.getCore(advancedExtender.getWorldObj());
                     if (core instanceof TileEntityAdvancedInfoPanel
-                            && SCREEN_BOX_SOURCES.get(core) == advancedExtender) {
+                            && getBoxSource((TileEntityAdvancedInfoPanel) core) == advancedExtender) {
                         new ModelInfoPanel().renderScreen(block, (TileEntityAdvancedInfoPanel) core, x, y, z, renderer);
                     }
                 }
