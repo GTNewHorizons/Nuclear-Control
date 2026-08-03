@@ -45,6 +45,7 @@ import shedar.mods.ic2.nuclearcontrol.utils.BlockDamages;
 import shedar.mods.ic2.nuclearcontrol.utils.ColorUtil;
 import shedar.mods.ic2.nuclearcontrol.utils.NuclearNetworkHelper;
 import shedar.mods.ic2.nuclearcontrol.utils.RedstoneHelper;
+import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanel extends TileEntity
         implements ISlotItemFilter, INetworkDataProvider, INetworkUpdateListener, INetworkClientTileEntityEventListener,
@@ -101,6 +102,8 @@ public class TileEntityInfoPanel extends TileEntity
     public boolean colored;
 
     private final Map<Integer, List<PanelString>> cardData;
+
+    private List<PanelString> joinedData;
 
     @Override
     public short getFacing() {
@@ -233,6 +236,7 @@ public class TileEntityInfoPanel extends TileEntity
         if (cardType != null) {
             if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<>());
             displaySettings.get(slot).put(cardType, settings);
+            resetCardData();
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 NuclearNetworkHelper.sendDisplaySettingsUpdate(this, slot, cardType, settings);
             }
@@ -364,6 +368,43 @@ public class TileEntityInfoPanel extends TileEntity
 
     public void resetCardData() {
         cardData.clear();
+        joinedData = null;
+    }
+
+    /**
+     * get the combined data of all cards in the panel, or null when no card produces data
+     *
+     * @return the combined list of PanelStrings to display
+     */
+    public List<PanelString> getJoinedData() {
+        if (joinedData == null) {
+            joinedData = new ArrayList<>();
+            for (int slot = 0; slot < getCardSlotsCount(); slot++) {
+                ItemStack card = getStackInSlot(slot);
+                if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
+                    continue;
+                }
+                CardWrapperImpl helper = new CardWrapperImpl(card, -1);
+                DisplaySettingHelper displaySettings = getNewDisplaySettingsByCard(card, helper);
+                CardState state = helper.getState();
+                List<PanelString> data;
+                if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
+                    data = StringUtils.getStateMessage(state);
+                } else {
+                    data = getCardDataForDisplay(displaySettings, card, helper);
+                }
+                if (data == null) {
+                    continue;
+                }
+                joinedData.addAll(data);
+            }
+        }
+        return joinedData.isEmpty() ? null : joinedData;
+    }
+
+    protected List<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
+            CardWrapperImpl helper) {
+        return getCardData(settings, card, helper);
     }
 
     /**
@@ -375,19 +416,25 @@ public class TileEntityInfoPanel extends TileEntity
      * @return a list of PanelStrings to display
      */
     public List<PanelString> getCardData(DisplaySettingHelper settings, ItemStack cardStack, ICardWrapper helper) {
-        IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
         int slot = getIndexOfCard(cardStack);
-        resetCardData();
         List<PanelString> data = cardData.get(slot);
         if (data == null) {
-            if (card != null) data = card.getStringData(settings, helper, getShowLabels());
-            String title = helper.getTitle();
-            if (data != null && title != null && !title.isEmpty()) {
-                PanelString titleString = new PanelString();
-                titleString.textCenter = title;
-                data.add(0, titleString);
-            }
+            data = computeCardData(settings, cardStack, helper);
             cardData.put(slot, data);
+        }
+        return data;
+    }
+
+    protected List<PanelString> computeCardData(DisplaySettingHelper settings, ItemStack cardStack,
+            ICardWrapper helper) {
+        IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
+        List<PanelString> data = null;
+        if (card != null) data = card.getStringData(settings, helper, getShowLabels());
+        String title = helper.getTitle();
+        if (data != null && title != null && !title.isEmpty()) {
+            PanelString titleString = new PanelString();
+            titleString.textCenter = title;
+            data.add(0, titleString);
         }
         return data;
     }
@@ -603,6 +650,9 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void setInventorySlotContents(int slotNum, ItemStack itemStack) {
+        if (isCardSlot(slotNum) && inventory[slotNum] != itemStack) {
+            resetCardData();
+        }
         inventory[slotNum] = itemStack;
         if (slotNum == SLOT_CARD) {
             setCard(itemStack);
@@ -902,16 +952,20 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     public DisplaySettingHelper getNewDisplaySettingsByCard(ItemStack card) {
-        byte slot = getIndexOfCard(card);
         if (card == null) {
             return new DisplaySettingHelper();
         }
+        return getNewDisplaySettingsByCard(card, new CardWrapperImpl(card, 0));
+    }
+
+    public DisplaySettingHelper getNewDisplaySettingsByCard(ItemStack card, CardWrapperImpl helper) {
+        byte slot = getIndexOfCard(card);
         if (!displaySettings.containsKey(slot)) {
             return new DisplaySettingHelper();
         }
         UUID cardType = null;
         if (card.getItem() instanceof IPanelMultiCard) {
-            cardType = ((IPanelMultiCard) card.getItem()).getCardType(new CardWrapperImpl(card, 0));
+            cardType = ((IPanelMultiCard) card.getItem()).getCardType(helper);
         } else if (card.getItem() instanceof IPanelDataSource) {
             cardType = ((IPanelDataSource) card.getItem()).getCardType();
         }

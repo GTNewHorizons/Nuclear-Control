@@ -1,49 +1,99 @@
 package shedar.mods.ic2.nuclearcontrol.renderers;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.WeakHashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
 import shedar.mods.ic2.nuclearcontrol.IScreenPart;
-import shedar.mods.ic2.nuclearcontrol.api.CardState;
-import shedar.mods.ic2.nuclearcontrol.api.DisplaySettingHelper;
-import shedar.mods.ic2.nuclearcontrol.api.IPanelDataSource;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
-import shedar.mods.ic2.nuclearcontrol.panel.CardWrapperImpl;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
-import shedar.mods.ic2.nuclearcontrol.utils.StringUtils;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
-    private static String implodeArray(String[] inputArray, String glueString) {
-        String output = "";
-        if (inputArray.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < inputArray.length; i++) {
-                if (inputArray[i] == null || inputArray[i].isEmpty()) continue;
-                sb.append(glueString);
-                sb.append(inputArray[i]);
-            }
-            output = sb.toString();
-            if (output.length() > 1) output = output.substring(1);
+    private static final ModelInfoPanel MODEL = new ModelInfoPanel();
+    private final double[] deltasBuffer = new double[4];
+    private final WeakHashMap<TileEntityInfoPanel, PanelMeasurements> measurements = new WeakHashMap<>();
+
+    private static class PanelMeasurements {
+
+        final List<PanelString> source;
+        final FontRenderer font;
+        final int maxWidth;
+        final int[] centerWidths;
+        final int[] rightWidths;
+
+        PanelMeasurements(List<PanelString> source, FontRenderer font, int maxWidth, int[] centerWidths,
+                int[] rightWidths) {
+            this.source = source;
+            this.font = font;
+            this.maxWidth = maxWidth;
+            this.centerWidths = centerWidths;
+            this.rightWidths = rightWidths;
         }
-        return output;
+    }
+
+    private PanelMeasurements getMeasurements(TileEntityInfoPanel panel, List<PanelString> joinedData,
+            FontRenderer fontRenderer) {
+        PanelMeasurements meas = measurements.get(panel);
+        if (meas == null || meas.source != joinedData || meas.font != fontRenderer) {
+            int maxWidth = 1;
+            int spaceWidth = fontRenderer.getStringWidth(" ");
+            int[] centerWidths = new int[joinedData.size()];
+            int[] rightWidths = new int[joinedData.size()];
+            int i = 0;
+            for (PanelString panelString : joinedData) {
+                int lineWidth = 0;
+                int parts = 0;
+                if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
+                    lineWidth += fontRenderer.getStringWidth(panelString.textLeft);
+                    parts++;
+                }
+                if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
+                    centerWidths[i] = fontRenderer.getStringWidth(panelString.textCenter);
+                    lineWidth += centerWidths[i];
+                    parts++;
+                }
+                if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
+                    rightWidths[i] = fontRenderer.getStringWidth(panelString.textRight);
+                    lineWidth += rightWidths[i];
+                    parts++;
+                }
+                if (parts > 1) lineWidth += (parts - 1) * spaceWidth;
+                maxWidth = Math.max(lineWidth, maxWidth);
+                i++;
+            }
+            maxWidth += 4;
+            meas = new PanelMeasurements(joinedData, fontRenderer, maxWidth, centerWidths, rightWidths);
+            measurements.put(panel, meas);
+        }
+        return meas;
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
+        if (tileEntity instanceof TileEntityAdvancedInfoPanelExtender) {
+            TileEntityAdvancedInfoPanelExtender extender = (TileEntityAdvancedInfoPanelExtender) tileEntity;
+            Screen scr = extender.getScreen();
+            if (scr != null) {
+                TileEntity core = scr.getCore(tileEntity.getWorldObj());
+                if (core instanceof TileEntityAdvancedInfoPanel) {
+                    MainBlockRenderer.updateScreenBoxFallback(
+                            (TileEntityAdvancedInfoPanel) core,
+                            extender,
+                            tileEntity.getWorldObj());
+                }
+            }
+        }
         boolean isPanel = tileEntity instanceof TileEntityInfoPanel;
         if (!isPanel && tileEntity instanceof IScreenPart) {
             Screen scr = ((IScreenPart) tileEntity).getScreen();
@@ -64,34 +114,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             if (!panel.getPowered()) {
                 return;
             }
-            List<ItemStack> cards = panel.getCards();
-            boolean anyCardFound = false;
-            List<PanelString> joinedData = new LinkedList<PanelString>();
-            for (ItemStack card : cards) {
-                if (card == null || !(card.getItem() instanceof IPanelDataSource)) {
-                    continue;
-                }
-                DisplaySettingHelper displaySettings = panel.getNewDisplaySettingsByCard(card);
-
-                CardWrapperImpl helper = new CardWrapperImpl(card, -1);
-                CardState state = helper.getState();
-                List<PanelString> data;
-                if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
-                    data = StringUtils.getStateMessage(state);
-                } else {
-                    if (panel instanceof TileEntityAdvancedInfoPanel) {
-                        data = ((TileEntityAdvancedInfoPanel) panel).getSortedCardData(displaySettings, card, helper);
-                    } else {
-                        data = panel.getCardData(displaySettings, card, helper);
-                    }
-                }
-                if (data == null) {
-                    continue;
-                }
-                joinedData.addAll(data);
-                anyCardFound = true;
-            }
-            if (!anyCardFound) {
+            List<PanelString> joinedData = panel.getJoinedData();
+            if (joinedData == null) {
                 return;
             }
 
@@ -178,8 +202,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             double[] deltas = null;
             if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
                 TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
-                ModelInfoPanel model = new ModelInfoPanel();
-                deltas = model.getDeltas(advPanel, screen);
+                deltas = MODEL.getDeltas(advPanel, screen, deltasBuffer);
                 thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);
             }
 
@@ -231,14 +254,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             GL11.glRotatef((float) panel.getTextRotation() * 90.0f, 0, 0, 1);
             FontRenderer fontRenderer = this.func_147498_b();
 
-            int maxWidth = 1;
-            for (PanelString panelString : joinedData) {
-                String currentString = implodeArray(
-                        new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight },
-                        " ");
-                maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
-            }
-            maxWidth += 4;
+            PanelMeasurements meas = getMeasurements(panel, joinedData, fontRenderer);
+            int maxWidth = meas.maxWidth;
 
             int lineHeight = fontRenderer.FONT_HEIGHT + 2;
             int requiredHeight = lineHeight * joinedData.size();
@@ -265,10 +282,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 offsetX = (realWidth - maxWidth) / 2 + 2;
                 offsetY = 0;
             }
-            Block block = panel.getWorldObj().getBlock(panel.xCoord, panel.yCoord, panel.zCoord);
-            if (block == null) {
-                block = Blocks.stone;
-            }
 
             GL11.glDisable(GL11.GL_LIGHTING);
 
@@ -284,14 +297,14 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 if (panelString.textCenter != null) {
                     fontRenderer.drawString(
                             panelString.textCenter,
-                            -fontRenderer.getStringWidth(panelString.textCenter) / 2,
+                            -meas.centerWidths[row] / 2,
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
                 }
                 if (panelString.textRight != null) {
                     fontRenderer.drawString(
                             panelString.textRight,
-                            realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+                            realWidth / 2 - meas.rightWidths[row],
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
                 }

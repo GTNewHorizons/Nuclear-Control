@@ -1,7 +1,6 @@
 package shedar.mods.ic2.nuclearcontrol.renderers.model;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Facing;
@@ -17,14 +16,8 @@ import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
 @SideOnly(Side.CLIENT)
 public class ModelInfoPanel {
 
-    private static final String TEXTURE_FILE = "nuclearcontrol:infoPanel/panelAdvancedSide";
-    private static final IIcon advSideTex = Minecraft.getMinecraft().getTextureMapBlocks().registerIcon(TEXTURE_FILE);
-    private static final double Uma = advSideTex.getMaxU();
-    private static final double Umi = advSideTex.getMinU();
-    private static final double Vma = advSideTex.getMaxV();
-    private static final double Vmi = advSideTex.getMinV();
-
     private final double[] coordinates = new double[24];
+    private final double[] deltaBuffer = new double[4];
     private static final byte[][] pointMap = { { 0, 3, 2, 1 }, { 4, 5, 6, 7 }, { 0, 4, 7, 3 }, { 6, 5, 1, 2 },
             { 5, 4, 0, 1 }, { 2, 3, 7, 6 } };
     private static final byte[][] normalMap = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 },
@@ -64,6 +57,10 @@ public class ModelInfoPanel {
     }
 
     public double[] getDeltas(TileEntityAdvancedInfoPanel panel, Screen screen) {
+        return getDeltas(panel, screen, deltaBuffer);
+    }
+
+    public double[] getDeltas(TileEntityAdvancedInfoPanel panel, Screen screen, double[] res) {
         boolean isTopBottom = panel.rotateVert != 0;
         boolean isLeftRight = panel.rotateHor != 0;
         double dTopLeft = 0;
@@ -112,7 +109,10 @@ public class ModelInfoPanel {
             dBottomLeft = scale * dBottomLeft;
             dBottomRight = scale * dBottomRight;
         }
-        double[] res = { dTopLeft, dTopRight, dBottomLeft, dBottomRight };
+        res[0] = dTopLeft;
+        res[1] = dTopRight;
+        res[2] = dBottomLeft;
+        res[3] = dBottomRight;
         return res;
     }
 
@@ -301,6 +301,13 @@ public class ModelInfoPanel {
 
         // SIDES
         if (panel.getTransparencyMode() == 0) { // Check if block should be transparent
+
+            IIcon sideIcon = block
+                    .getIcon(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord, (facing + 1) % 6);
+            double Umi = sideIcon.getMinU();
+            double Uma = sideIcon.getMaxU();
+            double Vmi = sideIcon.getMinV();
+            double Vma = sideIcon.getMaxV();
 
             tess.setBrightness(
                     block.getMixedBrightnessForBlock(panel.getWorldObj(), panel.xCoord, panel.yCoord, panel.zCoord));
