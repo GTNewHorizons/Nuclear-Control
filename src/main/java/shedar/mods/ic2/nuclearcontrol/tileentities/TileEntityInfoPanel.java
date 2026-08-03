@@ -650,6 +650,9 @@ public class TileEntityInfoPanel extends TileEntity
 
     @Override
     public void setInventorySlotContents(int slotNum, ItemStack itemStack) {
+        if (isCardSlot(slotNum) && inventory[slotNum] != itemStack) {
+            resetCardData();
+        }
         inventory[slotNum] = itemStack;
         if (slotNum == SLOT_CARD) {
             setCard(itemStack);
