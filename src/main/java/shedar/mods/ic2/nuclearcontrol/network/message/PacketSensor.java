@@ -179,7 +179,7 @@ public class PacketSensor implements IMessage, IMessageHandler<PacketSensor, IMe
                 helper.clearField(name);
             }
         }
-        panel.resetCardData();
+        panel.resetCardData(message.slot);
         return null;
     }
 }

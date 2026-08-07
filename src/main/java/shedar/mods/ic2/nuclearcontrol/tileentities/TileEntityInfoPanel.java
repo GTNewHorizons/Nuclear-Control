@@ -65,10 +65,7 @@ public class TileEntityInfoPanel extends TileEntity
     private static final byte LOCATION_RANGE = 8;
 
     protected int updateTicker;
-    protected int dataTicker;
     protected int tickRate;
-    protected int dt;
-    protected int updatedataTicker;
     public boolean init;
     public ItemStack inventory[];
     public NBTTagCompound screenData;
@@ -101,7 +98,7 @@ public class TileEntityInfoPanel extends TileEntity
     private boolean prevColored;
     public boolean colored;
 
-    private final Map<Integer, List<PanelString>> cardData;
+    private final ArrayList<PanelString>[] cardData;
 
     private List<PanelString> joinedData;
 
@@ -236,7 +233,7 @@ public class TileEntityInfoPanel extends TileEntity
         if (cardType != null) {
             if (!displaySettings.containsKey(slot)) displaySettings.put(slot, new HashMap<>());
             displaySettings.get(slot).put(cardType, settings);
-            resetCardData();
+            resetCardData(slot);
             if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
                 NuclearNetworkHelper.sendDisplaySettingsUpdate(this, slot, cardType, settings);
             }
@@ -272,6 +269,7 @@ public class TileEntityInfoPanel extends TileEntity
         }
         if (field.equals("card")) {
             inventory[SLOT_CARD] = card;
+            resetCardData(SLOT_CARD);
         }
         if (field.equals("showLabels")) {
             prevShowLabels = showLabels;
@@ -301,18 +299,16 @@ public class TileEntityInfoPanel extends TileEntity
         }
     }
 
+    @SuppressWarnings("unchecked")
     public TileEntityInfoPanel(int inventorySize) {
         super();
         inventory = new ItemStack[inventorySize];
         screen = null;
         card = null;
         init = false;
-        cardData = new HashMap<Integer, List<PanelString>>();
+        cardData = new ArrayList[inventorySize];
         tickRate = IC2NuclearControl.instance.screenRefreshPeriod;
         updateTicker = tickRate;
-        dt = IC2NuclearControl.instance.dataRefreshPeriod;
-        dataTicker = (dt > tickRate) ? tickRate : dt;
-        updatedataTicker = dataTicker;
         displaySettings = new HashMap<>(1);
         displaySettings.put((byte) 0, new HashMap<>());
         powered = false;
@@ -366,8 +362,24 @@ public class TileEntityInfoPanel extends TileEntity
         init = true;
     }
 
+    /**
+     * Drop all cached display data. Only called from events that can affect every card at once, such as applying the
+     * display settings of the whole screen.
+     */
     public void resetCardData() {
-        cardData.clear();
+        for (int slot = 0; slot < cardData.length; slot++) {
+            cardData[slot] = null;
+        }
+        joinedData = null;
+    }
+
+    /**
+     * Drop the cached display data of a single card slot. O(1): the client is invalidated on every event that changes
+     * the card data (value updates, title changes, display settings, card swaps), so the cache never has to be scanned
+     * or compared on the hot path.
+     */
+    public void resetCardData(int slot) {
+        cardData[slot] = null;
         joinedData = null;
     }
 
@@ -416,20 +428,29 @@ public class TileEntityInfoPanel extends TileEntity
      * @return a list of PanelStrings to display
      */
     public List<PanelString> getCardData(DisplaySettingHelper settings, ItemStack cardStack, ICardWrapper helper) {
-        int slot = getIndexOfCard(cardStack);
-        List<PanelString> data = cardData.get(slot);
+        return getCardData(settings, getIndexOfCard(cardStack), cardStack, helper);
+    }
+
+    protected List<PanelString> getCardData(DisplaySettingHelper settings, int slot, ItemStack cardStack,
+            ICardWrapper helper) {
+        ArrayList<PanelString> data = cardData[slot];
         if (data == null) {
             data = computeCardData(settings, cardStack, helper);
-            cardData.put(slot, data);
+            cardData[slot] = data;
         }
         return data;
     }
 
-    protected List<PanelString> computeCardData(DisplaySettingHelper settings, ItemStack cardStack,
+    protected ArrayList<PanelString> computeCardData(DisplaySettingHelper settings, ItemStack cardStack,
             ICardWrapper helper) {
         IPanelDataSource card = (IPanelDataSource) cardStack.getItem();
-        List<PanelString> data = null;
-        if (card != null) data = card.getStringData(settings, helper, getShowLabels());
+        ArrayList<PanelString> data = null;
+        if (card != null) {
+            List<PanelString> strings = card.getStringData(settings, helper, getShowLabels());
+            if (strings != null) {
+                data = new ArrayList<>(strings);
+            }
+        }
         String title = helper.getTitle();
         if (data != null && title != null && !title.isEmpty()) {
             PanelString titleString = new PanelString();
@@ -443,11 +464,6 @@ public class TileEntityInfoPanel extends TileEntity
     public void updateEntity() {
         if (!init) {
             initData();
-        }
-        updatedataTicker--;
-        if (updatedataTicker <= 0) {
-            resetCardData();
-            updatedataTicker = dataTicker;
         }
         if (!worldObj.isRemote) {
             if (updateTicker-- > 0) return;
@@ -651,7 +667,7 @@ public class TileEntityInfoPanel extends TileEntity
     @Override
     public void setInventorySlotContents(int slotNum, ItemStack itemStack) {
         if (isCardSlot(slotNum) && inventory[slotNum] != itemStack) {
-            resetCardData();
+            resetCardData(slotNum);
         }
         inventory[slotNum] = itemStack;
         if (slotNum == SLOT_CARD) {
