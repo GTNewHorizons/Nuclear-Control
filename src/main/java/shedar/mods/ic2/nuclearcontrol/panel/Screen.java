@@ -32,6 +32,10 @@ public class Screen {
         return core;
     }
 
+    public void clearCachedCore() {
+        cachedCore = null;
+    }
+
     public void setCore(TileEntityInfoPanel core) {
         cachedCore = core;
         coreX = core.xCoord;

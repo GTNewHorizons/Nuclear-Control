@@ -874,6 +874,13 @@ public class TileEntityInfoPanel extends TileEntity
     }
 
     @Override
+    public void onChunkUnload() {
+        if (screen != null) {
+            screen.clearCachedCore();
+        }
+    }
+
+    @Override
     public void setScreen(Screen screen) {
         this.screen = screen;
     }
