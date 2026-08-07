@@ -31,6 +31,14 @@ public class DataSorter {
     }
 
     /**
+     * Whether the stored order differs from the default identity order. Sorters that were never configured have an
+     * empty order, which is a no-op, so the caller can skip sorting entirely.
+     */
+    public boolean hasCustomOrder() {
+        return !customOrder.isEmpty();
+    }
+
+    /**
      * Save a custom order, and completely overwrite the one currently stored.
      *
      * @param newOrder the new custom order

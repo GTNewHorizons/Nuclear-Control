@@ -465,6 +465,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
             CardWrapperImpl helper) {
         byte slot = getIndexOfCard(cardStack);
         List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
+        if (!hasCustomSorterOrder(slot)) {
+            return data;
+        }
         List<PanelString> all_data = allCardData.get(slot);
         if (all_data == null) {
             all_data = computeCardData(new DisplaySettingHelper(true), cardStack, helper);
@@ -481,6 +484,19 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
             getDataSorter(slot).sortListByPrefix(data, all_data);
         }
         return data;
+    }
+
+    private boolean hasCustomSorterOrder(byte slot) {
+        Map<UUID, DataSorter> slotSorters = dataSorters.get(slot);
+        if (slotSorters == null || slotSorters.isEmpty()) {
+            return false;
+        }
+        ItemStack cardStack = getStackInSlot(slot);
+        if (cardStack == null || !(cardStack.getItem() instanceof IPanelDataSource)) {
+            return false;
+        }
+        DataSorter sorter = slotSorters.get(((IPanelDataSource) cardStack.getItem()).getCardType());
+        return sorter != null && sorter.hasCustomOrder();
     }
 
     @Override
