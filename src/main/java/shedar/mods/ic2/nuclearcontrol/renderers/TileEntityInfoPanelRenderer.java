@@ -50,8 +50,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             int spaceWidth = fontRenderer.getStringWidth(" ");
             int[] centerWidths = new int[joinedData.size()];
             int[] rightWidths = new int[joinedData.size()];
-            int i = 0;
-            for (PanelString panelString : joinedData) {
+            for (int i = 0; i < joinedData.size(); i++) {
+                PanelString panelString = joinedData.get(i);
                 int lineWidth = 0;
                 int parts = 0;
                 if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
@@ -70,7 +70,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                 }
                 if (parts > 1) lineWidth += (parts - 1) * spaceWidth;
                 maxWidth = Math.max(lineWidth, maxWidth);
-                i++;
             }
             maxWidth += 4;
             meas = new PanelMeasurements(joinedData, fontRenderer, maxWidth, centerWidths, rightWidths);
@@ -285,8 +284,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
             GL11.glDisable(GL11.GL_LIGHTING);
 
-            int row = 0;
-            for (PanelString panelString : joinedData) {
+            for (int row = 0; row < joinedData.size(); row++) {
+                PanelString panelString = joinedData.get(row);
                 if (panelString.textLeft != null) {
                     fontRenderer.drawString(
                             panelString.textLeft,
@@ -308,7 +307,6 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
                             offsetY - realHeight / 2 + row * lineHeight,
                             panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
                 }
-                row++;
             }
 
             GL11.glEnable(GL11.GL_LIGHTING);
