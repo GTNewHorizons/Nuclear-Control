@@ -206,6 +206,7 @@ public class TileEntityInfoPanel extends TileEntity
     public void setShowLabels(boolean p) {
         showLabels = p;
         if (prevShowLabels != p) {
+            resetCardData();
             IC2.network.get().updateTileEntityField(this, "showLabels");
         }
         prevShowLabels = showLabels;
@@ -272,6 +273,7 @@ public class TileEntityInfoPanel extends TileEntity
             resetCardData(SLOT_CARD);
         }
         if (field.equals("showLabels")) {
+            resetCardData();
             prevShowLabels = showLabels;
         }
         if (field.equals("powered") && prevPowered != powered) {
@@ -379,6 +381,9 @@ public class TileEntityInfoPanel extends TileEntity
      * or compared on the hot path.
      */
     public void resetCardData(int slot) {
+        if (slot < 0 || slot >= cardData.length) {
+            return;
+        }
         cardData[slot] = null;
         joinedData = null;
     }

@@ -262,8 +262,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         super.onNetworkUpdate(field);
         if (field.equals("card2")) {
             inventory[SLOT_CARD2] = card2;
+            resetCardData(SLOT_CARD2);
         } else if (field.equals("card3")) {
             inventory[SLOT_CARD3] = card3;
+            resetCardData(SLOT_CARD3);
         } else if (field.equals("powerMode") && prevPowerMode != powerMode) {
             if (screen != null) {
                 screen.turnPower(getPowered(), worldObj);
@@ -512,6 +514,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
     @Override
     public void resetCardData(int slot) {
+        if (slot < 0 || slot >= allCardData.length) {
+            return;
+        }
         super.resetCardData(slot);
         allCardData[slot] = null;
         sortedCardData[slot] = null;
