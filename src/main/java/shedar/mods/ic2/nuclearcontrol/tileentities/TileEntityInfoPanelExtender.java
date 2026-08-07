@@ -76,11 +76,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
         if (field.equals("facing") && prevFacing != facing) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
-        } else if (field.equals("partOfScreen") || field.equals("coreX")
-                || field.equals("coreY")
-                || field.equals("coreZ")) {
-                    tryResolveScreen();
-                }
+        }
     }
 
     public TileEntityInfoPanelExtender() {
@@ -116,18 +112,16 @@ public class TileEntityInfoPanelExtender extends TileEntity
     }
 
     /**
-     * Resolve and attach the screen of this extender. Runs at init, when the networked fields of the extender arrive,
-     * and as a periodic retry while the core panel chunk has not been loaded yet. Chunk load order is arbitrary and the
-     * client only receives the screen identity (partOfScreen/coreX/coreY/coreZ) through the IC2 field sync, so without
-     * the retry an extender whose chunk loads late would stay unattached forever.
+     * Attach the screen of this extender once its core screen exists. Retried periodically because the client only
+     * learns the screen identity through the IC2 field sync, which is delivered in no particular order and after the
+     * chunk itself.
      */
     private void tryResolveScreen() {
         if (!partOfScreen || screen != null) return;
         TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
-        if (core != null && core instanceof TileEntityInfoPanel) {
-            screen = ((TileEntityInfoPanel) core).getScreen();
-            if (screen != null) screen.init(true, worldObj);
-        }
+        if (!(core instanceof TileEntityInfoPanel)) return;
+        screen = ((TileEntityInfoPanel) core).getScreen();
+        if (screen != null) screen.init(true, worldObj);
     }
 
     public void setCoreCoordinates(int x, int y, int z) {
