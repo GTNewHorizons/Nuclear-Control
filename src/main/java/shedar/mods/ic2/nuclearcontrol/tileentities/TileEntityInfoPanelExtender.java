@@ -27,6 +27,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
         implements INetworkDataProvider, INetworkUpdateListener, IWrenchable, ITextureHelper, IScreenPart, IRotation {
 
     protected boolean init;
+    private int screenRetryTicks = 40;
 
     private Screen screen;
     private short prevFacing;
@@ -75,7 +76,11 @@ public class TileEntityInfoPanelExtender extends TileEntity
         if (field.equals("facing") && prevFacing != facing) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
-        }
+        } else if (field.equals("partOfScreen") || field.equals("coreX")
+                || field.equals("coreY")
+                || field.equals("coreZ")) {
+                    tryResolveScreen();
+                }
     }
 
     public TileEntityInfoPanelExtender() {
@@ -90,8 +95,12 @@ public class TileEntityInfoPanelExtender extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<String>(5);
         list.add("facing");
+        list.add("partOfScreen");
+        list.add("coreX");
+        list.add("coreY");
+        list.add("coreZ");
         return list;
     }
 
@@ -102,14 +111,23 @@ public class TileEntityInfoPanelExtender extends TileEntity
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             IC2.network.get().updateTileEntityField(this, "facing");
         }
-        if (partOfScreen && screen == null) {
-            TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
-            if (core != null && core instanceof TileEntityInfoPanel) {
-                screen = ((TileEntityInfoPanel) core).getScreen();
-                if (screen != null) screen.init(true, worldObj);
-            }
-        }
+        tryResolveScreen();
         init = true;
+    }
+
+    /**
+     * Resolve and attach the screen of this extender. Runs at init, when the networked fields of the extender arrive,
+     * and as a periodic retry while the core panel chunk has not been loaded yet. Chunk load order is arbitrary and the
+     * client only receives the screen identity (partOfScreen/coreX/coreY/coreZ) through the IC2 field sync, so without
+     * the retry an extender whose chunk loads late would stay unattached forever.
+     */
+    private void tryResolveScreen() {
+        if (!partOfScreen || screen != null) return;
+        TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
+        if (core != null && core instanceof TileEntityInfoPanel) {
+            screen = ((TileEntityInfoPanel) core).getScreen();
+            if (screen != null) screen.init(true, worldObj);
+        }
     }
 
     public void setCoreCoordinates(int x, int y, int z) {
@@ -122,6 +140,10 @@ public class TileEntityInfoPanelExtender extends TileEntity
     public void updateEntity() {
         if (!init) {
             initData();
+        }
+        if (partOfScreen && screen == null && --screenRetryTicks <= 0) {
+            screenRetryTicks = 40;
+            tryResolveScreen();
         }
         super.updateEntity();
     }
@@ -195,6 +217,12 @@ public class TileEntityInfoPanelExtender extends TileEntity
                     screen.getCore(worldObj).xCoord,
                     screen.getCore(worldObj).yCoord,
                     screen.getCore(worldObj).zCoord);
+        }
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "partOfScreen");
+            IC2.network.get().updateTileEntityField(this, "coreX");
+            IC2.network.get().updateTileEntityField(this, "coreY");
+            IC2.network.get().updateTileEntityField(this, "coreZ");
         }
     }
 
