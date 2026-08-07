@@ -284,29 +284,34 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
             GL11.glDisable(GL11.GL_LIGHTING);
 
-            for (int row = 0; row < joinedData.size(); row++) {
-                PanelString panelString = joinedData.get(row);
-                if (panelString.textLeft != null) {
-                    fontRenderer.drawString(
-                            panelString.textLeft,
-                            offsetX - realWidth / 2,
-                            1 + offsetY - realHeight / 2 + row * lineHeight,
-                            panelString.colorLeft != 0 ? panelString.colorLeft : panel.getColorTextHex());
+            AngelicaFontBatcher.beginBatch(fontRenderer);
+            try {
+                for (int row = 0; row < joinedData.size(); row++) {
+                    PanelString panelString = joinedData.get(row);
+                    if (panelString.textLeft != null && !panelString.textLeft.isEmpty()) {
+                        fontRenderer.drawString(
+                                panelString.textLeft,
+                                offsetX - realWidth / 2,
+                                1 + offsetY - realHeight / 2 + row * lineHeight,
+                                panelString.colorLeft != 0 ? panelString.colorLeft : panel.getColorTextHex());
+                    }
+                    if (panelString.textCenter != null && !panelString.textCenter.isEmpty()) {
+                        fontRenderer.drawString(
+                                panelString.textCenter,
+                                -meas.centerWidths[row] / 2,
+                                offsetY - realHeight / 2 + row * lineHeight,
+                                panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
+                    }
+                    if (panelString.textRight != null && !panelString.textRight.isEmpty()) {
+                        fontRenderer.drawString(
+                                panelString.textRight,
+                                realWidth / 2 - meas.rightWidths[row],
+                                offsetY - realHeight / 2 + row * lineHeight,
+                                panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
+                    }
                 }
-                if (panelString.textCenter != null) {
-                    fontRenderer.drawString(
-                            panelString.textCenter,
-                            -meas.centerWidths[row] / 2,
-                            offsetY - realHeight / 2 + row * lineHeight,
-                            panelString.colorCenter != 0 ? panelString.colorCenter : panel.getColorTextHex());
-                }
-                if (panelString.textRight != null) {
-                    fontRenderer.drawString(
-                            panelString.textRight,
-                            realWidth / 2 - meas.rightWidths[row],
-                            offsetY - realHeight / 2 + row * lineHeight,
-                            panelString.colorRight != 0 ? panelString.colorRight : panel.getColorTextHex());
-                }
+            } finally {
+                AngelicaFontBatcher.endBatch(fontRenderer);
             }
 
             GL11.glEnable(GL11.GL_LIGHTING);
