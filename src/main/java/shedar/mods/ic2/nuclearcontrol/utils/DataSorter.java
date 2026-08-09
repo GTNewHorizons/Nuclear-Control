@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,14 @@ public class DataSorter {
     public DataSorter(int[] order) {
         if (order != null) this.customOrder = Arrays.stream(order).boxed().collect(Collectors.toList());
         else this.customOrder = new ArrayList<>();
+    }
+
+    /**
+     * Whether the stored order differs from the default identity order. Sorters that were never configured have an
+     * empty order, which is a no-op, so the caller can skip sorting entirely.
+     */
+    public boolean hasCustomOrder() {
+        return !customOrder.isEmpty();
     }
 
     /**
@@ -120,15 +129,17 @@ public class DataSorter {
             prefixCacheSource = originalList;
         }
 
-        // Sort based on prefix order
-        data.sort((a, b) -> {
-            int aIndex = prefixOrderCache
-                    .getOrDefault(getPrefix(a.textLeft, a.textCenter, a.textRight), Integer.MAX_VALUE);
-            int bIndex = prefixOrderCache
-                    .getOrDefault(getPrefix(b.textLeft, b.textCenter, b.textRight), Integer.MAX_VALUE);
-            return Integer.compare(aIndex, bIndex);
-        });
-
+        // Compute the custom-order rank of every element once (one prefix extraction per element), then sort
+        // stably by rank. Elements whose prefix is not in the cache rank last (Integer.MAX_VALUE).
+        Map<PanelString, Integer> ranks = new HashMap<>(data.size() * 2);
+        for (PanelString item : data) {
+            ranks.put(
+                    item,
+                    prefixOrderCache.getOrDefault(
+                            getPrefix(item.textLeft, item.textCenter, item.textRight),
+                            Integer.MAX_VALUE));
+        }
+        data.sort(Comparator.comparingInt(ranks::get));
     }
 
     // Helper to extract prefix

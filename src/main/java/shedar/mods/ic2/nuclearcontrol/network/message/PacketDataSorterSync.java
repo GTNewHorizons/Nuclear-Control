@@ -54,6 +54,7 @@ public class PacketDataSorterSync implements IMessage, IMessageHandler<PacketDat
                     .getTileEntity(message.x, message.y, message.z);
             if (panel != null) {
                 panel.readDataSortersFromNBT(message.dataSortersTag);
+                panel.resetCardData();
             }
         } else if (ctx.side.isServer()) {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;

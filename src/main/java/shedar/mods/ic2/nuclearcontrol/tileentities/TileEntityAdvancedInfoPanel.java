@@ -66,9 +66,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
     protected final Map<Byte, Map<UUID, DataSorter>> dataSorters = new HashMap<>();
 
-    private final Map<Byte, List<PanelString>> allCardData = new HashMap<>();
+    private final ArrayList<PanelString>[] allCardData;
 
-    private final Map<Byte, List<PanelString>> sortedCardData = new HashMap<>();
+    private final ArrayList<PanelString>[] sortedCardData;
     // </editor-fold>
 
     // <editor-fold desc="Constructor">
@@ -76,8 +76,11 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     /**
      * Default constructor for the Advanced Information Panel.
      */
+    @SuppressWarnings("unchecked")
     public TileEntityAdvancedInfoPanel() {
         super(4); // 3 cards + range/web upgrade
+        allCardData = new ArrayList[4];
+        sortedCardData = new ArrayList[4];
         colored = true;
         thickness = 16;
     }
@@ -259,8 +262,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         super.onNetworkUpdate(field);
         if (field.equals("card2")) {
             inventory[SLOT_CARD2] = card2;
+            resetCardData(SLOT_CARD2);
         } else if (field.equals("card3")) {
             inventory[SLOT_CARD3] = card3;
+            resetCardData(SLOT_CARD3);
         } else if (field.equals("powerMode") && prevPowerMode != powerMode) {
             if (screen != null) {
                 screen.turnPower(getPowered(), worldObj);
@@ -444,34 +449,36 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
      * @param helper    Wrapper object, to access field values.
      * @return a list of PanelStrings to display
      */
-    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+    public ArrayList<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
             CardWrapperImpl helper) {
         byte slot = getIndexOfCard(cardStack);
-        List<PanelString> sorted = sortedCardData.get(slot);
+        ArrayList<PanelString> sorted = sortedCardData[slot];
         if (sorted == null) {
-            sorted = computeSortedCardData(settings, cardStack, helper);
-            sortedCardData.put(slot, sorted);
+            sorted = computeSortedCardData(settings, slot, cardStack, helper);
+            sortedCardData[slot] = sorted;
         }
         return sorted;
     }
 
     @Override
-    protected List<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
+    protected ArrayList<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
             CardWrapperImpl helper) {
         return getSortedCardData(settings, card, helper);
     }
 
-    private List<PanelString> computeSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+    private ArrayList<PanelString> computeSortedCardData(DisplaySettingHelper settings, byte slot, ItemStack cardStack,
             CardWrapperImpl helper) {
-        byte slot = getIndexOfCard(cardStack);
-        List<PanelString> data = new ArrayList<>(this.getCardData(settings, cardStack, helper));
-        List<PanelString> all_data = allCardData.get(slot);
+        ArrayList<PanelString> data = new ArrayList<>(getCardData(settings, slot, cardStack, helper));
+        if (!hasCustomSorterOrder(slot)) {
+            return data;
+        }
+        ArrayList<PanelString> all_data = allCardData[slot];
         if (all_data == null) {
             all_data = computeCardData(new DisplaySettingHelper(true), cardStack, helper);
             if (!Objects.equals(helper.getTitle(), "")) {
                 all_data.remove(0);
             }
-            allCardData.put(slot, all_data);
+            allCardData[slot] = all_data;
         }
         if (!Objects.equals(helper.getTitle(), "")) {
             PanelString title = data.remove(0);
@@ -483,11 +490,42 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         return data;
     }
 
+    private boolean hasCustomSorterOrder(byte slot) {
+        Map<UUID, DataSorter> slotSorters = dataSorters.get(slot);
+        if (slotSorters == null || slotSorters.isEmpty()) {
+            return false;
+        }
+        ItemStack cardStack = getStackInSlot(slot);
+        if (cardStack == null || !(cardStack.getItem() instanceof IPanelDataSource)) {
+            return false;
+        }
+        DataSorter sorter = slotSorters.get(((IPanelDataSource) cardStack.getItem()).getCardType());
+        return sorter != null && sorter.hasCustomOrder();
+    }
+
     @Override
     public void resetCardData() {
         super.resetCardData();
-        allCardData.clear();
-        sortedCardData.clear();
+        for (int slot = 0; slot < allCardData.length; slot++) {
+            allCardData[slot] = null;
+            sortedCardData[slot] = null;
+        }
+    }
+
+    @Override
+    public void resetCardData(int slot) {
+        if (slot < 0 || slot >= allCardData.length) {
+            return;
+        }
+        super.resetCardData(slot);
+        allCardData[slot] = null;
+        sortedCardData[slot] = null;
+    }
+
+    @Override
+    protected void invalidateSlotExtra(int slot) {
+        allCardData[slot] = null;
+        sortedCardData[slot] = null;
     }
 
     // </editor-fold>
@@ -537,7 +575,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
         if (sendToServer) {
             NuclearNetworkHelper.sendDataSorterSync(this);
         }
-        resetCardData();
+        resetCardData(slot);
     }
     // </editor-fold>
 }

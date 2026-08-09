@@ -19,15 +19,25 @@ public class Screen {
     private int coreX;
     private int coreY;
     private int coreZ;
+    private TileEntityInfoPanel cachedCore;
     private boolean powered = false;
 
     public TileEntityInfoPanel getCore(IBlockAccess world) {
-        TileEntity tileEntity = world.getTileEntity(coreX, coreY, coreZ);
-        if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel)) return null;
-        return (TileEntityInfoPanel) tileEntity;
+        TileEntityInfoPanel core = cachedCore;
+        if (core == null || core.isInvalid() || core.getWorldObj() != world) {
+            TileEntity tileEntity = world.getTileEntity(coreX, coreY, coreZ);
+            core = tileEntity instanceof TileEntityInfoPanel ? (TileEntityInfoPanel) tileEntity : null;
+            cachedCore = core;
+        }
+        return core;
+    }
+
+    public void clearCachedCore() {
+        cachedCore = null;
     }
 
     public void setCore(TileEntityInfoPanel core) {
+        cachedCore = core;
         coreX = core.xCoord;
         coreY = core.yCoord;
         coreZ = core.zCoord;
