@@ -449,7 +449,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
      * @param helper    Wrapper object, to access field values.
      * @return a list of PanelStrings to display
      */
-    public List<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
+    public ArrayList<PanelString> getSortedCardData(DisplaySettingHelper settings, ItemStack cardStack,
             CardWrapperImpl helper) {
         byte slot = getIndexOfCard(cardStack);
         ArrayList<PanelString> sorted = sortedCardData[slot];
@@ -461,7 +461,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
     }
 
     @Override
-    protected List<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
+    protected ArrayList<PanelString> getCardDataForDisplay(DisplaySettingHelper settings, ItemStack card,
             CardWrapperImpl helper) {
         return getSortedCardData(settings, card, helper);
     }
@@ -518,6 +518,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
             return;
         }
         super.resetCardData(slot);
+        allCardData[slot] = null;
+        sortedCardData[slot] = null;
+    }
+
+    @Override
+    protected void invalidateSlotExtra(int slot) {
         allCardData[slot] = null;
         sortedCardData[slot] = null;
     }
