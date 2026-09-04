@@ -13,11 +13,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
 import net.minecraftforge.common.util.Constants;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.network.INetworkDataProvider;
 import ic2.api.network.INetworkUpdateListener;
@@ -113,6 +116,19 @@ public class TileEntityInfoPanel extends TileEntity
      * rebuilds the joined text from these cached lists without touching the other slots.
      */
     private ArrayList<PanelString>[] joinedSlotData;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        if (screen == null) return super.getRenderBoundingBox();
+        return AxisAlignedBB.getBoundingBox(
+                screen.minX,
+                screen.minY,
+                screen.minZ,
+                screen.maxX + 1,
+                screen.maxY + 1,
+                screen.maxZ + 1);
+    }
 
     @Override
     public short getFacing() {
