@@ -202,7 +202,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             if (panel instanceof TileEntityAdvancedInfoPanel && screen != null) {
                 TileEntityAdvancedInfoPanel advPanel = (TileEntityAdvancedInfoPanel) panel;
                 deltas = MODEL.getDeltas(advPanel, screen, deltasBuffer);
-                thickness = (float) (advPanel.thickness / 16F - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);
+                float surfaceDepth = advPanel.thickness == 16 ? 0.98F : Math.max(advPanel.thickness, 1) / 16F;
+                thickness = (float) (surfaceDepth + 0.02F
+                        - (deltas[0] + deltas[1] + deltas[2] + deltas[3]) / 4);
             }
 
             GL11.glTranslatef(dx + displayWidth / 2, thickness, dz + displayHeight / 2);
