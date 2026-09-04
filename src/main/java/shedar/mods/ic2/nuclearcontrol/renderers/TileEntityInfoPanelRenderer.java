@@ -10,7 +10,6 @@ import net.minecraft.util.Facing;
 
 import org.lwjgl.opengl.GL11;
 
-import shedar.mods.ic2.nuclearcontrol.IScreenPart;
 import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 import shedar.mods.ic2.nuclearcontrol.panel.Screen;
 import shedar.mods.ic2.nuclearcontrol.renderers.model.ModelInfoPanel;
@@ -94,19 +93,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
             }
         }
         boolean isPanel = tileEntity instanceof TileEntityInfoPanel;
-        if (!isPanel && tileEntity instanceof IScreenPart) {
-            Screen scr = ((IScreenPart) tileEntity).getScreen();
-            if (scr != null) {
-                TileEntity core = scr.getCore(tileEntity.getWorldObj());
-                if (core != null) {
-                    x += core.xCoord - tileEntity.xCoord;
-                    y += core.yCoord - tileEntity.yCoord;
-                    z += core.zCoord - tileEntity.zCoord;
-                    tileEntity = core;
-                    isPanel = tileEntity instanceof TileEntityInfoPanel;
-                }
-            }
-        }
+        if (!isPanel) return;
 
         if (isPanel) {
             TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
