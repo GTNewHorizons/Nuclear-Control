@@ -658,7 +658,7 @@ public class TileEntityInfoPanel extends TileEntity
         for (Map.Entry<UUID, DisplaySettingHelper> item : getDisplaySettingsForSlot(slot).entrySet()) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("key", item.getKey().toString());
-            compound.setString("value", item.getValue().toString());
+            compound.setString("value", item.getValue().toBitString());
             settingsList.appendTag(compound);
         }
         return settingsList;
