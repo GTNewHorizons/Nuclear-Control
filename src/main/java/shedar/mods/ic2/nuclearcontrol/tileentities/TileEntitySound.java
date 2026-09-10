@@ -19,6 +19,7 @@ public class TileEntitySound {
 
     public void playAlarm(double x, double y, double z, String soundName, float range, boolean skipCheck) {
         if (sound == null || skipCheck) {
+            stopAlarm();
             sound = SoundHelper.playAlarm(x, y, z, soundName, range);
         }
     }
