@@ -145,6 +145,14 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     }
 
     @Override
+    public void onChunkUnload() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() && sound != null) {
+            sound.stopAlarm();
+        }
+        super.onChunkUnload();
+    }
+
+    @Override
     public void setPowered(boolean value) {
         powered = value;
 
