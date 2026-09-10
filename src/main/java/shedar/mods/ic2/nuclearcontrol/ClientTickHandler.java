@@ -21,11 +21,14 @@ import net.minecraft.client.audio.SoundListSerializer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntitySound;
 
 public class ClientTickHandler {
 
@@ -52,6 +55,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void importSound(SoundLoadEvent event) {
+        TileEntitySound.clear();
         IC2NuclearControl ncInstance = IC2NuclearControl.instance;
         ncInstance.availableAlarms = new ArrayList<String>();
 
@@ -87,5 +91,17 @@ public class ClientTickHandler {
         }
 
         ncInstance.serverAllowedAlarms = new ArrayList<String>();
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && !Minecraft.getMinecraft().isGamePaused()) {
+            TileEntitySound.tick();
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event) {
+        if (event.world.isRemote) TileEntitySound.clear();
     }
 }
