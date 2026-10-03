@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.google.gson.GsonBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntitySound;
 
 public class ClientTickHandler {
@@ -89,8 +91,16 @@ public class ClientTickHandler {
         } catch (IOException ioexception) {
             ;
         }
+    }
 
-        ncInstance.serverAllowedAlarms = new ArrayList<String>();
+    @SubscribeEvent
+    public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        IC2NuclearControl.instance.serverAllowedAlarms = Collections.emptyList();
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        IC2NuclearControl.instance.serverAllowedAlarms = Collections.emptyList();
     }
 
     @SubscribeEvent
