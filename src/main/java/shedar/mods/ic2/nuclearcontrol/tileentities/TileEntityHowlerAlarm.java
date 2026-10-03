@@ -73,10 +73,14 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             RedstoneHelper.checkPowered(worldObj, this);
         }
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            if ("".equals(soundName)) {
+                setSoundName(DEFAULT_SOUND_NAME);
+            }
+            // Newly placed alarms also need every field required by client playback readiness.
             IC2.network.get().updateTileEntityField(this, "facing");
-        }
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && "".equals(soundName)) {
-            setSoundName(DEFAULT_SOUND_NAME);
+            IC2.network.get().updateTileEntityField(this, "powered");
+            IC2.network.get().updateTileEntityField(this, "range");
+            IC2.network.get().updateTileEntityField(this, "soundName");
         }
         init = true;
     }
