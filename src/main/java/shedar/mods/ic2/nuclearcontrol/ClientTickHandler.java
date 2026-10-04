@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +22,15 @@ import net.minecraft.client.audio.SoundListSerializer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntitySound;
 
 public class ClientTickHandler {
 
@@ -52,6 +57,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void importSound(SoundLoadEvent event) {
+        TileEntitySound.clear();
         IC2NuclearControl ncInstance = IC2NuclearControl.instance;
         ncInstance.availableAlarms = new ArrayList<String>();
 
@@ -85,7 +91,27 @@ public class ClientTickHandler {
         } catch (IOException ioexception) {
             ;
         }
+    }
 
-        ncInstance.serverAllowedAlarms = new ArrayList<String>();
+    @SubscribeEvent
+    public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
+        IC2NuclearControl.instance.serverAllowedAlarms = Collections.emptyList();
+    }
+
+    @SubscribeEvent
+    public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        IC2NuclearControl.instance.serverAllowedAlarms = Collections.emptyList();
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && !Minecraft.getMinecraft().isGamePaused()) {
+            TileEntitySound.tick();
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event) {
+        if (event.world.isRemote) TileEntitySound.clear();
     }
 }
