@@ -52,7 +52,7 @@ public class GuiScrollableList extends GuiScreen {
             - FUNCTION_BUTTON_HEIGHT
             - PADDING_BOTTOM
             - 1;
-    private static final int VISIBLE_BUTTONS = LIST_HEIGHT / BUTTON_HEIGHT + 1;
+    private static final int VISIBLE_BUTTONS = LIST_HEIGHT / BUTTON_HEIGHT;
 
     static final int TOGGLE_BUTTON_WIDTH = 20;
 
