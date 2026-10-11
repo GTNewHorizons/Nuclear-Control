@@ -1,0 +1,14 @@
+alarm-warning.ogg
+
+Author:  MiraclesHappen
+Used as: alarm-warning.ogg
+License: Creative Commons 0 / CC0
+Source:  https://freesound.org/people/MiraclesHappen/sounds/428526/
+
+Original description:
+    This alarm recording was produced with LMMS (Ami Evan), then imported 
+    into Audacity where the author recorded their own voice and added a 
+    vocoder to make it sound more robotic.
+
+Modified from original:
+    Trimmed ending and reduced volume by -6.0 dB
