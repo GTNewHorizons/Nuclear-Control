@@ -65,7 +65,7 @@ public class PacketDispSettingsUpdate implements IMessage, IMessageHandler<Packe
         }
         TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
         panel.getDisplaySettingsForSlot(message.slot).put(new UUID(message.most, message.least), message.value);
-        panel.resetCardData();
+        panel.resetCardData(message.slot);
         return null;
     }
 }

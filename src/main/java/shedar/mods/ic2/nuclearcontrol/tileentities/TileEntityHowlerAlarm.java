@@ -33,6 +33,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
 
     private boolean init;
     private boolean soundReceived;
+    private boolean poweredReceived;
+    private boolean rangeReceived;
 
     private short prevFacing;
     public short facing;
@@ -50,7 +52,6 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
 
     private int updateTicker;
     protected int tickRate;
-    private TileEntitySound sound;
     private int color;
 
     public TileEntityHowlerAlarm() {
@@ -65,9 +66,6 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         range = IC2NuclearControl.instance.alarmRange;
         soundReceived = false;
         color = 16777215;
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            sound = new TileEntitySound();
-        }
     }
 
     private void initData() {
@@ -75,10 +73,14 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
             RedstoneHelper.checkPowered(worldObj, this);
         }
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            if ("".equals(soundName)) {
+                setSoundName(DEFAULT_SOUND_NAME);
+            }
+            // Newly placed alarms also need every field required by client playback readiness.
             IC2.network.get().updateTileEntityField(this, "facing");
-        }
-        if (FMLCommonHandler.instance().getEffectiveSide().isServer() && "".equals(soundName)) {
-            setSoundName(DEFAULT_SOUND_NAME);
+            IC2.network.get().updateTileEntityField(this, "powered");
+            IC2.network.get().updateTileEntityField(this, "range");
+            IC2.network.get().updateTileEntityField(this, "soundName");
         }
         init = true;
     }
@@ -139,9 +141,17 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     @Override
     public void invalidate() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            sound.stopAlarm();
+            TileEntitySound.stopAlarm(this);
         }
         super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            TileEntitySound.unloadAlarm(this);
+        }
+        super.onChunkUnload();
     }
 
     @Override
@@ -149,19 +159,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         powered = value;
 
         if (prevPowered != value) {
-            if (powered) {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient() && soundReceived) sound.playAlarm(
-                        xCoord + 0.5D,
-                        yCoord + 0.5D,
-                        zCoord + 0.5D,
-                        SOUND_PREFIX + soundName,
-                        getNormalizedRange(),
-                        false);
-            } else {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-                    sound.stopAlarm();
-                }
-            }
+            updateSound();
             // NetworkHelper.updateTileEntityField(this, "powered");
             IC2.network.get().updateTileEntityField(this, "powered");
         }
@@ -173,19 +171,7 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
         powered = value;
 
         if (prevPowered != value) {
-            if (powered) {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient() && soundReceived) sound.playAlarm(
-                        xCoord + 0.5D,
-                        yCoord + 0.5D,
-                        zCoord + 0.5D,
-                        SOUND_PREFIX + soundName,
-                        getNormalizedRange(),
-                        false);
-            } else {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-                    sound.stopAlarm();
-                }
-            }
+            updateSound();
         }
         prevPowered = value;
     }
@@ -214,6 +200,8 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
 
     @Override
     public void onNetworkUpdate(String field) {
+        if (field.equals("powered")) poweredReceived = true;
+        if (field.equals("range")) rangeReceived = true;
         if (field.equals("facing") && prevFacing != facing) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             prevFacing = facing;
@@ -281,16 +269,16 @@ public class TileEntityHowlerAlarm extends TileEntity implements INetworkDataPro
     }
 
     protected void checkStatus() {
+        updateSound();
+    }
+
+    public boolean isAlarmSoundReady() {
+        return soundReceived && poweredReceived && rangeReceived;
+    }
+
+    private void updateSound() {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (powered && soundReceived && !sound.isPlaying()) {
-                sound.playAlarm(
-                        xCoord + 0.5D,
-                        yCoord + 0.5D,
-                        zCoord + 0.5D,
-                        SOUND_PREFIX + soundName,
-                        getNormalizedRange(),
-                        true);
-            }
+            TileEntitySound.updateAlarm(this, SOUND_PREFIX + soundName, getNormalizedRange());
         }
     }
 

@@ -27,6 +27,7 @@ public class TileEntityInfoPanelExtender extends TileEntity
         implements INetworkDataProvider, INetworkUpdateListener, IWrenchable, ITextureHelper, IScreenPart, IRotation {
 
     protected boolean init;
+    private int screenRetryTicks = 40;
 
     private Screen screen;
     private short prevFacing;
@@ -90,8 +91,12 @@ public class TileEntityInfoPanelExtender extends TileEntity
 
     @Override
     public List<String> getNetworkedFields() {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<String>(5);
         list.add("facing");
+        list.add("partOfScreen");
+        list.add("coreX");
+        list.add("coreY");
+        list.add("coreZ");
         return list;
     }
 
@@ -102,14 +107,21 @@ public class TileEntityInfoPanelExtender extends TileEntity
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             IC2.network.get().updateTileEntityField(this, "facing");
         }
-        if (partOfScreen && screen == null) {
-            TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
-            if (core != null && core instanceof TileEntityInfoPanel) {
-                screen = ((TileEntityInfoPanel) core).getScreen();
-                if (screen != null) screen.init(true, worldObj);
-            }
-        }
+        tryResolveScreen();
         init = true;
+    }
+
+    /**
+     * Attach the screen of this extender once its core screen exists. Retried periodically because the client only
+     * learns the screen identity through the IC2 field sync, which is delivered in no particular order and after the
+     * chunk itself.
+     */
+    private void tryResolveScreen() {
+        if (!partOfScreen || screen != null) return;
+        TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
+        if (!(core instanceof TileEntityInfoPanel)) return;
+        screen = ((TileEntityInfoPanel) core).getScreen();
+        if (screen != null) screen.init(true, worldObj);
     }
 
     public void setCoreCoordinates(int x, int y, int z) {
@@ -122,6 +134,10 @@ public class TileEntityInfoPanelExtender extends TileEntity
     public void updateEntity() {
         if (!init) {
             initData();
+        }
+        if (partOfScreen && screen == null && --screenRetryTicks <= 0) {
+            screenRetryTicks = 40;
+            tryResolveScreen();
         }
         super.updateEntity();
     }
@@ -195,6 +211,12 @@ public class TileEntityInfoPanelExtender extends TileEntity
                     screen.getCore(worldObj).xCoord,
                     screen.getCore(worldObj).yCoord,
                     screen.getCore(worldObj).zCoord);
+        }
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            IC2.network.get().updateTileEntityField(this, "partOfScreen");
+            IC2.network.get().updateTileEntityField(this, "coreX");
+            IC2.network.get().updateTileEntityField(this, "coreY");
+            IC2.network.get().updateTileEntityField(this, "coreZ");
         }
     }
 

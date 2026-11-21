@@ -1,6 +1,7 @@
 package shedar.mods.ic2.nuclearcontrol;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.item.Item;
@@ -86,7 +87,7 @@ public class IC2NuclearControl {
     public static boolean isServer;
     public static boolean isThorfusionLoaded;
     public String allowedAlarms;
-    public List<String> serverAllowedAlarms;
+    public List<String> serverAllowedAlarms = Collections.emptyList();
     public static Item itemPanelMemoryCard;
     public static Item itemToolThermometer;
     public static Item itemToolDigitalThermometer;

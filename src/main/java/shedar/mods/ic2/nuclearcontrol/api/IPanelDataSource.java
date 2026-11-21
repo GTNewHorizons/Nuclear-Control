@@ -77,4 +77,15 @@ public interface IPanelDataSource {
      * Control cards for backward compatibility.
      */
     UUID getCardType();
+
+    /**
+     * Whether the card recomputes its display string on the client every tick. Cards whose data derives from the client
+     * state (e.g. the time card reading the world clock) opt in to a per-tick display refresh instead of relying on
+     * packet-driven cache invalidation alone.
+     *
+     * @return true to refresh the card's display once per tick on the client
+     */
+    default boolean needsPerTickRefresh() {
+        return false;
+    }
 }

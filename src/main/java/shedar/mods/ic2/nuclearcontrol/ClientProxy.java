@@ -10,8 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.gtnewhorizons.angelica.rendering.TileEntityRenderBoundsRegistry;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import shedar.mods.ic2.nuclearcontrol.blocks.subblocks.Subblock;
 import shedar.mods.ic2.nuclearcontrol.gui.GuiRemoteMonitor;
@@ -19,11 +22,18 @@ import shedar.mods.ic2.nuclearcontrol.renderers.MainBlockRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityIC2ThermoRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityInfoPanelRenderer;
 import shedar.mods.ic2.nuclearcontrol.renderers.TileEntityRemoteThermoRenderer;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityAdvancedInfoPanel;
+import shedar.mods.ic2.nuclearcontrol.tileentities.TileEntityInfoPanel;
 
 public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerTileEntities() {
+        if (Loader.isModLoaded("angelica")) {
+            TileEntityRenderBoundsRegistry.registerDynamicClass(TileEntityInfoPanel.class.getName());
+            TileEntityRenderBoundsRegistry.registerDynamicClass(TileEntityAdvancedInfoPanel.class.getName());
+        }
+
         TileEntityIC2ThermoRenderer renderThermalMonitor = new TileEntityIC2ThermoRenderer();
         TileEntityRemoteThermoRenderer renderRemoteThermo = new TileEntityRemoteThermoRenderer();
         TileEntityInfoPanelRenderer renderInfoPanel = new TileEntityInfoPanelRenderer();

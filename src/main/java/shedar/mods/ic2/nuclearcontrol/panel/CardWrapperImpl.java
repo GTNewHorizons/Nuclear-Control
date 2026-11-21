@@ -29,7 +29,6 @@ public class CardWrapperImpl implements ICardWrapper {
         }
         this.card = card;
         this.slot = (byte) slot;
-        updateSet = new HashMap<>();
     }
 
     @Override
@@ -63,9 +62,9 @@ public class CardWrapperImpl implements ICardWrapper {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
         if (nbtTagCompound.hasKey(name)) {
             Integer prevValue = nbtTagCompound.getInteger(name);
-            if (prevValue == null || !prevValue.equals(value)) updateSet.put(name, value);
+            if (prevValue == null || !prevValue.equals(value)) getUpdateSet().put(name, value);
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         nbtTagCompound.setInteger(name, value);
     }
@@ -85,10 +84,10 @@ public class CardWrapperImpl implements ICardWrapper {
         if (nbtTagCompound.hasKey(name)) {
             Long prevValue = nbtTagCompound.getLong(name);
             if (prevValue == null || !prevValue.equals(value)) {
-                updateSet.put(name, value);
+                getUpdateSet().put(name, value);
             }
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         nbtTagCompound.setLong(name, value);
     }
@@ -107,9 +106,9 @@ public class CardWrapperImpl implements ICardWrapper {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
         if (nbtTagCompound.hasKey(name)) {
             Double prevValue = nbtTagCompound.getDouble(name);
-            if (prevValue == null || prevValue != value) updateSet.put(name, value);
+            if (prevValue == null || prevValue != value) getUpdateSet().put(name, value);
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         nbtTagCompound.setDouble(name, value);
     }
@@ -131,9 +130,9 @@ public class CardWrapperImpl implements ICardWrapper {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
         if (nbtTagCompound.hasKey(name)) {
             String prevValue = nbtTagCompound.getString(name);
-            if (prevValue == null || !prevValue.equals(value)) updateSet.put(name, value);
+            if (prevValue == null || !prevValue.equals(value)) getUpdateSet().put(name, value);
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         nbtTagCompound.setString(name, value);
     }
@@ -152,9 +151,9 @@ public class CardWrapperImpl implements ICardWrapper {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
         if (nbtTagCompound.hasKey(name)) {
             Boolean prevValue = nbtTagCompound.getBoolean(name);
-            if (prevValue == null || !prevValue.equals(value)) updateSet.put(name, value);
+            if (prevValue == null || !prevValue.equals(value)) getUpdateSet().put(name, value);
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         nbtTagCompound.setBoolean(name, value);
     }
@@ -200,7 +199,7 @@ public class CardWrapperImpl implements ICardWrapper {
 
     @Override
     public void commit(TileEntity panel) {
-        if (!updateSet.isEmpty()) {
+        if (updateSet != null && !updateSet.isEmpty()) {
             NuclearNetworkHelper.setSensorCardField(panel, slot, updateSet);
         }
     }
@@ -210,9 +209,9 @@ public class CardWrapperImpl implements ICardWrapper {
         NBTTagCompound nbtTagCompound = ItemStackUtils.getTagCompound(card);
         if (nbtTagCompound.hasKey(name)) {
             NBTBase prevValue = nbtTagCompound.getTag(name);
-            if (prevValue == null || !prevValue.equals(value)) updateSet.put(name, value);
+            if (prevValue == null || !prevValue.equals(value)) getUpdateSet().put(name, value);
         } else {
-            updateSet.put(name, value);
+            getUpdateSet().put(name, value);
         }
         if (value == null) {
             nbtTagCompound.removeTag(name);
@@ -236,6 +235,9 @@ public class CardWrapperImpl implements ICardWrapper {
     }
 
     public Map<String, Object> getUpdateSet() {
+        if (updateSet == null) {
+            updateSet = new HashMap<>();
+        }
         return this.updateSet;
     }
 }

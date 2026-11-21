@@ -42,6 +42,11 @@ public class ItemTimeCard extends ItemCardBase {
     }
 
     @Override
+    public boolean needsPerTickRefresh() {
+        return true;
+    }
+
+    @Override
     public List<PanelString> getStringData(DisplaySettingHelper displaySettings, ICardWrapper card,
             boolean showLabels) {
         List<PanelString> result = new ArrayList<PanelString>(1);

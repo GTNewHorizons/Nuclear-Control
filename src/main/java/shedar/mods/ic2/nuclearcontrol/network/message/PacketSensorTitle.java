@@ -62,7 +62,7 @@ public class PacketSensorTitle implements IMessage, IMessageHandler<PacketSensor
             return null;
         }
         new CardWrapperImpl(itemStack, message.slot).setTitle(message.title);
-        panel.resetCardData();
+        panel.resetCardData(message.slot);
         return null;
     }
 }

@@ -52,7 +52,7 @@ public class GuiScrollableList extends GuiScreen {
             - FUNCTION_BUTTON_HEIGHT
             - PADDING_BOTTOM
             - 1;
-    private static final int VISIBLE_BUTTONS = LIST_HEIGHT / BUTTON_HEIGHT + 1;
+    private static final int VISIBLE_BUTTONS = LIST_HEIGHT / BUTTON_HEIGHT;
 
     static final int TOGGLE_BUTTON_WIDTH = 20;
 
@@ -368,6 +368,7 @@ public class GuiScrollableList extends GuiScreen {
             draggedButton = null;
             updateVisibleButtons();
             newDataSorter.computeSortOrder(originalButtonList, buttonListFull);
+            panel.resetCardData();
             dataSorterChanged = true;
             // check if the scrollbar is being used
         } else if (scrollbarOffset != -1) {

@@ -2,6 +2,7 @@ package shedar.mods.ic2.nuclearcontrol.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,9 @@ import shedar.mods.ic2.nuclearcontrol.api.PanelString;
 public class DataSorter {
 
     private List<Integer> customOrder;
+
+    private Map<String, Integer> prefixOrderCache;
+    private List<PanelString> prefixCacheSource;
 
     /**
      * Default constructor, use only if you don't know the size of the list yet.
@@ -28,12 +32,21 @@ public class DataSorter {
     }
 
     /**
+     * Whether the stored order differs from the default identity order. Sorters that were never configured have an
+     * empty order, which is a no-op, so the caller can skip sorting entirely.
+     */
+    public boolean hasCustomOrder() {
+        return !customOrder.isEmpty();
+    }
+
+    /**
      * Save a custom order, and completely overwrite the one currently stored.
      *
      * @param newOrder the new custom order
      */
     public void saveCustomOrder(List<Integer> newOrder) {
         this.customOrder = new ArrayList<>(newOrder);
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -45,6 +58,7 @@ public class DataSorter {
         for (int i = 0; i < size; i++) {
             customOrder.add(i);
         }
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -57,6 +71,7 @@ public class DataSorter {
         for (int i = 0; i < size; i++) {
             customOrder.add(i);
         }
+        this.prefixOrderCache = null;
     }
 
     /**
@@ -101,30 +116,46 @@ public class DataSorter {
             this.resetOrder(originalList.size());
         }
 
-        // Build prefix → order map
-        Map<String, Integer> prefixOrderMap = new HashMap<>();
-        for (int i = 0; i < customOrder.size(); i++) {
-            int index = customOrder.get(i);
-            if (index >= 0 && index < originalList.size()) {
-                PanelString item = originalList.get(index);
-                String prefix = getPrefix(item.toString());
-                prefixOrderMap.put(prefix, i);
+        if (prefixOrderCache == null || prefixCacheSource != originalList) {
+            // Build prefix → order map
+            prefixOrderCache = new HashMap<>();
+            for (int i = 0; i < customOrder.size(); i++) {
+                int index = customOrder.get(i);
+                if (index >= 0 && index < originalList.size()) {
+                    PanelString item = originalList.get(index);
+                    prefixOrderCache.put(getPrefix(item.textLeft, item.textCenter, item.textRight), i);
+                }
             }
+            prefixCacheSource = originalList;
         }
 
-        // Sort based on prefix order
-        data.sort((a, b) -> {
-            int aIndex = prefixOrderMap.getOrDefault(getPrefix(a.toString()), Integer.MAX_VALUE);
-            int bIndex = prefixOrderMap.getOrDefault(getPrefix(b.toString()), Integer.MAX_VALUE);
-            return Integer.compare(aIndex, bIndex);
-        });
-
+        // Compute the custom-order rank of every element once (one prefix extraction per element), then sort
+        // stably by rank. Elements whose prefix is not in the cache rank last (Integer.MAX_VALUE).
+        Map<PanelString, Integer> ranks = new HashMap<>(data.size() * 2);
+        for (PanelString item : data) {
+            ranks.put(
+                    item,
+                    prefixOrderCache.getOrDefault(
+                            getPrefix(item.textLeft, item.textCenter, item.textRight),
+                            Integer.MAX_VALUE));
+        }
+        data.sort(Comparator.comparingInt(ranks::get));
     }
 
     // Helper to extract prefix
-    private String getPrefix(String s) {
-        int colonIndex = s.indexOf(':');
-        return colonIndex == -1 ? s : s.substring(0, colonIndex);
+    private String getPrefix(String left, String center, String right) {
+        int colonIndex = -1;
+        String text = left;
+        if (text == null || text.isEmpty()) {
+            text = center;
+        }
+        if (text == null || text.isEmpty()) {
+            text = right;
+        }
+        if (text != null) {
+            colonIndex = text.indexOf(':');
+        }
+        return colonIndex == -1 ? text : text.substring(0, colonIndex);
     }
 
     /**
@@ -147,6 +178,7 @@ public class DataSorter {
         }
 
         this.customOrder = sortOrder;
+        this.prefixOrderCache = null;
     }
 
     public int[] getArray() {
